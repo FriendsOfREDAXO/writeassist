@@ -5,7 +5,7 @@ Schreibhilfe mit KI-Power direkt im REDAXO Backend. Übersetzen, Texte verbesser
 ## Was kann das Ding?
 
 ### Übersetzung (DeepL)
-Texte fix übersetzen, direkt im Backend oder im TinyMCE Editor. HTML-Formatierung bleibt erhalten, Quellsprache wird automatisch erkannt. Wer mag, aktiviert das Info Center Widget.
+Texte fix übersetzen, direkt im Backend oder im TinyMCE Editor. HTML-Formatierung bleibt erhalten, Quellsprache wird automatisch erkannt. Es gibt auch ein Widget für das Info Center. Andere in Vorbereitung. 
 
 ### Textverbesserung (LanguageTool)
 Grammatik, Rechtschreibung, Stil – alles wird geprüft. Läuft über die öffentliche API oder einen eigenen Server per Docker.
