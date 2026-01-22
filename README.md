@@ -1,28 +1,53 @@
 # WriteAssist für REDAXO
 
-Schreibhilfe mit KI-Power direkt im REDAXO Backend. Übersetzen, Texte verbessern, generieren – alles an einem Ort.
+**Dein KI-Texter, tief integriert in den Workflow.**
 
-## Was kann das Ding?
+WriteAssist bringt die volle Power moderner KI-Tools direkt in dein REDAXO Backend. Egal ob du Texte übersetzen, Grammatik korrigieren oder komplett neuen Content generieren willst – WriteAssist ist überall da, wo du es brauchst.
 
-### Übersetzung (DeepL)
-Texte fix übersetzen, direkt im Backend oder im TinyMCE Editor. HTML-Formatierung bleibt erhalten, Quellsprache wird automatisch erkannt. Es gibt auch ein Widget für das Info Center. Andere in Vorbereitung. 
+Voll integriert als Toolbar-Button im TinyMCE, als Info-Center-Widget oder als dedizierter Coding-Assistent. Dein Schweizer Taschenmesser für Content & Code.
 
-### Textverbesserung (LanguageTool)
-Grammatik, Rechtschreibung, Stil – alles wird geprüft. Läuft über die öffentliche API oder einen eigenen Server per Docker.
+## Features im Überblick
 
-### KI-Textgenerator (Google Gemini & OpenWebUI)
-Texte umschreiben, kürzen, erweitern oder komplett neu aus einem Thema generieren. Eigene Prompts gehen auch.
+### 🌐 Übersetzung (DeepL)
+Übersetze Content mit einem Klick, ohne das Layout zu zerschießen.
+- **Nahtlos**: Funktioniert direkt im TinyMCE Editor und behält HTML-Formatierung bei.
+- **Smart**: Automatische Spracherkennung.
+- **Griffbereit**: Auch als Info-Center-Widget verfügbar.
 
-Unterstützte Provider:
-*   **Google Gemini**: Kostenlos und leistungsfähig.
-*   **OpenWebUI / OpenAI Compatible**: Für lokal gehostete Modelle (Ollama, vLLM) oder andere OpenAI-kompatible APIs.
-*   **Prompt Management**: Speichere deine häufigsten Prompts als Vorlage ab.
+### ✨ Textverbesserung (LanguageTool)
+Schluss mit Tippfehlern und holprigen Sätzen.
+- Prüft Grammatik, Rechtschreibung und Stil.
+- Flexibel: Nutze die öffentliche API oder hoste deinen eigenen dockerisierten LanguageTool-Server für maximale Privacy.
 
-### Code-Assistent (nur Admins)
-REDAXO-Code generieren, erklären lassen oder verbessern. Kennt die Core-Klassen, installierte AddOns und die Datenbankstruktur.
-Es zeigt bei der Generierung an, an welchen Dienst die Daten gesendet werden (z.B. Google, OpenWebUI).
+### 🪄 KI-Textgenerator
+Lass dir beim Schreiben helfen – vom Umschreiben bis zum Brainstorming.
+- **Texte optimieren**: Kürzen, verlängern, Tonalität ändern.
+- **Content erschaffen**: Blogposts, Teaser oder Beschreibungen aus Stichpunkten generieren.
 
-**Aber:** Das ist ein Experiment – kein Ersatz für richtige Tools wie GitHub Copilot. Taugt für schnelle REDAXO-Fragen und einfache Snippets, mehr nicht.
+**Unterstützte KI-Modelle:**
+*   **Google Gemini**: Schnell, smart und mit großzügigem kostenlosen Kontingent.
+*   **OpenWebUI / OpenAI Compatible**: Volle Freiheit! Nutze lokal gehostete Modelle (Ollama, vLLM) oder jede API, die OpenAI-kompatibel ist (z.B. Mistral, Groq).
+*   **Prompt Management**: Speichere deine besten Befehle als Vorlagen für das ganze Team.
+
+### 💻 Code-Assistent (Admin-Only)
+Dein Sparringspartner für REDAXO-Entwicklung.
+- Generiert Modul-Code, erklärt komplexe Klassen oder hilft beim Debuggen.
+- **Weiß Bescheid**: Kennt Core-Klassen und installierte AddOns via Datenbank-Scan.
+- *Hinweis: Ideal für schnelle Snippets und Fragen, ersetzt aber keinen erfahrenen Entwickler.*
+
+## Integrationen
+
+### Info Center Widget
+WriteAssist klinkt sich direkt in das [Info Center AddOn](https://github.com/KLXM/redaxo-info-center) ein. Damit hast du deine Text-Tools direkt auf dem Dashboard.
+- **Tab-Interface**: Schnelles Umschalten zwischen Übersetzen, Optimieren und Generieren.
+- **Unabhängig**: Arbeite an Texten, ohne einen Artikel öffnen zu müssen.
+
+### TinyMCE Editor
+Die Tools sind da, wo du schreibst.
+- **Buttons in der Toolbar**: Funktionen auf Knopfdruck abrufbar.
+- **Kontext-Aware**: Liest den markierten Text oder den ganzen Editor-Inhalt.
+
+--------------------------------------------------------------------------------
 
 ## Installation
 
