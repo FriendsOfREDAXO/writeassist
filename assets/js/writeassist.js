@@ -69,6 +69,24 @@
                     self.copyToClipboard(improvedText.value, widget.querySelector('.writeassist-improve-message'));
                     return;
                 }
+
+                // Generate button
+                if (e.target.matches('.writeassist-generate-btn')) {
+                    const widget = e.target.closest('.writeassist-widget') || e.target.closest('.writeassist-page');
+                    const topic = widget.querySelector('.writeassist-generate-topic').value;
+                    const type = widget.querySelector('.writeassist-generate-type').value;
+                    
+                    self.generate(topic, type, widget);
+                    return;
+                }
+                
+                // Copy generated button
+                if (e.target.matches('.writeassist-copy-generated-btn')) {
+                    const widget = e.target.closest('.writeassist-widget') || e.target.closest('.writeassist-page');
+                    const generatedText = widget.querySelector('.writeassist-generated');
+                    self.copyToClipboard(generatedText.value, widget.querySelector('.writeassist-generate-message'));
+                    return;
+                }
             });
         },
         
@@ -180,6 +198,42 @@
                         resultDiv.style.display = 'block';
                     } else {
                         self.showMessage(messageEl, data.error || 'Check error', 'error');
+                    }
+                })
+                .catch(function(error) {
+                    self.showMessage(messageEl, error.message || 'Network error', 'error');
+                });
+        },
+        
+        // Generate via Gemini/Provider API
+        generate: function(text, type, widget) {
+            const self = this;
+            const messageEl = widget.querySelector('.writeassist-generate-message');
+            const resultDiv = widget.querySelector('.writeassist-generate-result');
+            const generatedArea = widget.querySelector('.writeassist-generated');
+            
+            if (!text.trim()) {
+                self.showMessage(messageEl, 'Please enter topic', 'warning');
+                return;
+            }
+            
+            self.showMessage(messageEl, 'Generating...', 'info');
+            
+            const apiUrl = './index.php?rex-api-call=writeassist_generate';
+            const formData = new FormData();
+            formData.append('action', 'generate');
+            formData.append('text', text); // Topic
+            formData.append('type', type);
+            
+            fetch(apiUrl, { method: 'POST', body: formData })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success) {
+                        generatedArea.value = data.text;
+                        resultDiv.style.display = 'block';
+                        self.showMessage(messageEl, '✓ Generated', 'success');
+                    } else {
+                        self.showMessage(messageEl, data.error || 'Generation error', 'error');
                     }
                 })
                 .catch(function(error) {

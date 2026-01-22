@@ -56,7 +56,7 @@ class rex_api_writeassist_generate extends rex_api_function
                 'rewrite' => $api->rewrite($text, $style),
                 'summarize' => $api->summarize($text),
                 'expand' => $api->expand($text),
-                'generate' => $api->generateFromTopic($text, $type),
+                'generate' => $api->generateFromTopic($text, $type, $prompt),
                 'custom' => $api->custom($prompt, $text),
                 'code_generate' => $api->generateCode($text, $language),
                 'code_explain' => $api->explainCode($text, $language),

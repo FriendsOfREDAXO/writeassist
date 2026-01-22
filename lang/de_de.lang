@@ -145,7 +145,7 @@ writeassist_module_placeholder = Beschreibe das Modul, z.B.: "Bild-Text-Modul mi
 writeassist_module_use_mform = MForm für Eingabeformular verwenden
 writeassist_module_use_mblock = MBlock für wiederholbare Elemente verwenden
 writeassist_code_security_title = Sicherheitshinweis
-writeassist_code_security_notice = Der Code-Generator sendet Projekt-Metadaten (REDAXO-Version, installierte AddOns, Tabellennamen) an Google Gemini. <strong>Gib niemals sensible Daten ein:</strong> Keine Passwörter, API-Keys, persönliche Daten, Bankdaten oder vertrauliche Geschäftsinformationen. Die Verbindung erfolgt über HTTPS, aber die Daten werden von Google verarbeitet.
+writeassist_code_security_notice = Der Code-Generator sendet Projekt-Metadaten (REDAXO-Version, installierte AddOns, Tabellennamen) an den gewählten KI-Provider ({0}). Gib niemals sensible Daten ein: Keine Passwörter, API-Keys, persönliche Daten, Bankdaten oder vertrauliche Geschäftsinformationen. Die Daten werden vom externen Dienst verarbeitet.
 
 # Integration Settings
 writeassist_integration_settings = Integrationen
@@ -156,3 +156,30 @@ writeassist_enable_tinymce_plugin_notice = Aktiviert das DeepL Übersetzungs-Plu
 writeassist_yes = Ja
 writeassist_no = Nein
 writeassist_code_context_info = REDAXO-Kontext wird automatisch mitgesendet (Version, AddOns, Tabellenstruktur - keine Inhalte oder Zugangsdaten).
+
+# AI Provider Settings
+writeassist_ai_provider_settings = AI Generator Provider
+writeassist_ai_provider = Provider auswählen
+writeassist_ai_provider_notice = Wähle den Dienst für die KI-Textgenerierung
+writeassist_openwebui_api_key = API Key
+writeassist_openwebui_api_key_notice = Der API-Schlüssel für OpenWebUI oder Ollama (optional bei lokalen Installationen)
+writeassist_openwebui_base_url = Base URL
+writeassist_openwebui_base_url_notice = Die URL zum API-Endpunkt (z.B. http://localhost:3000/api oder http://localhost:11434/v1)
+writeassist_openwebui_model = Modell-Name
+writeassist_openwebui_model_notice = Der technische Name des Modells (z.B. llama2, mistral, gemma:7b)
+
+# Generator UI Updates
+writeassist_optional_instructions = Zusätzliche Anweisungen (optional)
+writeassist_topic_keywords = Thema / Stichworte
+writeassist_input_text_optional = Kontext-Text (optional)
+writeassist_enter_prompt = Bitte gib eine Anweisung ein.
+writeassist_generating = Generiere...
+
+# Prompt Management
+writeassist_load_prompt = Vorlage laden...
+writeassist_save_prompt = Prompt als Vorlage speichern
+writeassist_delete_prompt = Vorlage löschen
+writeassist_prompt_saved = Prompt wurde gespeichert!
+writeassist_prompt_empty = Das Prompt-Feld ist leer.
+writeassist_prompt_name = Name für die Vorlage:
+writeassist_prompt_delete_confirm = Möchtest du diese Vorlage wirklich löschen?

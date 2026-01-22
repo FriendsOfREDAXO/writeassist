@@ -75,6 +75,22 @@ if (!$api->isConfigured()) {
                     <!-- Custom Prompt (for custom) -->
                     <div class="form-group" id="writeassist-prompt-group" style="display:none;">
                         <label for="writeassist-prompt"><?= $package->i18n('writeassist_prompt') ?></label>
+                        
+                        <!-- Prompt Selection -->
+                        <div class="input-group" style="margin-bottom: 5px;">
+                            <select id="writeassist-prompt-select" class="form-control">
+                                <option value=""><?= $package->i18n('writeassist_load_prompt') ?></option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="writeassist-save-prompt-btn" title="<?= $package->i18n('writeassist_save_prompt') ?>">
+                                    <i class="fa fa-floppy-o"></i>
+                                </button>
+                                <button class="btn btn-default" type="button" id="writeassist-delete-prompt-btn" title="<?= $package->i18n('writeassist_delete_prompt') ?>" disabled>
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </span>
+                        </div>
+                        
                         <textarea id="writeassist-prompt" class="form-control" rows="3" 
                             placeholder="<?= $package->i18n('writeassist_prompt_placeholder') ?>"></textarea>
                     </div>
@@ -143,15 +159,120 @@ if (!$api->isConfigured()) {
     const usageEl = document.getElementById('writeassist-usage');
     const copyBtn = document.getElementById('writeassist-copy-btn');
     const useAsInputBtn = document.getElementById('writeassist-use-as-input-btn');
+    const promptSelect = document.getElementById('writeassist-prompt-select');
+    const savePromptBtn = document.getElementById('writeassist-save-prompt-btn');
+    const deletePromptBtn = document.getElementById('writeassist-delete-prompt-btn');
+    const promptTextarea = document.getElementById('writeassist-prompt');
+    
+    // Load prompts
+    function loadPrompts() {
+        fetch('./index.php?rex-api-call=writeassist_prompts&action=list')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const currentVal = promptSelect.value;
+                promptSelect.innerHTML = '<option value=""><?= $package->i18n('writeassist_load_prompt') ?></option>';
+                data.prompts.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = p.title;
+                    option.dataset.content = p.content;
+                    promptSelect.appendChild(option);
+                });
+                if (currentVal) promptSelect.value = currentVal; // Restore selection if exists
+            }
+        });
+    }
     
     // Toggle visibility based on action
     actionSelect.addEventListener('change', function() {
         const action = this.value;
         styleGroup.style.display = action === 'rewrite' ? 'block' : 'none';
         typeGroup.style.display = action === 'generate' ? 'block' : 'none';
-        promptGroup.style.display = action === 'custom' ? 'block' : 'none';
+        
+        // Show prompt group for 'custom' AND 'generate'
+        const showPrompt = (action === 'custom' || action === 'generate');
+        promptGroup.style.display = showPrompt ? 'block' : 'none';
+        if (showPrompt) loadPrompts(); // Reload prompts when shown
+        
+        // Adjust labels based on action
+        if (action === 'generate') {
+             document.querySelector('label[for="writeassist-prompt"]').textContent = '<?= $package->i18n('writeassist_optional_instructions') ?>';
+             document.querySelector('label[for="writeassist-input"]').textContent = '<?= $package->i18n('writeassist_topic_keywords') ?>';
+        } else if (action === 'custom') {
+             document.querySelector('label[for="writeassist-prompt"]').textContent = '<?= $package->i18n('writeassist_prompt') ?>';
+             document.querySelector('label[for="writeassist-input"]').textContent = '<?= $package->i18n('writeassist_input_text_optional') ?>';
+        } else {
+             document.querySelector('label[for="writeassist-input"]').textContent = '<?= $package->i18n('writeassist_input_text') ?>';
+        }
     });
     
+    // Trigger initial state
+    actionSelect.dispatchEvent(new Event('change'));
+    
+    // Prompt Management
+    promptSelect.addEventListener('change', function() {
+        const option = this.options[this.selectedIndex];
+        if (option.value) {
+            promptTextarea.value = option.dataset.content;
+            deletePromptBtn.disabled = false;
+        } else {
+            promptTextarea.value = '';
+            deletePromptBtn.disabled = true;
+        }
+    });
+    
+    savePromptBtn.addEventListener('click', function() {
+        const content = promptTextarea.value.trim();
+        if (!content) {
+            alert('<?= $package->i18n('writeassist_prompt_empty') ?>');
+            return;
+        }
+        
+        const title = prompt('<?= $package->i18n('writeassist_prompt_name') ?>');
+        if (title) {
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+            
+            fetch('./index.php?rex-api-call=writeassist_prompts&action=save', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadPrompts();
+                    alert('<?= $package->i18n('writeassist_prompt_saved') ?>');
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            });
+        }
+    });
+    
+    deletePromptBtn.addEventListener('click', function() {
+        const id = promptSelect.value;
+        if (id && confirm('<?= $package->i18n('writeassist_prompt_delete_confirm') ?>')) {
+            const formData = new FormData();
+            formData.append('id', id);
+            
+            fetch('./index.php?rex-api-call=writeassist_prompts&action=delete', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    promptSelect.value = '';
+                    promptTextarea.value = '';
+                    deletePromptBtn.disabled = true;
+                    loadPrompts();
+                }
+            });
+        }
+    });
+
     // Generate
     generateBtn.addEventListener('click', function() {
         const action = actionSelect.value;

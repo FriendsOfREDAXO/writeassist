@@ -45,6 +45,9 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
                 <button type="button" class="writeassist-tab" data-tab="improve">
                     ✨ ' . rex_i18n::msg('writeassist_tab_improve') . '
                 </button>
+                <button type="button" class="writeassist-tab" data-tab="generate">
+                    🪄 ' . rex_i18n::msg('writeassist_generator') . '
+                </button>
             </div>
             
             <!-- Translate Tab -->
@@ -55,6 +58,11 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
             <!-- Improve Tab -->
             <div class="writeassist-tab-content" data-tab="improve">
                 ' . $this->renderImproveTab() . '
+            </div>
+            
+            <!-- Generate Tab -->
+            <div class="writeassist-tab-content" data-tab="generate">
+                ' . $this->renderGeneratorTab() . '
             </div>
         </div>
         ';
@@ -184,6 +192,51 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
             </div>
             
             <div class="writeassist-message writeassist-improve-message" style="display:none;"></div>
+        ';
+    }
+
+    private function renderGeneratorTab(): string
+    {
+        $api = new GeminiApi();
+        
+        if (!$api->isConfigured()) {
+            $settingsUrl = rex_url::backendPage('writeassist/settings');
+            return '
+                <div class="writeassist-alert warning">
+                    ' . rex_i18n::msg('writeassist_no_gemini_key') . '
+                    <a href="' . $settingsUrl . '">' . rex_i18n::msg('writeassist_settings') . '</a>
+                </div>
+            ';
+        }
+
+        return '
+            <div class="writeassist-form-group">
+                <textarea class="writeassist-input writeassist-generate-topic" rows="2" placeholder="' . rex_i18n::msg('writeassist_prompt_placeholder') . '"></textarea>
+            </div>
+            
+            <div class="writeassist-controls">
+                <select class="writeassist-select writeassist-generate-type">
+                    <option value="paragraph">Absatz</option>
+                    <option value="headline">Überschriften</option>
+                    <option value="bullet_points">Stichpunkte</option>
+                    <option value="intro">Einleitung</option>
+                    <option value="meta_description">Meta Description</option>
+                </select>
+                <button type="button" class="writeassist-btn primary writeassist-generate-btn">
+                    ' . rex_i18n::msg('writeassist_generate') . '
+                </button>
+            </div>
+            
+            <div class="writeassist-result writeassist-generate-result" style="display:none;">
+                <div class="writeassist-form-group">
+                    <textarea class="writeassist-input writeassist-generated" rows="5" readonly></textarea>
+                </div>
+                <button type="button" class="writeassist-btn small writeassist-copy-generated-btn">
+                    ' . rex_i18n::msg('writeassist_copy') . '
+                </button>
+            </div>
+            
+            <div class="writeassist-message writeassist-generate-message" style="display:none;"></div>
         ';
     }
 }

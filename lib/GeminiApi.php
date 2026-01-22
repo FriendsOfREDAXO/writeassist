@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace FriendsOfREDAXO\WriteAssist;
 
+use FriendsOfREDAXO\WriteAssist\AiProvider\WriteAssistAiProviderInterface;
 use rex_addon;
+use rex_clang;
+use rex_sql;
 
 /**
- * Google Gemini API Wrapper
+ * AI Service Wrapper
  * 
- * Uses Google AI Studio / Gemini API for text generation
- * API Docs: https://ai.google.dev/docs
+ * Delegates to the configured AI Provider (Gemini, OpenWebUI, etc.)
+ * Provides specialized prompts for varied tasks.
  */
 class GeminiApi
 {
-    private readonly string $apiKey;
-    private readonly string $model;
+    private WriteAssistAiProviderInterface $provider;
     
-    public function __construct(?string $apiKey = null)
+    public function __construct()
     {
-        $addon = rex_addon::get('writeassist');
-        $this->apiKey = $apiKey ?? (string) $addon->getConfig('gemini_api_key', '');
-        $this->model = (string) $addon->getConfig('gemini_model', 'gemini-2.5-flash');
+        $this->provider = WriteAssistAiFactory::factory();
     }
     
     /**
@@ -29,7 +29,7 @@ class GeminiApi
      */
     public function isConfigured(): bool
     {
-        return $this->apiKey !== '';
+        return $this->provider->isConfigured();
     }
     
     /**
@@ -43,59 +43,9 @@ class GeminiApi
      */
     public function generate(string $prompt, string $text = '', array $options = []): array
     {
-        if (!$this->isConfigured()) {
-            throw new \Exception('Gemini API key not configured');
-        }
-        
-        $fullPrompt = $prompt;
-        if ($text !== '') {
-            $fullPrompt .= "\n\n" . $text;
-        }
-        
-        $payload = [
-            'contents' => [
-                [
-                    'parts' => [
-                        ['text' => $fullPrompt]
-                    ]
-                ]
-            ],
-            'generationConfig' => [
-                'temperature' => $options['temperature'] ?? 0.7,
-                'maxOutputTokens' => $options['max_tokens'] ?? 2048,
-                'topP' => $options['top_p'] ?? 0.95,
-            ]
-        ];
-        
-        // Safety settings (allow most content for text processing)
-        $payload['safetySettings'] = [
-            ['category' => 'HARM_CATEGORY_HARASSMENT', 'threshold' => 'BLOCK_ONLY_HIGH'],
-            ['category' => 'HARM_CATEGORY_HATE_SPEECH', 'threshold' => 'BLOCK_ONLY_HIGH'],
-            ['category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold' => 'BLOCK_ONLY_HIGH'],
-            ['category' => 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold' => 'BLOCK_ONLY_HIGH'],
-        ];
-        
-        $response = $this->makeRequest(':generateContent', $payload);
-        
-        // Extract text from response
-        $generatedText = '';
-        if (isset($response['candidates'][0]['content']['parts'][0]['text'])) {
-            $generatedText = $response['candidates'][0]['content']['parts'][0]['text'];
-        }
-        
-        $result = ['text' => $generatedText];
-        
-        // Include usage if available
-        if (isset($response['usageMetadata'])) {
-            $result['usage'] = [
-                'prompt_tokens' => $response['usageMetadata']['promptTokenCount'] ?? 0,
-                'completion_tokens' => $response['usageMetadata']['candidatesTokenCount'] ?? 0,
-                'total_tokens' => $response['usageMetadata']['totalTokenCount'] ?? 0,
-            ];
-        }
-        
-        return $result;
+        return $this->provider->generate($prompt, $text, $options);
     }
+
     
     /**
      * Rewrite/improve text
@@ -146,19 +96,23 @@ class GeminiApi
      * Generate text from keywords/topic
      * @return array{text: string, usage?: array<string, int>}
      */
-    public function generateFromTopic(string $topic, string $type = 'paragraph'): array
+    public function generateFromTopic(string $topic, string $type = 'paragraph', string $instructions = ''): array
     {
-        $types = [
-            'paragraph' => "Schreibe einen informativen Absatz über: {$topic}",
-            'headline' => "Erstelle 5 verschiedene, ansprechende Überschriften für: {$topic}",
-            'bullet_points' => "Erstelle eine Aufzählung mit den wichtigsten Punkten zu: {$topic}",
-            'intro' => "Schreibe eine einleitende Einführung für einen Artikel über: {$topic}",
-            'meta_description' => "Schreibe eine SEO-optimierte Meta-Description (max 160 Zeichen) für: {$topic}",
-        ];
+        $prompt = match($type) {
+            'headline' => 'Schreibe 5 Vorschläge für eine Überschrift zum folgenden Thema.',
+            'bullet_points' => 'Erstelle eine Liste mit Stichpunkten zum folgenden Thema.',
+            'intro' => 'Schreibe eine Einleitung für einen Artikel zum folgenden Thema.',
+            'meta_description' => 'Schreibe eine SEO Meta-Description (max. 160 Zeichen) zum folgenden Thema.',
+            default => 'Schreibe einen Absatz zum folgenden Thema.'
+        };
         
-        $prompt = $types[$type] ?? $types['paragraph'];
+        if ($instructions !== '') {
+            $prompt .= "\nZusätzliche Anweisungen: " . $instructions;
+        }
         
-        return $this->generate($prompt);
+        $prompt .= "\nAntworte nur mit dem generierten Text.";
+        
+        return $this->generate($prompt, $topic);
     }
     
     /**
@@ -289,79 +243,6 @@ class GeminiApi
         
         return implode("\n", $context);
     }
-    
-    /**
-     * Custom prompt
-     * @return array{text: string, usage?: array<string, int>}
-     */
-    public function custom(string $prompt, string $text = ''): array
-    {
-        return $this->generate($prompt, $text);
-    }
-    
-    /**
-     * Get available models
-     * @return list<array{id: string, name: string}>
-     */
-    public static function getAvailableModels(): array
-    {
-        return [
-            ['id' => 'gemini-2.5-flash', 'name' => 'Gemini 2.5 Flash (empfohlen)'],
-            ['id' => 'gemini-2.5-flash-lite', 'name' => 'Gemini 2.5 Flash-Lite (schnellstes)'],
-            ['id' => 'gemini-2.5-pro', 'name' => 'Gemini 2.5 Pro (beste Qualität)'],
-            ['id' => 'gemini-3-pro-preview', 'name' => 'Gemini 3 Pro (Preview)'],
-        ];
-    }
-    
-    /**
-     * Make API request using rex_socket
-     * @param array<string, mixed> $payload
-     * @return array<string, mixed>
-     * @throws \Exception
-     */
-    private function makeRequest(string $endpoint, array $payload): array
-    {
-        // Validate API key
-        if ($this->apiKey === '') {
-            throw new \Exception('Gemini API key is not configured');
-        }
-        
-        // Build URL parts
-        $path = '/v1beta/models/' . urlencode($this->model) . $endpoint . '?key=' . urlencode($this->apiKey);
-        
-        $jsonBody = json_encode($payload);
-        if ($jsonBody === false) {
-            throw new \Exception('Failed to encode request payload');
-        }
-        
-        // Use rex_socket for REDAXO-native HTTP requests
-        $socket = \rex_socket::factoryUrl('https://generativelanguage.googleapis.com' . $path);
-        $socket->setOptions([
-            'ssl' => [
-                'verify_peer' => true,
-                'verify_peer_name' => true,
-            ],
-        ]);
-        $socket->addHeader('Content-Type', 'application/json');
-        
-        $response = $socket->doPost($jsonBody);
-        
-        if (!$response->isOk()) {
-            $body = $response->getBody();
-            $decoded = json_decode($body, true);
-            $errorMessage = is_array($decoded) && isset($decoded['error']['message']) 
-                ? $decoded['error']['message'] 
-                : 'API Error: HTTP ' . $response->getStatusCode();
-            throw new \Exception($errorMessage);
-        }
-        
-        $body = $response->getBody();
-        $decoded = json_decode($body, true);
-        
-        if (!is_array($decoded)) {
-            throw new \Exception('Invalid API response');
-        }
-        
-        return $decoded;
-    }
 }
+
+

@@ -7,14 +7,19 @@ declare(strict_types=1);
  */
 
 use FriendsOfREDAXO\WriteAssist\GeminiApi;
+use FriendsOfREDAXO\WriteAssist\WriteAssistAiFactory;
 
 $package = rex_addon::get('writeassist');
 $api = new GeminiApi();
 
+// Get current provider label
+$providerKey = rex_config::get('writeassist', 'ai_provider', 'gemini');
+$providerLabel = WriteAssistAiFactory::PROVIDERS[$providerKey] ?? 'Unknown Provider';
+
 // Security warning
 echo rex_view::info('
     <i class="fa fa-shield"></i> <strong>' . $package->i18n('writeassist_code_security_title') . '</strong><br>
-    ' . $package->i18n('writeassist_code_security_notice') . '
+    ' . $package->i18n('writeassist_code_security_notice', $providerLabel) . '
 ');
 
 // Check if API key is configured
