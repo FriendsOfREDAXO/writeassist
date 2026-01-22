@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.1.0] - 2026-01-22
+## [2.0.0] - 2026-01-22
 ### Added
 - **AI Provider Architecture**: Support for Google Gemini and OpenAI Compatible (OpenWebUI/Ollama) providers.
 - **TinyMCE Integration**: New `writeassist_generate` plugin for AI text generation, rewriting, summarizing, and expanding directly within the editor.
