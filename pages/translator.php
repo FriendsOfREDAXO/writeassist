@@ -14,7 +14,7 @@ $api = new DeeplApi();
 // Check if API key is configured
 $apiKey = $package->getConfig('api_key', '');
 if ($apiKey === '' || $apiKey === null) {
-    echo rex_view::warning($package->i18n('writeassist_no_api_key_warning', rex_url::backendPage('writeassist/settings')));
+    echo rex_view::warning(rex_i18n::rawMsg('writeassist_no_api_key_warning', rex_url::backendPage('writeassist/settings')));
 }
 
 // Get usage statistics
