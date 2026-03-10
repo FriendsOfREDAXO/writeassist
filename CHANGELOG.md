@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.0] - 2026-03-10
+### Added
+- **Massenübersetzung**: Neue Backend-Seite zum Übersetzen bestehender Artikel- und Kategorienamen aus einer Quellsprache in alle anderen activen Sprachen via DeepL.
+- **Option „nur unübersetzte"**: Überspringt Einträge, die in der Zielsprache bereits einen abweichenden Namen haben.
+- Neue `AutoTranslateService`-Methoden `getTargetCode()` und `getSourceCode()` als öffentliche Aliases für die DeepL-Codemapping-Logik.
+
 ## [2.1.0] - 2026-03-10
 ### Added
 - **Auto-Übersetzen**: Neue Artikel und Kategorien werden beim Anlegen automatisch per DeepL in alle aktiven Sprachen übersetzt.

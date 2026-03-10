@@ -59,6 +59,13 @@ Wenn eine mehrsprachige REDAXO-Installation mit DeepL betrieben wird, kann Write
 - DeepL API-Key in den WriteAssist-Einstellungen hinterlegt
 - Option *Auto-Übersetzen* aktiviert
 
+### 🌍 Massenübersetzung bestehender Namen
+Für bereits vorhandene Artikel und Kategorien gibt es eine eigene Backend-Seite: Quellsprache auswählen, Typ wählen und mit einem Klick alle Namen übersetzen.
+
+- Übersetzt Artikel- und/oder Kategorienamen in einem Durchgang
+- Option „nur unübersetzte Namen" schützt bereits angepasste Titel
+- Nur für Admins sichtbar
+
 --------------------------------------------------------------------------------
 
 ## Installation

@@ -1,5 +1,5 @@
 package: writeassist
-version: '2.1.0'
+version: '2.2.0'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/writeassist
 
@@ -20,6 +20,10 @@ page:
         coder:
             title: 'translate:writeassist_coder'
             icon: rex-icon fa-regular fa-keyboard
+            perm: admin
+        bulk_translate:
+            title: 'translate:writeassist_bulk_translate_nav'
+            icon: rex-icon fa-globe
             perm: admin
         settings:
             title: 'translate:writeassist_settings'

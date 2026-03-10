@@ -114,8 +114,10 @@ class AutoTranslateService
     /**
      * Map REDAXO clang code to DeepL target language code.
      * e.g. "en_gb" → "EN-GB", "de_de" → "DE"
+     *
+     * @alias getTargetCode
      */
-    private static function getDeeplCode(int $clangId): string
+    public static function getDeeplCode(int $clangId): string
     {
         $clang = rex_clang::get($clangId);
         if (!$clang) {
@@ -144,14 +146,28 @@ class AutoTranslateService
         return $map[$code] ?? explode('_', $code)[0];
     }
 
+    /** @alias getDeeplCode */
+    public static function getTargetCode(int $clangId): string
+    {
+        return self::getDeeplCode($clangId);
+    }
+
     /**
      * Map REDAXO clang code to DeepL SOURCE language code.
      * Source langs only support base codes – EN-US/EN-GB are NOT valid source langs.
+     *
+     * @alias getSourceCode
      */
-    private static function getDeeplSourceCode(int $clangId): string
+    public static function getDeeplSourceCode(int $clangId): string
     {
         $target = self::getDeeplCode($clangId);
         // DeepL source lang never has region suffix
         return explode('-', $target)[0];
+    }
+
+    /** @alias getDeeplSourceCode */
+    public static function getSourceCode(int $clangId): string
+    {
+        return self::getDeeplSourceCode($clangId);
     }
 }

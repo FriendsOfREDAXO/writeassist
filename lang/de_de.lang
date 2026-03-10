@@ -187,3 +187,27 @@ writeassist_prompt_delete_confirm = Möchtest du diese Vorlage wirklich löschen
 # Auto-Translate
 writeassist_enable_auto_translate = Artikel/Kategorien automatisch übersetzen
 writeassist_enable_auto_translate_notice = Wenn aktiviert, werden Titel neu angelegter Artikel und Kategorien automatisch per DeepL in alle anderen Sprachen übersetzt. Voraussetzung: DeepL-API-Key ist hinterlegt.
+
+# Bulk Translate
+writeassist_bulk_translate_nav = Massenübersetzung
+writeassist_bulk_translate_page_title = Bestehende Namen übersetzen
+writeassist_bulk_translate_title = Artikel- und Kategorienamen übersetzen
+writeassist_bulk_translate_description = Übersetzt die Namen bestehender Artikel und Kategorien aus einer Quellsprache in alle anderen aktiven Sprachen per DeepL.
+writeassist_bulk_translate_source_lang = Quellsprache
+writeassist_bulk_translate_type = Was soll übersetzt werden?
+writeassist_bulk_translate_type_both = Artikel & Kategorien
+writeassist_bulk_translate_type_articles = Nur Artikel
+writeassist_bulk_translate_type_categories = Nur Kategorien
+writeassist_bulk_translate_only_untranslated = Nur noch nicht übersetzte Namen
+writeassist_bulk_translate_only_untranslated_notice = Überspringt Einträge, deren Name in der Zielsprache sich bereits vom Quelltitel unterscheidet.
+writeassist_bulk_translate_start = Übersetzung starten
+writeassist_bulk_translate_running = Übersetzung läuft …
+writeassist_bulk_translate_please_wait = Bitte warten – das kann je nach Anzahl der Einträge etwas dauern.
+writeassist_bulk_translate_no_api_key = Kein DeepL-API-Key hinterlegt. Bitte zuerst in den Einstellungen eintragen.
+writeassist_bulk_translate_info_title = Hinweise
+writeassist_bulk_translate_info_text = Diese Funktion übersetzt ausschließlich die Namen (Titel) von Artikeln und Kategorien – keine Inhalte.
+writeassist_bulk_translate_info_item1 = Alle aktiven Sprachen außer der Quellsprache werden befüllt.
+writeassist_bulk_translate_info_item2 = Bereits übersetzte Namen bleiben unberührt, wenn die Option aktiv ist.
+writeassist_bulk_translate_info_item3 = Der Vorgang kann je nach Größe der Website mehrere Minuten dauern.
+writeassist_bulk_translate_warning_title = Achtung
+writeassist_bulk_translate_warning_text = Die Übersetzung überschreibt vorhandene Namen in den Zielsprachen (es sei denn, „nur unübersetzte" ist aktiviert). Bitte vorher ein Backup anlegen.

@@ -160,3 +160,27 @@ writeassist_no = No
 # Auto-Translate
 writeassist_enable_auto_translate = Auto-translate articles/categories
 writeassist_enable_auto_translate_notice = When enabled, titles of newly created articles and categories are automatically translated into all other languages via DeepL. Requires a valid DeepL API key.
+
+# Bulk Translate
+writeassist_bulk_translate_nav = Bulk translate
+writeassist_bulk_translate_page_title = Translate existing names
+writeassist_bulk_translate_title = Translate article and category names
+writeassist_bulk_translate_description = Translates the names of existing articles and categories from a source language into all other active languages via DeepL.
+writeassist_bulk_translate_source_lang = Source language
+writeassist_bulk_translate_type = What should be translated?
+writeassist_bulk_translate_type_both = Articles & categories
+writeassist_bulk_translate_type_articles = Articles only
+writeassist_bulk_translate_type_categories = Categories only
+writeassist_bulk_translate_only_untranslated = Only untranslated names
+writeassist_bulk_translate_only_untranslated_notice = Skips entries whose name in the target language already differs from the source title.
+writeassist_bulk_translate_start = Start translation
+writeassist_bulk_translate_running = Translation in progress ...
+writeassist_bulk_translate_please_wait = Please wait – this may take a moment depending on the number of entries.
+writeassist_bulk_translate_no_api_key = No DeepL API key configured. Please add one in the settings first.
+writeassist_bulk_translate_info_title = Notes
+writeassist_bulk_translate_info_text = This function only translates the names (titles) of articles and categories – not their content.
+writeassist_bulk_translate_info_item1 = All active languages except the source language will be filled.
+writeassist_bulk_translate_info_item2 = Already translated names remain untouched when the option is active.
+writeassist_bulk_translate_info_item3 = The process may take several minutes depending on the size of the website.
+writeassist_bulk_translate_warning_title = Warning
+writeassist_bulk_translate_warning_text = The translation overwrites existing names in target languages (unless "only untranslated" is enabled). Please create a backup first.
