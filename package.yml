@@ -39,3 +39,4 @@ requires:
 default_config:
     enable_infocenter_widget: 1
     enable_tinymce_plugin: 1
+    enable_auto_translate: 0

@@ -156,3 +156,7 @@ writeassist_enable_tinymce_plugin = Enable TinyMCE Plugin
 writeassist_enable_tinymce_plugin_notice = Enables the DeepL translation plugin in TinyMCE editor (if TinyMCE addon is installed)
 writeassist_yes = Yes
 writeassist_no = No
+
+# Auto-Translate
+writeassist_enable_auto_translate = Auto-translate articles/categories
+writeassist_enable_auto_translate_notice = When enabled, titles of newly created articles and categories are automatically translated into all other languages via DeepL. Requires a valid DeepL API key.

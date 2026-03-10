@@ -191,6 +191,14 @@ $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
 $field->setNotice($package->i18n('writeassist_enable_tinymce_plugin_notice'));
 
+// Auto-Translate on Article/Category creation
+$field = $form->addSelectField('enable_auto_translate');
+$field->setLabel($package->i18n('writeassist_enable_auto_translate'));
+$select = $field->getSelect();
+$select->addOption($package->i18n('writeassist_yes'), '1');
+$select->addOption($package->i18n('writeassist_no'), '0');
+$field->setNotice($package->i18n('writeassist_enable_auto_translate_notice'));
+
 $form->addRawField('</fieldset>');
 
 // Render form

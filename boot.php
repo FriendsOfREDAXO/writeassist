@@ -11,6 +11,25 @@ declare(strict_types=1);
 
 $addon = rex_addon::get('writeassist');
 
+// Auto-Translate: Artikelnamen und Kategorienamen bei Neuanlage übersetzen
+if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isEnabled()) {
+    rex_extension::register('ART_ADDED', static function (rex_extension_point $ep): void {
+        $id = (int) $ep->getParam('id');
+        $clang = (int) $ep->getParam('clang');
+        if ($id > 0 && $clang > 0) {
+            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateArticleName($id, $clang);
+        }
+    });
+
+    rex_extension::register('CAT_ADDED', static function (rex_extension_point $ep): void {
+        $id = (int) $ep->getParam('id');
+        $clang = (int) $ep->getParam('clang');
+        if ($id > 0 && $clang > 0) {
+            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateCategoryName($id, $clang);
+        }
+    });
+}
+
 if (rex::isBackend() && rex::getUser()) {
     // Register as Info Center Widget if info_center addon is available and enabled
     if ($addon->getConfig('enable_infocenter_widget', true) && rex_addon::get('info_center')->isAvailable() && class_exists(\KLXM\InfoCenter\InfoCenter::class)) {
