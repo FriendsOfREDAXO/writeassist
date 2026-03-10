@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 $addon = rex_addon::get('writeassist');
 
+// API-Klassen explizit registrieren (umgeht Autoload-Cache-Probleme)
+rex_api_function::register('writeassist_bulk_translate', 'rex_api_writeassist_bulk_translate');
+
 // Auto-Translate: Artikelnamen und Kategorienamen bei Neuanlage übersetzen
 // ART_ADDED feuert innerhalb der foreach-Clang-Schleife von addArticle().
 // Wir sammeln nur beim ersten Aufruf (done-Guard) und führen die Übersetzung

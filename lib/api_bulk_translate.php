@@ -21,6 +21,11 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
     /** @var bool accessible for logged-in admins only */
     protected $published = true;
 
+    protected function requiresCsrfProtection(): bool
+    {
+        return false;
+    }
+
     public function execute(): rex_api_result
     {
         rex_response::cleanOutputBuffers();
