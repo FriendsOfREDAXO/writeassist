@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.1] - 2026-03-10
+### Fixed
+- **Bulk-Translate**: JS wird jetzt korrekt über `boot.php` geladen (statt in der Page-Datei, wo es zu spät war)
+- **Bulk-Translate**: API auf `published = false` gesetzt (nur Backend)
+- **Bulk-Translate**: `rex-api-call` korrekt als GET-Parameter in der URL
+
 ## [2.2.0] - 2026-03-10
 ### Added
 - **Massenübersetzung**: Neue Backend-Seite zum Übersetzen bestehender Artikel- und Kategorienamen aus einer Quellsprache in alle anderen activen Sprachen via DeepL.
