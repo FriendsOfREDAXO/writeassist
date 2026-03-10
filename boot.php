@@ -12,30 +12,36 @@ declare(strict_types=1);
 $addon = rex_addon::get('writeassist');
 
 // Auto-Translate: Artikelnamen und Kategorienamen bei Neuanlage übersetzen
-// ART_ADDED/CAT_ADDED feuern einmal pro Sprache – Deduplication über static Set
+// ART_ADDED feuert innerhalb der foreach-Clang-Schleife von addArticle().
+// Wir sammeln nur beim ersten Aufruf (done-Guard) und führen die Übersetzung
+// NACH dem Ende aller Clang-Inserts via register_shutdown_function aus.
 if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isEnabled()) {
     rex_extension::register('ART_ADDED', static function (rex_extension_point $ep): void {
-        static $done = [];
+        static $queued = [];
         $id = (int) $ep->getParam('id');
-        if ($id <= 0 || isset($done[$id])) {
+        if ($id <= 0 || isset($queued[$id])) {
             return;
         }
-        $done[$id] = true;
+        $queued[$id] = true;
         $name = (string) $ep->getParam('name');
         $sourceClang = rex_clang::getCurrentId();
-        \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'article', $name, $sourceClang);
+        register_shutdown_function(static function () use ($id, $name, $sourceClang): void {
+            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'article', $name, $sourceClang);
+        });
     });
 
     rex_extension::register('CAT_ADDED', static function (rex_extension_point $ep): void {
-        static $done = [];
+        static $queued = [];
         $id = (int) $ep->getParam('id');
-        if ($id <= 0 || isset($done[$id])) {
+        if ($id <= 0 || isset($queued[$id])) {
             return;
         }
-        $done[$id] = true;
+        $queued[$id] = true;
         $name = (string) $ep->getParam('name');
         $sourceClang = rex_clang::getCurrentId();
-        \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'category', $name, $sourceClang);
+        register_shutdown_function(static function () use ($id, $name, $sourceClang): void {
+            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'category', $name, $sourceClang);
+        });
     });
 }
 

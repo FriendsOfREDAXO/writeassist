@@ -53,7 +53,7 @@ class AutoTranslateService
             return;
         }
 
-        $sourceCode = self::getDeeplCode($sourceClang);
+        $sourceCode = self::getDeeplSourceCode($sourceClang);
         $deepl = new DeeplApi();
 
         foreach (rex_clang::getAll() as $clang) {
@@ -62,25 +62,28 @@ class AutoTranslateService
             }
 
             try {
-                $result = $deepl->translate($sourceName, self::getDeeplCode($clang->getId()), $sourceCode);
+                $targetCode = self::getDeeplCode($clang->getId());
+                $result = $deepl->translate($sourceName, $targetCode, $sourceCode);
                 $translatedName = $result['text'];
 
-                rex_sql::factory()
-                    ->setTable(rex::getTablePrefix() . 'article')
-                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
-                    ->setValue('name', $translatedName)
-                    ->update();
-
                 if ('category' === $type) {
+                    // Kategorien sind startarticle=1-Zeilen in rex_article – Feld: catname
                     rex_sql::factory()
-                        ->setTable(rex::getTablePrefix() . 'category')
+                        ->setTable(rex::getTablePrefix() . 'article')
+                        ->setWhere(['id' => $id, 'clang_id' => $clang->getId(), 'startarticle' => 1])
+                        ->setValue('catname', $translatedName)
+                        ->setValue('name', $translatedName)
+                        ->update();
+                } else {
+                    rex_sql::factory()
+                        ->setTable(rex::getTablePrefix() . 'article')
                         ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
                         ->setValue('name', $translatedName)
                         ->update();
                 }
 
                 rex_article_cache::generateMeta($id, $clang->getId());
-            } catch (Exception) {
+            } catch (Exception $e) {
                 // Silently skip on DeepL error – original name stays
             }
         }
@@ -109,8 +112,8 @@ class AutoTranslateService
     }
 
     /**
-     * Map REDAXO clang code to DeepL language code.
-     * e.g. "de_de" → "DE", "en_gb" → "EN-GB"
+     * Map REDAXO clang code to DeepL target language code.
+     * e.g. "en_gb" → "EN-GB", "de_de" → "DE"
      */
     private static function getDeeplCode(int $clangId): string
     {
@@ -121,30 +124,34 @@ class AutoTranslateService
 
         $code = strtoupper($clang->getCode());
 
-        // Map common REDAXO codes to DeepL codes
         $map = [
-            'DE' => 'DE',
-            'DE_DE' => 'DE',
-            'EN' => 'EN-US',
-            'EN_GB' => 'EN-GB',
-            'EN_US' => 'EN-US',
-            'FR' => 'FR',
-            'FR_FR' => 'FR',
-            'ES' => 'ES',
-            'ES_ES' => 'ES',
-            'IT' => 'IT',
-            'IT_IT' => 'IT',
-            'NL' => 'NL',
-            'NL_NL' => 'NL',
-            'PL' => 'PL',
-            'PT' => 'PT-PT',
-            'PT_PT' => 'PT-PT',
-            'PT_BR' => 'PT-BR',
-            'RU' => 'RU',
-            'JA' => 'JA',
-            'ZH' => 'ZH',
+            'DE' => 'DE', 'DE_DE' => 'DE', 'DE_AT' => 'DE', 'DE_CH' => 'DE',
+            'EN' => 'EN-US', 'EN_GB' => 'EN-GB', 'EN_US' => 'EN-US',
+            'FR' => 'FR', 'FR_FR' => 'FR',
+            'ES' => 'ES', 'ES_ES' => 'ES',
+            'IT' => 'IT', 'IT_IT' => 'IT',
+            'NL' => 'NL', 'NL_NL' => 'NL',
+            'PL' => 'PL', 'PL_PL' => 'PL',
+            'PT' => 'PT-PT', 'PT_PT' => 'PT-PT', 'PT_BR' => 'PT-BR',
+            'RU' => 'RU', 'JA' => 'JA', 'ZH' => 'ZH',
+            'SL' => 'SL', 'CS' => 'CS', 'SK' => 'SK', 'HU' => 'HU',
+            'RO' => 'RO', 'BG' => 'BG', 'DA' => 'DA', 'FI' => 'FI',
+            'EL' => 'EL', 'ET' => 'ET', 'LT' => 'LT', 'LV' => 'LV',
+            'SV' => 'SV', 'TR' => 'TR', 'UK' => 'UK', 'ID' => 'ID',
+            'KO' => 'KO', 'NB' => 'NB',
         ];
 
         return $map[$code] ?? explode('_', $code)[0];
+    }
+
+    /**
+     * Map REDAXO clang code to DeepL SOURCE language code.
+     * Source langs only support base codes – EN-US/EN-GB are NOT valid source langs.
+     */
+    private static function getDeeplSourceCode(int $clangId): string
+    {
+        $target = self::getDeeplCode($clangId);
+        // DeepL source lang never has region suffix
+        return explode('-', $target)[0];
     }
 }

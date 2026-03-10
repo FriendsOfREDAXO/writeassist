@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.0] - 2026-03-10
+### Added
+- **Auto-Übersetzen**: Neue Artikel und Kategorien werden beim Anlegen automatisch per DeepL in alle aktiven Sprachen übersetzt.
+- **Einstellung**: Option `enable_auto_translate` in den Einstellungen, erfordert hinterlegten DeepL-API-Key.
+- **Robustheit**: Übersetzung läuft nach Abschluss aller REDAXO-internen Datenbank-Inserts (via `register_shutdown_function`), verhindert Überschreiben durch REDAXO-Core.
+
+### Changed
+- **Settings-Seite**: Zweispaltiges Layout mit Status-Sidebar (Auto-Übersetzen, API-Status, Integrationen).
+- **JavaScript**: Settings-JS in separate Datei `assets/js/writeassist-settings.js` ausgelagert, `rex:ready`-Event statt `DOMContentLoaded`.
+
 ## [2.0.0] - 2026-01-22
 ### Added
 - **AI Provider Architecture**: Support for Google Gemini and OpenAI Compatible (OpenWebUI/Ollama) providers.

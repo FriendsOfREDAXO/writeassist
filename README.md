@@ -47,6 +47,18 @@ Die Tools sind da, wo du schreibst.
 - **Buttons in der Toolbar**: Funktionen auf Knopfdruck abrufbar.
 - **Kontext-Aware**: Liest den markierten Text oder den ganzen Editor-Inhalt.
 
+### 🔄 Auto-Übersetzen bei Anlage
+Wenn eine mehrsprachige REDAXO-Installation mit DeepL betrieben wird, kann WriteAssist neue Artikel und Kategorien automatisch in alle aktiven Sprachen übersetzen – ohne manuellen Eingriff.
+
+- **Automatisch**: Wird ausgelöst, sobald ein Artikel oder eine Kategorie angelegt wird.
+- **Alle Sprachen sofort**: Alle aktiven Clangs werden beim Speichern direkt befüllt.
+- **Quellerkennung**: Die Ausgangssprache wird anhand der aktuellen Clang bestimmt.
+- **Steuerbar**: Lässt sich in den WriteAssist-Einstellungen ein- und ausschalten.
+
+**Voraussetzungen:**
+- DeepL API-Key in den WriteAssist-Einstellungen hinterlegt
+- Option *Auto-Übersetzen* aktiviert
+
 --------------------------------------------------------------------------------
 
 ## Installation
