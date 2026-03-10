@@ -18,10 +18,9 @@ $(document).on('rex:ready', function () {
         $result.hide();
 
         $.ajax({
-            url: 'index.php',
+            url: 'index.php?rex-api-call=writeassist_bulk_translate',
             method: 'POST',
             data: {
-                'rex-api-call': 'writeassist_bulk_translate',
                 source_clang:      sourceClang,
                 type:              type,
                 only_untranslated: onlyUntranslated
