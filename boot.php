@@ -60,6 +60,8 @@ if (rex::isBackend() && rex::getUser()) {
     // Add assets to backend
     rex_view::addCssFile($addon->getAssetsUrl('css/writeassist.css'));
     rex_view::addJsFile($addon->getAssetsUrl('js/writeassist.js'));
+    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-bulk-translate.js'));
+    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-settings.js'));
     if ($addon->getConfig('enable_markitup_plugin', true) && rex_addon::get('markitup')->isAvailable()) {
         // Register MarkItUp integration JS
         rex_view::addJsFile($addon->getAssetsUrl('js/markitup-writeassist-plugin.js'));

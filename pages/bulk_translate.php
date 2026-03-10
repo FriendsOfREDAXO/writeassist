@@ -9,8 +9,6 @@
 
 $package = rex_addon::get('writeassist');
 
-rex_view::addJsFile($package->getAssetsUrl('js/writeassist-bulk-translate.js'));
-
 // Check prerequisites
 $apiKey = trim((string) $package->getConfig('api_key', ''));
 if ($apiKey === '') {

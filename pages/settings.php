@@ -6,9 +6,6 @@
 
 $package = rex_addon::get('writeassist');
 
-// Settings JS (provider-toggle + connection test) in separate file
-rex_view::addJsFile($package->getAssetsUrl('js/writeassist-settings.js'));
-
 // -------------------------------------------------------------------------
 // Aktuelle Konfiguration für Sidebar
 // -------------------------------------------------------------------------

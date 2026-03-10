@@ -18,13 +18,7 @@ use FriendsOfREDAXO\WriteAssist\DeeplApi;
  */
 class rex_api_writeassist_bulk_translate extends rex_api_function
 {
-    /** @var bool accessible for logged-in admins only */
-    protected $published = true;
-
-    protected function requiresCsrfProtection(): bool
-    {
-        return false;
-    }
+    protected $published = false;
 
     public function execute(): rex_api_result
     {
