@@ -12,21 +12,30 @@ declare(strict_types=1);
 $addon = rex_addon::get('writeassist');
 
 // Auto-Translate: Artikelnamen und Kategorienamen bei Neuanlage übersetzen
+// ART_ADDED/CAT_ADDED feuern einmal pro Sprache – Deduplication über static Set
 if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isEnabled()) {
     rex_extension::register('ART_ADDED', static function (rex_extension_point $ep): void {
+        static $done = [];
         $id = (int) $ep->getParam('id');
-        $clang = (int) $ep->getParam('clang');
-        if ($id > 0 && $clang > 0) {
-            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateArticleName($id, $clang);
+        if ($id <= 0 || isset($done[$id])) {
+            return;
         }
+        $done[$id] = true;
+        $name = (string) $ep->getParam('name');
+        $sourceClang = rex_clang::getCurrentId();
+        \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'article', $name, $sourceClang);
     });
 
     rex_extension::register('CAT_ADDED', static function (rex_extension_point $ep): void {
+        static $done = [];
         $id = (int) $ep->getParam('id');
-        $clang = (int) $ep->getParam('clang');
-        if ($id > 0 && $clang > 0) {
-            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateCategoryName($id, $clang);
+        if ($id <= 0 || isset($done[$id])) {
+            return;
         }
+        $done[$id] = true;
+        $name = (string) $ep->getParam('name');
+        $sourceClang = rex_clang::getCurrentId();
+        \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'category', $name, $sourceClang);
     });
 }
 

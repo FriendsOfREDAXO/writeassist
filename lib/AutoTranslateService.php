@@ -8,6 +8,7 @@ use Exception;
 use rex;
 use rex_addon;
 use rex_article;
+use rex_article_cache;
 use rex_category;
 use rex_clang;
 use rex_sql;
@@ -39,19 +40,15 @@ class AutoTranslateService
     }
 
     /**
-     * Translate article name into all other active clangs.
+     * Translate a name (article or category) into all other active clangs.
      *
-     * @param int $articleId  REDAXO article ID
-     * @param int $sourceClang Clang ID in which the article was originally created
+     * @param int    $id         Article or category ID
+     * @param string $type       'article' or 'category'
+     * @param string $sourceName The name as entered by the user
+     * @param int    $sourceClang Clang ID of the user's current session language
      */
-    public static function translateArticleName(int $articleId, int $sourceClang): void
+    public static function translateName(int $id, string $type, string $sourceName, int $sourceClang): void
     {
-        $article = rex_article::get($articleId, $sourceClang);
-        if (!$article) {
-            return;
-        }
-
-        $sourceName = $article->getName();
         if ('' === $sourceName) {
             return;
         }
@@ -70,9 +67,19 @@ class AutoTranslateService
 
                 rex_sql::factory()
                     ->setTable(rex::getTablePrefix() . 'article')
-                    ->setWhere(['id' => $articleId, 'clang_id' => $clang->getId()])
+                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
                     ->setValue('name', $translatedName)
                     ->update();
+
+                if ('category' === $type) {
+                    rex_sql::factory()
+                        ->setTable(rex::getTablePrefix() . 'category')
+                        ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
+                        ->setValue('name', $translatedName)
+                        ->update();
+                }
+
+                rex_article_cache::generateMeta($id, $clang->getId());
             } catch (Exception) {
                 // Silently skip on DeepL error – original name stays
             }
@@ -80,49 +87,24 @@ class AutoTranslateService
     }
 
     /**
-     * Translate category name into all other active clangs.
-     *
-     * @param int $categoryId  REDAXO category ID
-     * @param int $sourceClang Clang ID in which the category was originally created
+     * @deprecated Use translateName() instead
+     */
+    public static function translateArticleName(int $articleId, int $sourceClang): void
+    {
+        $article = rex_article::get($articleId, $sourceClang);
+        if ($article) {
+            self::translateName($articleId, 'article', $article->getName(), $sourceClang);
+        }
+    }
+
+    /**
+     * @deprecated Use translateName() instead
      */
     public static function translateCategoryName(int $categoryId, int $sourceClang): void
     {
         $category = rex_category::get($categoryId, $sourceClang);
-        if (!$category) {
-            return;
-        }
-
-        $sourceName = $category->getName();
-        if ('' === $sourceName) {
-            return;
-        }
-
-        $sourceCode = self::getDeeplCode($sourceClang);
-        $deepl = new DeeplApi();
-
-        foreach (rex_clang::getAll() as $clang) {
-            if ($clang->getId() === $sourceClang) {
-                continue;
-            }
-
-            try {
-                $result = $deepl->translate($sourceName, self::getDeeplCode($clang->getId()), $sourceCode);
-                $translatedName = $result['text'];
-
-                rex_sql::factory()
-                    ->setTable(rex::getTablePrefix() . 'article')
-                    ->setWhere(['id' => $categoryId, 'clang_id' => $clang->getId(), 'startarticle' => 1])
-                    ->setValue('name', $translatedName)
-                    ->update();
-
-                rex_sql::factory()
-                    ->setTable(rex::getTablePrefix() . 'category')
-                    ->setWhere(['id' => $categoryId, 'clang_id' => $clang->getId()])
-                    ->setValue('name', $translatedName)
-                    ->update();
-            } catch (Exception) {
-                // Silently skip on DeepL error – original name stays
-            }
+        if ($category) {
+            self::translateName($categoryId, 'category', $category->getName(), $sourceClang);
         }
     }
 
