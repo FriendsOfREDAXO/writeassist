@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.1] - 2026-03-11
+### Fixed
+- Syntaxfehler (fehlendes Semikolon) in `pages/settings.php` – führte zu Weißseite im Backend
+
 ## [2.3.0] - 2026-03-11
 ### Added
 - **Auto-Übersetzen bei Umbenennung**: Neue Option `Übersetzung bei Umbenennung`, die Artikel- und Kategorienamen automatisch per DeepL in alle anderen Sprachen übersetzt, wann immer der Name gespeichert wird.
