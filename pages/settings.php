@@ -54,7 +54,7 @@ if (!$cfgAutoTranslate && !$cfgRenameTranslate) {
         $sidebar .= '<p class="small text-warning"><i class="rex-icon fa-exclamation-triangle"></i> DeepL-API-Key fehlt.</p>';
     }
 }
-$sidebar .= '</div></div>'
+$sidebar .= '</div></div>';
 
 // --- Dienste ---
 $sidebar .= '<div class="panel panel-default">';
