@@ -185,8 +185,10 @@ writeassist_prompt_name = Name für die Vorlage:
 writeassist_prompt_delete_confirm = Möchtest du diese Vorlage wirklich löschen?
 
 # Auto-Translate
-writeassist_enable_auto_translate = Artikel/Kategorien automatisch übersetzen
+writeassist_enable_auto_translate = Artikel/Kategorien automatisch übersetzen (Neuanlage)
 writeassist_enable_auto_translate_notice = Wenn aktiviert, werden Titel neu angelegter Artikel und Kategorien automatisch per DeepL in alle anderen Sprachen übersetzt. Voraussetzung: DeepL-API-Key ist hinterlegt.
+writeassist_translate_on_rename = Artikel/Kategorien automatisch übersetzen (Umbenennung)
+writeassist_translate_on_rename_notice = Wenn aktiviert, wird der Name eines Artikels oder einer Kategorie bei jeder Bearbeitung automatisch per DeepL in alle anderen Sprachen übersetzt. Bestehende Übersetzungen werden dabei überschrieben.
 
 # Bulk Translate
 writeassist_bulk_translate_nav = Massenübersetzung

@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0] - 2026-03-11
+### Added
+- **Auto-Übersetzen bei Umbenennung**: Neue Option `Übersetzung bei Umbenennung`, die Artikel- und Kategorienamen automatisch per DeepL in alle anderen Sprachen übersetzt, wann immer der Name gespeichert wird.
+- Neue Methode `AutoTranslateService::isRenameEnabled()` für die neue Funktion.
+- `ART_UPDATED`- und `CAT_UPDATED`-Extension-Point-Handler in `boot.php`.
+- Einstellung `translate_on_rename` in der Backend-Einstellungsseite (Bereich Integrationen).
+- Sidebar in den Einstellungen zeigt nun beide Auto-Übersetze-Optionen separat an.
+
 ## [2.2.1] - 2026-03-10
 ### Fixed
 - **Bulk-Translate**: JS wird jetzt korrekt über `boot.php` geladen (statt in der Page-Datei, wo es zu spät war)

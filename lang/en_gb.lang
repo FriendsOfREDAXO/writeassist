@@ -158,8 +158,10 @@ writeassist_yes = Yes
 writeassist_no = No
 
 # Auto-Translate
-writeassist_enable_auto_translate = Auto-translate articles/categories
-writeassist_enable_auto_translate_notice = When enabled, titles of newly created articles and categories are automatically translated into all other languages via DeepL. Requires a valid DeepL API key.
+writeassist_enable_auto_translate = Auto-translate articles/categories (on creation)
+writeassist_enable_auto_translate_notice = When enabled, titles of newly created articles and categories are automatically translated via DeepL into all other languages. Requires a valid DeepL API key.
+writeassist_translate_on_rename = Auto-translate articles/categories (on rename)
+writeassist_translate_on_rename_notice = When enabled, the name of an article or category is automatically translated via DeepL into all other languages whenever it is saved. Existing translations will be overwritten.
 
 # Bulk Translate
 writeassist_bulk_translate_nav = Bulk translate

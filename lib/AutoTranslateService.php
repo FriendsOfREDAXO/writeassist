@@ -25,12 +25,27 @@ use rex_sql;
 class AutoTranslateService
 {
     /**
-     * Whether the feature is active and usable.
+     * Whether the auto-translate on creation feature is active and usable.
      */
     public static function isEnabled(): bool
     {
         $addon = rex_addon::get('writeassist');
         if (!(bool) $addon->getConfig('enable_auto_translate', false)) {
+            return false;
+        }
+        if ('' === (string) $addon->getConfig('api_key', '')) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Whether the auto-translate on rename/update feature is active and usable.
+     */
+    public static function isRenameEnabled(): bool
+    {
+        $addon = rex_addon::get('writeassist');
+        if (!(bool) $addon->getConfig('translate_on_rename', false)) {
             return false;
         }
         if ('' === (string) $addon->getConfig('api_key', '')) {

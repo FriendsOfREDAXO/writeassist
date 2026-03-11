@@ -11,6 +11,7 @@ $package = rex_addon::get('writeassist');
 // -------------------------------------------------------------------------
 $cfgApiKey        = trim((string) $package->getConfig('api_key', ''));
 $cfgAutoTranslate = (bool) $package->getConfig('enable_auto_translate', false);
+$cfgRenameTranslate = (bool) $package->getConfig('translate_on_rename', false);
 $cfgTinyMce       = (bool) $package->getConfig('enable_tinymce_plugin', true);
 $cfgInfoCenter    = (bool) $package->getConfig('enable_infocenter_widget', true);
 $cfgAiProvider    = (string) $package->getConfig('ai_provider', 'gemini');
@@ -37,21 +38,23 @@ $statusBadge = static function (bool $ok, string $labelOn, string $labelOff): st
 $sidebar = '';
 
 // --- Auto-Translate (prominent oben) ---
-$atPanelClass = $cfgAutoTranslate ? 'panel-success' : 'panel-warning';
+$atPanelClass = ($cfgAutoTranslate || $cfgRenameTranslate) ? 'panel-success' : 'panel-warning';
 $sidebar .= '<div class="panel ' . $atPanelClass . '">';
 $sidebar .= '<div class="panel-heading"><strong><i class="rex-icon fa-language"></i> Auto-Übersetzen</strong></div>';
 $sidebar .= '<div class="panel-body">';
-if ($cfgAutoTranslate) {
-    $sidebar .= '<p><i class="rex-icon fa-check text-success"></i> <strong>Aktiv</strong></p>';
-    $sidebar .= '<p class="small">Neue Artikel und Kategorien werden automatisch per DeepL in alle Sprachen übersetzt.</p>';
-} else {
-    $sidebar .= '<p><i class="rex-icon fa-times text-muted"></i> <strong>Inaktiv</strong></p>';
-    $sidebar .= '<p class="small">Aktiviere diese Option, damit neue Artikel und Kategorien automatisch übersetzt werden.</p>';
+$sidebar .= '<ul class="list-unstyled" style="margin:0">';
+$checkOn = '<i class="rex-icon fa-check text-success"></i>';
+$checkOff = '<i class="rex-icon fa-times text-muted"></i>';
+$sidebar .= '<li>' . ($cfgAutoTranslate ? $checkOn : $checkOff) . ' <strong>Bei Neuanlage</strong></li>';
+$sidebar .= '<li>' . ($cfgRenameTranslate ? $checkOn : $checkOff) . ' <strong>Bei Umbenennung</strong></li>';
+$sidebar .= '</ul>';
+if (!$cfgAutoTranslate && !$cfgRenameTranslate) {
+    $sidebar .= '<p class="small" style="margin-top:8px">Aktiviere eine der Optionen unten, damit Artikel- und Kategorienamen automatisch übersetzt werden.</p>';
     if (!$deeplConfigured) {
         $sidebar .= '<p class="small text-warning"><i class="rex-icon fa-exclamation-triangle"></i> DeepL-API-Key fehlt.</p>';
     }
 }
-$sidebar .= '</div></div>';
+$sidebar .= '</div></div>'
 
 // --- Dienste ---
 $sidebar .= '<div class="panel panel-default">';
@@ -205,6 +208,13 @@ $select = $field->getSelect();
 $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
 $field->setNotice($package->i18n('writeassist_enable_auto_translate_notice'));
+
+$field = $form->addSelectField('translate_on_rename');
+$field->setLabel($package->i18n('writeassist_translate_on_rename'));
+$select = $field->getSelect();
+$select->addOption($package->i18n('writeassist_yes'), '1');
+$select->addOption($package->i18n('writeassist_no'), '0');
+$field->setNotice($package->i18n('writeassist_translate_on_rename_notice'));
 
 $form->addRawField('</fieldset>');
 

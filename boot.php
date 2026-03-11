@@ -48,6 +48,45 @@ if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isEnabled()) {
     });
 }
 
+// Auto-Translate bei Umbenennung: Übersetzt Artikel-/Kategorienamen bei Bearbeitung
+if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isRenameEnabled()) {
+    rex_extension::register('ART_UPDATED', static function (rex_extension_point $ep): void {
+        static $queued = [];
+        $id = (int) $ep->getParam('id');
+        if ($id <= 0 || isset($queued[$id])) {
+            return;
+        }
+        $queued[$id] = true;
+        $name = (string) $ep->getParam('name');
+        $clangId = $ep->getParam('clang_id');
+        $sourceClang = null !== $clangId ? (int) $clangId : rex_clang::getCurrentId();
+        if ('' === $name || $sourceClang <= 0) {
+            return;
+        }
+        register_shutdown_function(static function () use ($id, $name, $sourceClang): void {
+            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'article', $name, $sourceClang);
+        });
+    });
+
+    rex_extension::register('CAT_UPDATED', static function (rex_extension_point $ep): void {
+        static $queued = [];
+        $id = (int) $ep->getParam('id');
+        if ($id <= 0 || isset($queued[$id])) {
+            return;
+        }
+        $queued[$id] = true;
+        $name = (string) $ep->getParam('name');
+        $clangId = $ep->getParam('clang_id');
+        $sourceClang = null !== $clangId ? (int) $clangId : rex_clang::getCurrentId();
+        if ('' === $name || $sourceClang <= 0) {
+            return;
+        }
+        register_shutdown_function(static function () use ($id, $name, $sourceClang): void {
+            \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateName($id, 'category', $name, $sourceClang);
+        });
+    });
+}
+
 if (rex::isBackend() && rex::getUser()) {
     // Register as Info Center Widget if info_center addon is available and enabled
     if ($addon->getConfig('enable_infocenter_widget', true) && rex_addon::get('info_center')->isAvailable() && class_exists(\KLXM\InfoCenter\InfoCenter::class)) {
