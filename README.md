@@ -78,7 +78,7 @@ Für bereits vorhandene Artikel und Kategorien gibt es eine eigene Backend-Seite
 
 | Service | Wo gibts den Key? | Kostenlos? |
 |---------|-------------------|------------|
-| DeepL | https://www.deepl.com/pro-api | 500k Zeichen/Monat |
+| DeepL | https://www.deepl.com/ | 500k Zeichen/Monat |
 | Google Gemini | https://aistudio.google.com/apikey | Großzügiges Kontingent |
 | LanguageTool | Öffentliche API oder eigener Server | Ja |
 | OpenWebUI / Ollama | Lokal installieren | Ja |
