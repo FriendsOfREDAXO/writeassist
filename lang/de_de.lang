@@ -61,6 +61,8 @@ writeassist_languagetool_username = Benutzername
 writeassist_ignore_settings = Ignorierte Wörter
 writeassist_ignore_words = Wörter ignorieren
 writeassist_ignore_words_notice = Ein Wort pro Zeile. Diese Wörter werden bei der Rechtschreibprüfung ignoriert (z.B. Eigennamen, Firmennamen, Fachbegriffe).
+writeassist_test_connection = Verbindungstest
+
 
 # API Messages
 writeassist_translation_success = Übersetzung erfolgreich!
