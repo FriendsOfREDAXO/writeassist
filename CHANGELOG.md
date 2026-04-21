@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.4.0] - 2026-04-21
+### Fixed
+- **Bulk-Translate**: Checkbox „Nur noch nicht übersetzte Namen" saß außerhalb des Fieldsets – Bootstrap-3-Struktur korrigiert (`div.checkbox > label > input` statt `label.checkbox > input`)
+
+### Changed
+- **InfoCenter-Widget**: Tabs werden nur noch angezeigt, wenn der zugehörige Service konfiguriert ist (Übersetzer-Tab nur bei vorhandenem DeepL-Key, Generator-Tab nur bei konfigurierter KI). LanguageTool (Improve) ist immer verfügbar (kostenlose Public-API).
+- **AI-Provider**: Neue Option „Deaktiviert" im Provider-Select deaktiviert den Generator-Tab explizit.
+- **AI-Provider**: Default-URL für OpenWebUI-Provider war `http://localhost:3000` und sorgte dafür, dass der Generator-Tab stets als konfiguriert galt – jetzt leer.
+- **AI-Provider**: Provider-Einstellungsblöcke und Verbindungstest-Button werden server- und clientseitig korrekt aus-/eingeblendet (bei „Deaktiviert" alles versteckt).
+- **Settings**: Notices mit HTML-Links (`api_key_notice`, `gemini_api_key_notice`) nutzen jetzt `rex_i18n::rawMsg()` statt `i18n()`, damit Links korrekt gerendert werden.
+- **Verbindungstest**: Hinweis ergänzt, dass vor dem Test gespeichert werden muss.
+- **Sidebar**: KI-Provider zeigt bei „Deaktiviert" nun korrekt „Deaktiviert" statt fälschlicherweise den vorherigen Provider als konfiguriert.
+
+### Added
+- **OpenAI-Provider**: Neuer Provider „OpenAI (ChatGPT)" mit dediziertem Formularblock (API-Key + Modell-Auswahl). Nutzt die offizielle OpenAI-API (`api.openai.com/v1`) – keine Base-URL-Eingabe nötig. Verfügbare Modelle: `gpt-4o-mini`, `gpt-4o`, `o4-mini`, `o3`.
+- **Gemini-Modelle aktualisiert**: Modell-Auswahl enthält jetzt aktuelle Modelle (Gemini 2.5 Flash, 2.5 Flash Lite, 2.5 Pro, 3 Flash Preview, 3.1 Pro Preview). `gemini-3-pro-preview` wurde entfernt (eingestellt am 09.03.2026).
+
 ## [2.3.1] - 2026-03-11
 ### Fixed
 - Syntaxfehler (fehlendes Semikolon) in `pages/settings.php` – führte zu Weißseite im Backend

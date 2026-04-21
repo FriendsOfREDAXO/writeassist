@@ -21,6 +21,7 @@ writeassist_clear = Clear
 writeassist_swap = Swap
 writeassist_picky_mode = Strict mode
 writeassist_no_deepl_key = DeepL API key missing.
+writeassist_no_services_configured = No services configured. Please add API keys in the settings.
 writeassist_auto_detect = Auto-detect
 
 # Translator Page
@@ -58,6 +59,9 @@ writeassist_languagetool_api_key = API Key
 writeassist_languagetool_api_key_notice = Optional for premium features. LanguageTool works without an API key.
 writeassist_languagetool_username = Username
 
+writeassist_test_connection = Connection test
+writeassist_test_connection_notice = Note: Please save first before running the connection test.
+
 writeassist_ignore_settings = Ignored Words
 writeassist_ignore_words = Ignore words
 writeassist_ignore_words_notice = One word per line. These words will be ignored during spell checking (e.g. proper names, company names, technical terms).
@@ -69,12 +73,20 @@ writeassist_no_api_key = No API key configured
 writeassist_translation_failed = Translation failed
 writeassist_improvement_failed = Check failed
 
+writeassist_ai_provider_disabled = Disabled
+
 # Gemini Settings
 writeassist_gemini_settings = Google Gemini (AI Text Generation)
 writeassist_gemini_api_key = Gemini API Key
 writeassist_gemini_api_key_notice = Free API Key: <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a> (free with usage limits)
 writeassist_gemini_model = Default Model
-writeassist_gemini_model_notice = Choose the default model for text generation
+writeassist_gemini_model_notice = Recommended: Gemini 2.5 Flash (free), Gemini 2.5 Pro (paid, best quality)
+
+# OpenAI Settings
+writeassist_openai_api_key = API Key
+writeassist_openai_api_key_notice = API Key from <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+writeassist_openai_model = Model
+writeassist_openai_model_notice = Recommended: gpt-4o-mini (affordable), gpt-4o (best quality)
 
 # Generator Page
 writeassist_generator_description = Generate texts with Google Gemini AI. Free with API key from Google AI Studio.

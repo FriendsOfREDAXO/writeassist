@@ -7,12 +7,25 @@ $(document).on('rex:ready', function () {
     function updateProviderVisibility() {
         var value = $providerSelect.val();
         $('.ai-provider-settings').hide();
-        $('#' + (value === 'gemini' ? 'gemini' : 'openwebui') + '-settings').show();
+        if (value === 'gemini') {
+            $('#gemini-settings').show();
+        } else if (value === 'openai') {
+            $('#openai-settings').show();
+        } else if (value === 'openwebui') {
+            $('#openwebui-settings').show();
+        }
+        // 'disabled' → all sections and test button stay hidden
+        if (value === 'disabled') {
+            $('#wa-test-connection-wrap').hide();
+        } else {
+            $('#wa-test-connection-wrap').show();
+        }
     }
 
+    // Run immediately (not deferred) so the correct section is shown on page load
     if ($providerSelect.length) {
-        $providerSelect.on('change', updateProviderVisibility);
         updateProviderVisibility();
+        $providerSelect.on('change', updateProviderVisibility);
     }
 
     // === Test AI connection ===

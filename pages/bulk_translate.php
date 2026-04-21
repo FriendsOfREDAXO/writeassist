@@ -59,11 +59,13 @@ $content = '
                 </div>
 
                 <div class="form-group">
-                    <label class="checkbox">
-                        <input type="checkbox" id="wa-bulk-only-untranslated" value="1" checked>
-                        ' . $package->i18n('writeassist_bulk_translate_only_untranslated') . '
-                        <br><small class="text-muted">' . $package->i18n('writeassist_bulk_translate_only_untranslated_notice') . '</small>
-                    </label>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" id="wa-bulk-only-untranslated" value="1" checked>
+                            ' . $package->i18n('writeassist_bulk_translate_only_untranslated') . '
+                        </label>
+                        <small class="text-muted">' . $package->i18n('writeassist_bulk_translate_only_untranslated_notice') . '</small>
+                    </div>
                 </div>
 
                 <hr>

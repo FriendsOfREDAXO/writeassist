@@ -33,40 +33,54 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
     public function render(): string
     {
         $package = rex_addon::get('writeassist');
-        $deeplApiKey = $package->getConfig('api_key', '');
-        
+        $deeplApiKey = trim((string) $package->getConfig('api_key', ''));
+        $geminiApi = new GeminiApi();
+
+        $showTranslate = $deeplApiKey !== '';
+        $showImprove   = true; // LanguageTool is a free public API, always available
+        $showGenerate  = $geminiApi->isConfigured();
+
+        if (!$showTranslate && !$showImprove && !$showGenerate) {
+            $settingsUrl = rex_url::backendPage('writeassist/settings');
+            return $this->wrapContent('
+                <div class="writeassist-alert warning">
+                    ' . rex_i18n::msg('writeassist_no_services_configured') . '
+                    <a href="' . $settingsUrl . '">' . rex_i18n::msg('writeassist_settings') . '</a>
+                </div>
+            ');
+        }
+
+        // First visible tab becomes active
+        $firstTab = $showTranslate ? 'translate' : ($showImprove ? 'improve' : 'generate');
+
+        $tabs        = '';
+        $tabContents = '';
+
+        if ($showTranslate) {
+            $active = $firstTab === 'translate' ? ' active' : '';
+            $tabs        .= '<button type="button" class="writeassist-tab' . $active . '" data-tab="translate">🌐 ' . rex_i18n::msg('writeassist_tab_translate') . '</button>';
+            $tabContents .= '<div class="writeassist-tab-content' . $active . '" data-tab="translate">' . $this->renderTranslateTab($deeplApiKey) . '</div>';
+        }
+
+        if ($showImprove) {
+            $active = $firstTab === 'improve' ? ' active' : '';
+            $tabs        .= '<button type="button" class="writeassist-tab' . $active . '" data-tab="improve">✨ ' . rex_i18n::msg('writeassist_tab_improve') . '</button>';
+            $tabContents .= '<div class="writeassist-tab-content' . $active . '" data-tab="improve">' . $this->renderImproveTab() . '</div>';
+        }
+
+        if ($showGenerate) {
+            $active = $firstTab === 'generate' ? ' active' : '';
+            $tabs        .= '<button type="button" class="writeassist-tab' . $active . '" data-tab="generate">🪄 ' . rex_i18n::msg('writeassist_generator') . '</button>';
+            $tabContents .= '<div class="writeassist-tab-content' . $active . '" data-tab="generate">' . $this->renderGeneratorTab() . '</div>';
+        }
+
         $content = '
         <div class="writeassist-widget">
-            <!-- Tabs -->
-            <div class="writeassist-tabs">
-                <button type="button" class="writeassist-tab active" data-tab="translate">
-                    🌐 ' . rex_i18n::msg('writeassist_tab_translate') . '
-                </button>
-                <button type="button" class="writeassist-tab" data-tab="improve">
-                    ✨ ' . rex_i18n::msg('writeassist_tab_improve') . '
-                </button>
-                <button type="button" class="writeassist-tab" data-tab="generate">
-                    🪄 ' . rex_i18n::msg('writeassist_generator') . '
-                </button>
-            </div>
-            
-            <!-- Translate Tab -->
-            <div class="writeassist-tab-content active" data-tab="translate">
-                ' . $this->renderTranslateTab($deeplApiKey) . '
-            </div>
-            
-            <!-- Improve Tab -->
-            <div class="writeassist-tab-content" data-tab="improve">
-                ' . $this->renderImproveTab() . '
-            </div>
-            
-            <!-- Generate Tab -->
-            <div class="writeassist-tab-content" data-tab="generate">
-                ' . $this->renderGeneratorTab() . '
-            </div>
+            <div class="writeassist-tabs">' . $tabs . '</div>
+            ' . $tabContents . '
         </div>
         ';
-        
+
         return $this->wrapContent($content);
     }
     

@@ -21,6 +21,7 @@ writeassist_clear = Löschen
 writeassist_swap = Tauschen
 writeassist_picky_mode = Strenger Modus
 writeassist_no_deepl_key = DeepL API-Schlüssel fehlt.
+writeassist_no_services_configured = Keine Dienste konfiguriert. Bitte API-Schlüssel in den Einstellungen hinterlegen.
 writeassist_auto_detect = Auto-Erkennung
 
 # Translator Page
@@ -45,7 +46,7 @@ writeassist_corrections_applied = Korrekturen angewendet
 # Settings
 writeassist_deepl_settings = DeepL Übersetzung
 writeassist_api_key = DeepL API-Schlüssel
-writeassist_api_key_notice = Kostenloser API-Schlüssel: https://www.deepl.com (500.000 Zeichen/Monat gratis)
+writeassist_api_key_notice = Kostenloser API-Schlüssel: <a href="https://www.deepl.com/pro-api" target="_blank">deepl.com/pro-api</a> (500.000 Zeichen/Monat gratis)
 writeassist_api_type = API-Typ
 writeassist_api_type_free = Free API
 writeassist_api_type_pro = Pro API
@@ -62,6 +63,7 @@ writeassist_ignore_settings = Ignorierte Wörter
 writeassist_ignore_words = Wörter ignorieren
 writeassist_ignore_words_notice = Ein Wort pro Zeile. Diese Wörter werden bei der Rechtschreibprüfung ignoriert (z.B. Eigennamen, Firmennamen, Fachbegriffe).
 writeassist_test_connection = Verbindungstest
+writeassist_test_connection_notice = Hinweis: Bitte erst speichern, bevor der Verbindungstest gestartet wird.
 
 
 # API Messages
@@ -76,7 +78,7 @@ writeassist_gemini_settings = Google Gemini (KI-Textgenerierung)
 writeassist_gemini_api_key = Gemini API-Schlüssel
 writeassist_gemini_api_key_notice = Kostenloser API-Schlüssel: <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a> (kostenlos mit Nutzungslimits)
 writeassist_gemini_model = Standard-Modell
-writeassist_gemini_model_notice = Wähle das Standard-Modell für die Textgenerierung
+writeassist_gemini_model_notice = Empfohlen: Gemini 2.5 Flash (kostenlos), Gemini 2.5 Pro (kostenpflichtig, beste Qualität)
 
 # Generator Page
 writeassist_generator_description = Generiere Texte mit Google Gemini AI. Kostenlos mit API-Schlüssel von Google AI Studio.
@@ -162,6 +164,7 @@ writeassist_code_context_info = REDAXO-Kontext wird automatisch mitgesendet (Ver
 # AI Provider Settings
 writeassist_ai_provider_settings = AI Generator Provider
 writeassist_ai_provider = Provider auswählen
+writeassist_ai_provider_disabled = Deaktiviert
 writeassist_ai_provider_notice = Wähle den Dienst für die KI-Textgenerierung
 writeassist_openwebui_api_key = API Key
 writeassist_openwebui_api_key_notice = Der API-Schlüssel für OpenWebUI oder Ollama (optional bei lokalen Installationen)
@@ -169,6 +172,12 @@ writeassist_openwebui_base_url = Base URL
 writeassist_openwebui_base_url_notice = Die URL zum API-Endpunkt (z.B. http://localhost:3000/api oder http://localhost:11434/v1)
 writeassist_openwebui_model = Modell-Name
 writeassist_openwebui_model_notice = Der technische Name des Modells (z.B. llama2, mistral, gemma:7b)
+
+# OpenAI Settings
+writeassist_openai_api_key = API-Schlüssel
+writeassist_openai_api_key_notice = API-Key von <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+writeassist_openai_model = Modell
+writeassist_openai_model_notice = Empfohlen: gpt-4o-mini (günstig), gpt-4o (beste Qualität)
 
 # Generator UI Updates
 writeassist_optional_instructions = Zusätzliche Anweisungen (optional)
