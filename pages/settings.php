@@ -21,6 +21,13 @@ $cfgOwKey         = trim((string) $package->getConfig('openwebui_api_key', ''));
 $cfgOwUrl         = trim((string) $package->getConfig('openwebui_base_url', ''));
 
 $deeplConfigured  = $cfgApiKey !== '';
+
+// DeepL-Nutzung direkt von der API abrufen (nur wenn Key gesetzt)
+$deeplUsage = null;
+if ($deeplConfigured) {
+    $deeplApi   = new \FriendsOfREDAXO\WriteAssist\DeeplApi();
+    $deeplUsage = $deeplApi->getUsage();
+}
 $aiConfigured     = match($cfgAiProvider) {
     'gemini'    => $cfgGeminiKey !== '',
     'openai'    => $cfgOpenAiKey !== '',
@@ -69,6 +76,20 @@ $sidebar .= '<ul class="list-group">';
 
 $sidebar .= '<li class="list-group-item"><strong>DeepL</strong> ';
 $sidebar .= $statusBadge($deeplConfigured, 'Konfiguriert', 'Kein Key');
+if ($deeplUsage !== null && !isset($deeplUsage['error'])) {
+    $usageCount   = $deeplUsage['character_count'];
+    $usageLimit   = $deeplUsage['character_limit'];
+    $usagePercent = $usageLimit > 0 ? (int) round(($usageCount / $usageLimit) * 100) : 0;
+    $barClass     = $usagePercent >= 90 ? 'danger' : ($usagePercent >= 70 ? 'warning' : 'success');
+    $sidebar .= '<div style="margin-top:6px">';
+    $sidebar .= '<div class="progress" style="margin-bottom:3px;height:8px;">';
+    $sidebar .= '<div class="progress-bar progress-bar-' . $barClass . '" role="progressbar" style="width:' . $usagePercent . '%"></div>';
+    $sidebar .= '</div>';
+    $sidebar .= '<small>' . number_format($usageCount, 0, ',', '.') . ' / ' . number_format($usageLimit, 0, ',', '.') . ' Zeichen (' . $usagePercent . '%)</small>';
+    $sidebar .= '</div>';
+} elseif ($deeplUsage !== null && isset($deeplUsage['error'])) {
+    $sidebar .= '<div class="small text-muted" style="margin-top:4px"><i class="rex-icon fa-exclamation-triangle"></i> Nutzung nicht abrufbar</div>';
+}
 $sidebar .= '</li>';
 
 $providerLabels = [

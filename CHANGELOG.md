@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.1] - 2026-04-21
+### Added
+- **DeepL-Nutzungsanzeige**: Einstellungs-Sidebar zeigt nun den aktuellen Zeichenverbrauch als Fortschrittsbalken an (automatisch über die DeepL `/usage`-API abgerufen). Funktioniert mit Developer Plan und Pro-Accounts. Closes #8.
+- **DeepL-Nutzungsanzeige im Widget**: Der Übersetzer-Tab im InfoCenter-Widget zeigt ebenfalls den aktuellen Zeichenverbrauch als kompakten Fortschrittsbalken an.
+
+### Changed
+- **DeepL Developer Plan**: Hinweis auf den neuen DeepL Developer Plan (bis zu 1.000.000 Zeichen kostenlos, einmalig) in Einstellungen und README aktualisiert – der bisherige Free Plan mit 500.000 Zeichen/Monat wurde von DeepL eingestellt.
+
 ## [2.4.0] - 2026-04-21
 ### Fixed
 - **Bulk-Translate**: Checkbox „Nur noch nicht übersetzte Namen" saß außerhalb des Fieldsets – Bootstrap-3-Struktur korrigiert (`div.checkbox > label > input` statt `label.checkbox > input`)

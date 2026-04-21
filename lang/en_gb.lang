@@ -46,7 +46,7 @@ writeassist_corrections_applied = Corrections applied
 # Settings
 writeassist_deepl_settings = DeepL Translation
 writeassist_api_key = DeepL API Key
-writeassist_api_key_notice = Free API Key: <a href="https://www.deepl.com/pro-api" target="_blank">deepl.com/pro-api</a> (500,000 chars/month free)
+writeassist_api_key_notice = API Key: <a href="https://www.deepl.com/pro#developer" target="_blank">DeepL Developer Plan</a> (up to 1,000,000 characters free one-time)
 writeassist_api_type = API Type
 writeassist_api_type_free = Free API
 writeassist_api_type_pro = Pro API

@@ -96,7 +96,7 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
             ';
         }
         
-        return '
+        $html = '
             <div class="writeassist-form-group">
                 <textarea class="writeassist-input writeassist-source" rows="3" placeholder="' . rex_i18n::msg('writeassist_enter_text') . '"></textarea>
             </div>
@@ -159,6 +159,23 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
             
             <div class="writeassist-message writeassist-translate-message" style="display:none;"></div>
         ';
+
+        // DeepL usage bar
+        $deepl = new DeeplApi($deeplApiKey);
+        $usage = $deepl->getUsage();
+        if (!isset($usage['error']) && $usage['character_limit'] > 0) {
+            $percent  = (int) round(($usage['character_count'] / $usage['character_limit']) * 100);
+            $barClass = $percent >= 90 ? 'danger' : ($percent >= 70 ? 'warning' : 'success');
+            $html .= '
+            <div class="writeassist-deepl-usage" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,0.08);">
+                <div class="progress" style="margin-bottom:2px; height:6px;">
+                    <div class="progress-bar progress-bar-' . $barClass . '" role="progressbar" style="width:' . $percent . '%"></div>
+                </div>
+                <small style="opacity:.65;">' . number_format($usage['character_count'], 0, ',', '.') . ' / ' . number_format($usage['character_limit'], 0, ',', '.') . ' Zeichen (' . $percent . '%)</small>
+            </div>';
+        }
+
+        return $html;
     }
     
     private function renderImproveTab(): string
