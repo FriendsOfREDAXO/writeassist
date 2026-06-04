@@ -33,12 +33,14 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
     public function render(): string
     {
         $package = rex_addon::get('writeassist');
+        $providerType = $package->getConfig('translation_provider', 'deepl');
         $deeplApiKey = trim((string) $package->getConfig('api_key', ''));
-        $geminiApi = new GeminiApi();
+        
+        $aiApi = WriteAssistAiFactory::factory();
 
-        $showTranslate = $deeplApiKey !== '';
+        $showTranslate = ($providerType === 'ai' && $aiApi->isConfigured()) || ($providerType === 'deepl' && $deeplApiKey !== '');
         $showImprove   = true; // LanguageTool is a free public API, always available
-        $showGenerate  = $geminiApi->isConfigured();
+        $showGenerate  = $aiApi->isConfigured();
 
         if (!$showTranslate && !$showImprove && !$showGenerate) {
             $settingsUrl = rex_url::backendPage('writeassist/settings');
@@ -59,7 +61,7 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
         if ($showTranslate) {
             $active = $firstTab === 'translate' ? ' active' : '';
             $tabs        .= '<button type="button" class="writeassist-tab' . $active . '" data-tab="translate">🌐 ' . rex_i18n::msg('writeassist_tab_translate') . '</button>';
-            $tabContents .= '<div class="writeassist-tab-content' . $active . '" data-tab="translate">' . $this->renderTranslateTab($deeplApiKey) . '</div>';
+            $tabContents .= '<div class="writeassist-tab-content' . $active . '" data-tab="translate">' . $this->renderTranslateTab($deeplApiKey, $providerType, $aiApi) . '</div>';
         }
 
         if ($showImprove) {
@@ -84,13 +86,13 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
         return $this->wrapContent($content);
     }
     
-    private function renderTranslateTab(string $deeplApiKey): string
+    private function renderTranslateTab(string $deeplApiKey, string $providerType, \FriendsOfREDAXO\WriteAssist\AiProvider\WriteAssistAiProviderInterface $aiApi): string
     {
-        if (empty($deeplApiKey)) {
+        if (($providerType === 'deepl' && empty($deeplApiKey)) || ($providerType === 'ai' && !$aiApi->isConfigured())) {
             $settingsUrl = rex_url::backendPage('writeassist/settings');
             return '
                 <div class="writeassist-alert warning">
-                    ' . rex_i18n::msg('writeassist_no_deepl_key') . '
+                    Bitte konfiguriere zuerst deinen gewählten Übersetzungs-Dienst (DeepL oder Text-KI) in den Einstellungen.
                     <a href="' . $settingsUrl . '">' . rex_i18n::msg('writeassist_settings') . '</a>
                 </div>
             ';
@@ -160,19 +162,23 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
             <div class="writeassist-message writeassist-translate-message" style="display:none;"></div>
         ';
 
-        // DeepL usage bar
-        $deepl = new DeeplApi($deeplApiKey);
-        $usage = $deepl->getUsage();
-        if (!isset($usage['error']) && $usage['character_limit'] > 0) {
-            $percent  = (int) round(($usage['character_count'] / $usage['character_limit']) * 100);
-            $barClass = $percent >= 90 ? 'danger' : ($percent >= 70 ? 'warning' : 'success');
-            $html .= '
-            <div class="writeassist-deepl-usage" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,0.08);">
-                <div class="progress" style="margin-bottom:2px; height:6px;">
-                    <div class="progress-bar progress-bar-' . $barClass . '" role="progressbar" style="width:' . $percent . '%"></div>
-                </div>
-                <small style="opacity:.65;">' . number_format($usage['character_count'], 0, ',', '.') . ' / ' . number_format($usage['character_limit'], 0, ',', '.') . ' Zeichen (' . $percent . '%)</small>
-            </div>';
+        // DeepL usage bar (only show if DeepL is the active provider)
+        if ($providerType === 'deepl') {
+            $deepl = new DeeplApi($deeplApiKey);
+            $usage = $deepl->getUsage();
+            if (!isset($usage['error']) && $usage['character_limit'] > 0) {
+                $percent  = (int) round(($usage['character_count'] / $usage['character_limit']) * 100);
+                $barClass = $percent >= 90 ? 'danger' : ($percent >= 70 ? 'warning' : 'success');
+                $html .= '
+                <div class="writeassist-deepl-usage" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,0.08);">
+                    <div class="progress" style="margin-bottom:2px; height:6px;">
+                        <div class="progress-bar progress-bar-' . $barClass . '" role="progressbar" style="width:' . $percent . '%"></div>
+                    </div>
+                    <small style="opacity:.65;">' . number_format($usage['character_count'], 0, ',', '.') . ' / ' . number_format($usage['character_limit'], 0, ',', '.') . ' Zeichen (' . $percent . '%)</small>
+                </div>';
+            }
+        } else {
+            $html .= '<div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,0.08); font-size:11px; opacity:.65;"><i class="rex-icon fa-robot"></i> Übersetzt via ' . rex_escape($aiApi->getLabel()) . ' KI</div>';
         }
 
         return $html;
@@ -228,13 +234,13 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
 
     private function renderGeneratorTab(): string
     {
-        $api = new GeminiApi();
+        $api = WriteAssistAiFactory::factory();
         
         if (!$api->isConfigured()) {
             $settingsUrl = rex_url::backendPage('writeassist/settings');
             return '
                 <div class="writeassist-alert warning">
-                    ' . rex_i18n::msg('writeassist_no_gemini_key') . '
+                    Bitte konfiguriere zuerst einen KI-Provider in den Einstellungen.
                     <a href="' . $settingsUrl . '">' . rex_i18n::msg('writeassist_settings') . '</a>
                 </div>
             ';
