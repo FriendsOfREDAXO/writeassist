@@ -12,6 +12,7 @@ use rex_article_cache;
 use rex_category;
 use rex_clang;
 use rex_sql;
+use FriendsOfREDAXO\WriteAssist\WriteAssistAiFactory;
 
 /**
  * AutoTranslateService
@@ -69,7 +70,21 @@ class AutoTranslateService
         }
 
         $sourceCode = self::getDeeplSourceCode($sourceClang);
-        $deepl = new DeeplApi();
+        
+        $providerType = rex_addon::get('writeassist')->getConfig('translation_provider', 'deepl');
+        $deepl = null;
+        $ai = null;
+        
+        if ($providerType === 'ai') {
+            $ai = WriteAssistAiFactory::factory();
+            if (!$ai->isConfigured()) {
+                $ai = null;
+            }
+        }
+        
+        if (!$ai) {
+            $deepl = new DeeplApi();
+        }
 
         foreach (rex_clang::getAll() as $clang) {
             if ($clang->getId() === $sourceClang) {
@@ -78,8 +93,23 @@ class AutoTranslateService
 
             try {
                 $targetCode = self::getDeeplCode($clang->getId());
-                $result = $deepl->translate($sourceName, $targetCode, $sourceCode);
-                $translatedName = $result['text'];
+                
+                if ($ai) {
+                    $prompt = "Übersetze den folgenden Text/Titel in die Sprache/den Sprachcode: " . $targetCode . ".
+
+"
+                            . "Antworte AUSSCHLIESSLICH mit dem übersetzten Text. Keine Einleitung, keine Anführungszeichen.
+
+"
+                            . "Zu übersetzender Text:
+" . $sourceName;
+                            
+                    $aiResponse = $ai->generate($prompt);
+                    $translatedName = trim($aiResponse['text']);
+                } else {
+                    $result = $deepl->translate($sourceName, $targetCode, $sourceCode);
+                    $translatedName = $result['text'];
+                }
 
                 if ('category' === $type) {
                     // Kategorien sind startarticle=1-Zeilen in rex_article – Feld: catname

@@ -130,6 +130,18 @@ $sidebar .= '</ul></div>';
 // -------------------------------------------------------------------------
 $form = rex_config_form::factory($package->getName());
 
+// === Übersetzungs-Engine ===
+$form->addRawField('<fieldset><legend>Allgemeine Übersetzung</legend>');
+
+$field = $form->addSelectField('translation_provider');
+$field->setLabel('Übersetzungs-Dienst');
+$select = $field->getSelect();
+$select->addOption('DeepL (benötigt DeepL Token)', 'deepl');
+$select->addOption('Eingestellte Text-KI (Gemini/OpenAI)', 'ai');
+$field->setNotice('Welcher Dienst soll für Übersetzungen (z.B. YForm Lang Fields & Übersetzer-Tab) genutzt werden?');
+
+$form->addRawField('</fieldset>');
+
 // === DeepL Settings ===
 $form->addRawField('<fieldset><legend>' . $package->i18n('writeassist_deepl_settings') . '</legend>');
 
