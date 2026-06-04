@@ -1,6 +1,11 @@
 # Changelog
 
-## 2.5.0 - 2024-06-04
+## 2.5.1 - 2026-06-04
+### Behoben
+- **InfoCenter Widget Bugfix:** Das Widget stürzt nicht mehr ab oder zeigt Fehler an, wenn DeepL deaktiviert ist. Es respektiert nun vollständig das in den Einstellungen gewählte Translaton-Backend (Text-KI vs. DeepL) und blendet auch den Deepl-Ladebalken entsprechend sauber aus.
+- **Generator Tab:** Nutzt nun ebenfalls die globale AI-Factory (OpenAI/OpenWebUI Kompatibilität) statt hart auf Gemini zu setzen.
+
+## 2.5.0 - 2026-06-04
 ### Hinzugefügt
 - **LLM/KI für automatische Übersetzungen:** WriteAssist entkoppelt sich auf Wunsch vom reinen DeepL-Zwang! In den WriteAssist-Einstellungen lässt sich nun einstellen, ob für alle internen Übersetzungen (sowie externe Plugins wie `yform_lang_fields`) "DeepL" oder die eingestellte "Text-KI" (z.B. Gemini, OpenAI, OpenWebUI) genutzt werden soll.
 - Richtext-Übersetzung: Gibt man der KI (wie Gemini) den Job, Websites/TinyMCE-Inhalte zu übersetzen, extrahiert WriteAssist den Text samt HTML und achtet darauf, die Formatierungen strikt beizubehalten, statt sie zu zerstückeln. Man braucht damit nicht zwingend eine separate DeepL Subscription für REDAXO-Übersetzungen, sofern man ohnehin API-Tokens der KIs nutzt!
