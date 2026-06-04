@@ -1,5 +1,5 @@
 /**
- * WriteAssist DeepL Translation Plugin for TinyMCE
+ * WriteAssist Translation Plugin for TinyMCE
  * 
  * Adds a translate button that translates selected text via DeepL API
  */
@@ -88,7 +88,7 @@
         // Register menu button with language submenu
         editor.ui.registry.addMenuButton('writeassist_translate', {
             icon: 'translate',
-            tooltip: 'Übersetzen (DeepL)',
+            tooltip: 'Übersetzen (DeepL / KI)',
             fetch: function(callback) {
                 const items = languages.map(function(lang) {
                     return {

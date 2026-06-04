@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.5.0 - 2024-06-04
+### Hinzugefügt
+- **LLM/KI für automatische Übersetzungen:** WriteAssist entkoppelt sich auf Wunsch vom reinen DeepL-Zwang! In den WriteAssist-Einstellungen lässt sich nun einstellen, ob für alle internen Übersetzungen (sowie externe Plugins wie `yform_lang_fields`) "DeepL" oder die eingestellte "Text-KI" (z.B. Gemini, OpenAI, OpenWebUI) genutzt werden soll.
+- Richtext-Übersetzung: Gibt man der KI (wie Gemini) den Job, Websites/TinyMCE-Inhalte zu übersetzen, extrahiert WriteAssist den Text samt HTML und achtet darauf, die Formatierungen strikt beizubehalten, statt sie zu zerstückeln. Man braucht damit nicht zwingend eine separate DeepL Subscription für REDAXO-Übersetzungen, sofern man ohnehin API-Tokens der KIs nutzt!
+
+### Geändert
+- Das TinyMCE Übersetzungs-Plugin wurde umbenannt, da es nicht mehr ausschließlich für DeepL ist, sondern die API dynamisch entscheidet.
+
 ## [2.4.1] - 2026-04-21
 ### Added
 - **DeepL-Nutzungsanzeige**: Einstellungs-Sidebar zeigt nun den aktuellen Zeichenverbrauch als Fortschrittsbalken an (automatisch über die DeepL `/usage`-API abgerufen). Funktioniert mit Developer Plan und Pro-Accounts. Closes #8.
