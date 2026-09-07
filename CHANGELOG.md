@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.0.0 - 2026-09-07
+### Hinzugefügt
+- **KI-Buttons an normalen Formularfeldern**: Textareas und Inputs ohne WYSIWYG-Editor bekommen per CSS-Klasse einen KI-Button – `watext` für Generieren/Umschreiben/Zusammenfassen/Erweitern/eigener Prompt, `watranslate` für Direktübersetzung. Beide Klassen sind kombinierbar, funktionieren in Modulen, YForm, MForm und eigenen Backend-Seiten, und erkennen auch nachträglich eingefügte Felder (z.B. per MBlock) automatisch. Neue Demo-Seite *Feld-Widget Demo* zeigt alle Varianten live.
+- **ai_platform-Addon als Provider**: Ist [ai_platform](https://github.com/FriendsOfREDAXO/ai_platform) installiert, kann WriteAssist dessen zentral verwaltetes Text-Profil nutzen – keine eigenen API-Keys nötig. Gilt für Übersetzung, Generierung und die neuen Feld-Widgets gleichermaßen (alle Aufrufer laufen über dieselbe Provider-Factory).
+- **Feldlimit-sicher**: Ein vorhandenes `maxlength`-Attribut wird beim Einsetzen von KI-Ergebnissen respektiert – bei Bedarf wird sichtbar gekürzt statt still Daten zu verlieren.
+
+### Geändert
+- **Verbindungstest ohne Speichern**: Der „Verbindung testen"-Button in den Einstellungen testet jetzt den aktuellen, noch ungespeicherten Formularstand statt nur der gespeicherten Config (analog zu ai_chat) – ein Key lässt sich so vor dem Speichern prüfen.
+
+### Entfernt
+- **Code-Generator (Admin-Only) entfernt.** Die dedizierte Coding-Assistent-Seite samt Code-Generieren/-Erklären/-Verbessern/-Fragen-Aktionen ist raus – Textgenerierung, Umschreiben und Übersetzen bleiben unverändert erhalten. Breaking Change für alle, die die Seite aktiv genutzt haben.
+
 ## 2.5.1 - 2026-06-04
 ### Behoben
 - **InfoCenter Widget Bugfix:** Das Widget stürzt nicht mehr ab oder zeigt Fehler an, wenn DeepL deaktiviert ist. Es respektiert nun vollständig das in den Einstellungen gewählte Translaton-Backend (Text-KI vs. DeepL) und blendet auch den Deepl-Ladebalken entsprechend sauber aus.

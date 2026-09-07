@@ -101,6 +101,12 @@ if (rex::isBackend() && rex::getUser()) {
     rex_view::addJsFile($addon->getAssetsUrl('js/writeassist.js'));
     rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-bulk-translate.js'));
     rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-settings.js'));
+
+    // KI-Text-/Übersetzungs-Widget für einfache Textareas/Inputs ohne WYSIWYG-Editor
+    // (class="watext" bzw. class="watranslate") - addonweit im Backend verfügbar,
+    // damit auch YForm-/MForm-Felder oder Custom-Module davon profitieren können.
+    rex_view::addCssFile($addon->getAssetsUrl('css/writeassist-fields.css'));
+    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-fields.js'));
     if ($addon->getConfig('enable_markitup_plugin', true) && rex_addon::get('markitup')->isAvailable()) {
         // Register MarkItUp integration JS
         rex_view::addJsFile($addon->getAssetsUrl('js/markitup-writeassist-plugin.js'));

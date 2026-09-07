@@ -3,9 +3,27 @@ writeassist_title = WriteAssist
 writeassist_translator = Translator
 writeassist_improver = Text Improvement
 writeassist_generator = AI Generator
-writeassist_coder = Code Assistant
+writeassist_fields_demo = Field Widget Demo
 writeassist_settings = Settings
 writeassist_help = Help
+
+# Fields Demo (watext / watranslate)
+writeassist_fields_demo_title = AI field widgets for plain form fields
+writeassist_fields_demo_intro = Textareas and inputs without a WYSIWYG editor can get an AI button just by adding a CSS class - no extra JavaScript needed, WriteAssist detects the fields automatically (including ones added later via MBlock etc.).
+writeassist_fields_demo_watext_hint = Adds a magic-wand button: generate, rewrite, summarize, expand or edit via a custom prompt.
+writeassist_fields_demo_watranslate_hint = Adds a translate button that translates the field content directly into the chosen language.
+writeassist_fields_demo_input_label = Input field
+writeassist_fields_demo_input_placeholder = e.g. headline or meta title...
+writeassist_fields_demo_textarea_label = Textarea
+writeassist_fields_demo_textarea_placeholder = Try it here...
+writeassist_fields_demo_translate_sample = Hello, how are you?
+writeassist_fields_demo_watext_provider = Current AI provider: {0}. Change it under
+writeassist_fields_demo_watranslate_provider = Current translation engine: {0}. Change it under
+writeassist_fields_demo_usage_title = Usage in your own code
+writeassist_fields_demo_usage_intro = Just add the class to the form field - works in modules, YForm forms, MForm and any backend page:
+writeassist_fields_demo_usage_note = Both classes can be combined (the field then gets both buttons).
+writeassist_fields_demo_combined_hint = Both classes at once - the field gets two buttons side by side (generate and translate).
+writeassist_fields_demo_maxlength_hint = An existing maxlength attribute is respected: the result is automatically truncated if needed, with a visible notice instead of silent data loss.
 
 # Widget
 writeassist_widget_title = Writing Assistant
@@ -131,34 +149,6 @@ writeassist_output_placeholder = Generated text will appear here...
 writeassist_use_as_input = Use as input
 writeassist_generating = Generating...
 writeassist_tokens_used = tokens used
-
-# Code Generator (Admin only)
-writeassist_coder = Code Generator
-writeassist_code_input = Code Input
-writeassist_code_output = Code Output
-writeassist_code_generate = Generate code
-writeassist_code_explain = Explain code
-writeassist_code_improve = Improve code
-writeassist_code_language = Programming language
-writeassist_code_input_label = Description or code
-writeassist_code_input_placeholder = Describe what the code should do...
-writeassist_code_generate_placeholder = Describe what the code should do, e.g.: "A PHP function that validates an email address"
-writeassist_code_paste_placeholder = Paste your code here...
-writeassist_code_output_placeholder = Generated code will appear here...
-writeassist_code_ask = Ask a question
-writeassist_code_question = Your question
-writeassist_code_question_placeholder = What do you want to know? e.g.: "How do I create a REDAXO module?"
-writeassist_code_ask_code_placeholder = Optional: Paste code related to your question...
-writeassist_enter_question = Please enter a question
-
-# Module Generator
-writeassist_module_generate = Generate REDAXO module
-writeassist_module_placeholder = Describe the module, e.g.: "Image-text module with headline, text and image on left or right"
-writeassist_module_use_mform = Use MForm for input form
-writeassist_module_use_mblock = Use MBlock for repeatable elements
-writeassist_code_security_title = Security Notice
-writeassist_code_security_notice = The code generator sends project metadata (REDAXO version, installed addons, table names) to Google Gemini. <strong>Never enter sensitive data:</strong> No passwords, API keys, personal data, bank details or confidential business information. Connection is via HTTPS, but data is processed by Google.
-writeassist_code_context_info = REDAXO context is automatically included (version, addons, table structure - no content or credentials).
 
 # Integration Settings
 writeassist_integration_settings = Integrations

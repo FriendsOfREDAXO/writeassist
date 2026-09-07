@@ -3,9 +3,27 @@ writeassist_title = WriteAssist
 writeassist_translator = Übersetzer
 writeassist_improver = Textverbesserung
 writeassist_generator = KI-Generator
-writeassist_coder = Code-Assistent
+writeassist_fields_demo = Feld-Widget Demo
 writeassist_settings = Einstellungen
 writeassist_help = Hilfe
+
+# Fields Demo (watext / watranslate)
+writeassist_fields_demo_title = KI-Feld-Widgets für normale Formularfelder
+writeassist_fields_demo_intro = Textareas und Inputs ohne WYSIWYG-Editor können per CSS-Klasse mit einem KI-Button ausgestattet werden - kein zusätzlicher JavaScript-Code nötig, WriteAssist erkennt die Felder automatisch (auch nachträglich per MBlock o.ä. eingefügte).
+writeassist_fields_demo_watext_hint = Fügt einen Zauberstab-Button hinzu: Text generieren, umschreiben, zusammenfassen, erweitern oder per eigenem Prompt bearbeiten.
+writeassist_fields_demo_watranslate_hint = Fügt einen Übersetzen-Button hinzu, der den Feldinhalt direkt per Klick in die gewählte Sprache übersetzt.
+writeassist_fields_demo_input_label = Input-Feld
+writeassist_fields_demo_input_placeholder = z.B. Überschrift oder Meta-Titel...
+writeassist_fields_demo_textarea_label = Textarea
+writeassist_fields_demo_textarea_placeholder = Hier ausprobieren...
+writeassist_fields_demo_translate_sample = Hallo, wie geht es dir?
+writeassist_fields_demo_watext_provider = Aktueller KI-Provider: {0}. Ändern unter
+writeassist_fields_demo_watranslate_provider = Aktuelle Übersetzungs-Engine: {0}. Ändern unter
+writeassist_fields_demo_usage_title = Einbindung im eigenen Code
+writeassist_fields_demo_usage_intro = Einfach die Klasse zum Formularfeld hinzufügen - funktioniert in Modulen, YForm-Formularen, MForm und beliebigen Backend-Seiten:
+writeassist_fields_demo_usage_note = Beide Klassen lassen sich auch kombinieren (ein Feld bekommt dann beide Buttons).
+writeassist_fields_demo_combined_hint = Beide Klassen gleichzeitig - das Feld bekommt zwei Buttons nebeneinander (Generieren und Übersetzen).
+writeassist_fields_demo_maxlength_hint = Ein vorhandenes maxlength-Attribut wird beachtet: das Ergebnis wird bei Bedarf automatisch gekürzt, mit einem sichtbaren Hinweis statt stillem Datenverlust.
 
 # Widget
 writeassist_widget_title = Schreibhilfe
@@ -124,33 +142,6 @@ writeassist_use_as_input = Als Eingabe verwenden
 writeassist_generating = Generiere...
 writeassist_tokens_used = Token verwendet
 
-# Code Generator (Admin only)
-writeassist_coder = Code-Generator
-writeassist_code_input = Code-Eingabe
-writeassist_code_output = Code-Ausgabe
-writeassist_code_generate = Code generieren
-writeassist_code_explain = Code erklären
-writeassist_code_improve = Code verbessern
-writeassist_code_language = Programmiersprache
-writeassist_code_input_label = Beschreibung oder Code
-writeassist_code_input_placeholder = Beschreibe was der Code machen soll...
-writeassist_code_generate_placeholder = Beschreibe was der Code machen soll, z.B.: "Eine PHP-Funktion die prüft ob eine E-Mail-Adresse gültig ist"
-writeassist_code_paste_placeholder = Füge hier deinen Code ein...
-writeassist_code_output_placeholder = Generierter Code erscheint hier...
-writeassist_code_ask = Frage stellen
-writeassist_code_question = Deine Frage
-writeassist_code_question_placeholder = Was möchtest du wissen? z.B.: "Wie erstelle ich ein REDAXO Modul?"
-writeassist_code_ask_code_placeholder = Optional: Code einfügen auf den sich die Frage bezieht...
-writeassist_enter_question = Bitte stelle eine Frage
-
-# Module Generator
-writeassist_module_generate = REDAXO Modul generieren
-writeassist_module_placeholder = Beschreibe das Modul, z.B.: "Bild-Text-Modul mit Überschrift, Text und Bild rechts oder links"
-writeassist_module_use_mform = MForm für Eingabeformular verwenden
-writeassist_module_use_mblock = MBlock für wiederholbare Elemente verwenden
-writeassist_code_security_title = Sicherheitshinweis
-writeassist_code_security_notice = Der Code-Generator sendet Projekt-Metadaten (REDAXO-Version, installierte AddOns, Tabellennamen) an den gewählten KI-Provider ({0}). Gib niemals sensible Daten ein: Keine Passwörter, API-Keys, persönliche Daten, Bankdaten oder vertrauliche Geschäftsinformationen. Die Daten werden vom externen Dienst verarbeitet.
-
 # Integration Settings
 writeassist_integration_settings = Integrationen
 writeassist_enable_infocenter_widget = Info Center Widget aktivieren
@@ -159,7 +150,6 @@ writeassist_enable_tinymce_plugin = TinyMCE Plugin aktivieren
 writeassist_enable_tinymce_plugin_notice = Aktiviert das DeepL Übersetzungs-Plugin im TinyMCE Editor (falls TinyMCE AddOn installiert)
 writeassist_yes = Ja
 writeassist_no = Nein
-writeassist_code_context_info = REDAXO-Kontext wird automatisch mitgesendet (Version, AddOns, Tabellenstruktur - keine Inhalte oder Zugangsdaten).
 
 # AI Provider Settings
 writeassist_ai_provider_settings = AI Generator Provider

@@ -19,6 +19,9 @@ $cfgGeminiKey     = trim((string) $package->getConfig('gemini_api_key', ''));
 $cfgOpenAiKey     = trim((string) $package->getConfig('openai_api_key', ''));
 $cfgOwKey         = trim((string) $package->getConfig('openwebui_api_key', ''));
 $cfgOwUrl         = trim((string) $package->getConfig('openwebui_base_url', ''));
+$cfgAiPlatformTextProfileId = trim((string) $package->getConfig('ai_platform_text_profile_id', ''));
+
+$aiPlatformAvailable = rex_addon::get('ai_platform')->isAvailable() && class_exists(\FriendsOfRedaxo\AiPlatform\Service::class);
 
 $deeplConfigured  = $cfgApiKey !== '';
 
@@ -29,10 +32,11 @@ if ($deeplConfigured) {
     $deeplUsage = $deeplApi->getUsage();
 }
 $aiConfigured     = match($cfgAiProvider) {
-    'gemini'    => $cfgGeminiKey !== '',
-    'openai'    => $cfgOpenAiKey !== '',
-    'openwebui' => $cfgOwUrl !== '',
-    default     => false,
+    'gemini'      => $cfgGeminiKey !== '',
+    'openai'      => $cfgOpenAiKey !== '',
+    'openwebui'   => $cfgOwUrl !== '',
+    'ai_platform' => $cfgAiPlatformTextProfileId !== '',
+    default       => false,
 };
 
 // -------------------------------------------------------------------------
@@ -93,10 +97,11 @@ if ($deeplUsage !== null && !isset($deeplUsage['error'])) {
 $sidebar .= '</li>';
 
 $providerLabels = [
-    'gemini'    => 'Google Gemini',
-    'openai'    => 'OpenAI (ChatGPT)',
-    'openwebui' => 'OpenWebUI',
-    'disabled'  => 'Deaktiviert',
+    'gemini'      => 'Google Gemini',
+    'openai'      => 'OpenAI (ChatGPT)',
+    'openwebui'   => 'OpenWebUI',
+    'ai_platform' => 'ai_platform-Addon',
+    'disabled'    => 'Deaktiviert',
 ];
 $providerLabel = $providerLabels[$cfgAiProvider] ?? $cfgAiProvider;
 $sidebar .= '<li class="list-group-item"><strong>KI-Provider</strong><br>';
@@ -184,6 +189,9 @@ $select->addOption($package->i18n('writeassist_ai_provider_disabled'), 'disabled
 $select->addOption('Google Gemini', 'gemini');
 $select->addOption('OpenAI (ChatGPT)', 'openai');
 $select->addOption('OpenWebUI / OpenAI Compatible', 'openwebui');
+if ($aiPlatformAvailable) {
+    $select->addOption('ai_platform-Addon (gemeinsame KI-Provider-Verwaltung)', 'ai_platform');
+}
 $field->setAttribute('id', 'ai-provider-select');
 $field->setNotice($package->i18n('writeassist_ai_provider_notice'));
 
@@ -196,9 +204,11 @@ $form->addRawField('<div id="gemini-settings" class="ai-provider-settings"' . $g
 $field = $form->addInputField('text', 'gemini_api_key', null, ['class' => 'form-control']);
 $field->setLabel($package->i18n('writeassist_gemini_api_key'));
 $field->setNotice(rex_i18n::rawMsg('writeassist_gemini_api_key_notice'));
+$field->setAttribute('id', 'gemini-api-key');
 
 $field = $form->addSelectField('gemini_model');
 $field->setLabel($package->i18n('writeassist_gemini_model'));
+$field->setAttribute('id', 'gemini-model');
 $select = $field->getSelect();
 $select->addOption('Gemini 2.5 Flash (empfohlen, kostenlos)', 'gemini-2.5-flash');
 $select->addOption('Gemini 2.5 Flash Lite (schnellstes, kostenlos)', 'gemini-2.5-flash-lite');
@@ -214,9 +224,11 @@ $form->addRawField('<div id="openai-settings" class="ai-provider-settings"' . $o
 $field = $form->addInputField('text', 'openai_api_key', null, ['class' => 'form-control']);
 $field->setLabel($package->i18n('writeassist_openai_api_key'));
 $field->setNotice(rex_i18n::rawMsg('writeassist_openai_api_key_notice'));
+$field->setAttribute('id', 'openai-api-key');
 
 $field = $form->addSelectField('openai_model');
 $field->setLabel($package->i18n('writeassist_openai_model'));
+$field->setAttribute('id', 'openai-model');
 $select = $field->getSelect();
 $select->addOption('GPT-4o mini (empfohlen, günstig)', 'gpt-4o-mini');
 $select->addOption('GPT-4o (beste Qualität)', 'gpt-4o');
@@ -231,16 +243,38 @@ $form->addRawField('<div id="openwebui-settings" class="ai-provider-settings"' .
 $field = $form->addInputField('text', 'openwebui_api_key', null, ['class' => 'form-control']);
 $field->setLabel($package->i18n('writeassist_openwebui_api_key'));
 $field->setNotice($package->i18n('writeassist_openwebui_api_key_notice'));
+$field->setAttribute('id', 'openwebui-api-key');
 
 $field = $form->addInputField('text', 'openwebui_base_url', null, ['class' => 'form-control', 'placeholder' => 'http://localhost:3000/api']);
 $field->setLabel($package->i18n('writeassist_openwebui_base_url'));
 $field->setNotice($package->i18n('writeassist_openwebui_base_url_notice'));
+$field->setAttribute('id', 'openwebui-base-url');
 
 $field = $form->addInputField('text', 'openwebui_model', null, ['class' => 'form-control', 'placeholder' => 'llava, llama2, mistral']);
 $field->setLabel($package->i18n('writeassist_openwebui_model'));
 $field->setNotice($package->i18n('writeassist_openwebui_model_notice'));
+$field->setAttribute('id', 'openwebui-model');
 
 $form->addRawField('</div>');
+
+if ($aiPlatformAvailable) {
+    $form->addRawField('<div id="ai_platform-settings" class="ai-provider-settings" style="display:none;">');
+    $form->addRawField('<p class="help-block">Nutzt ein im ai_platform-Addon konfiguriertes Text-Profil statt eigener Provider-Zugangsdaten.</p>');
+
+    $aiPlatformService = \FriendsOfRedaxo\AiPlatform\Service::getInstance();
+
+    $field = $form->addSelectField('ai_platform_text_profile_id');
+    $field->setLabel('Text-Profil');
+    $field->setAttribute('id', 'ai-platform-text-profile');
+    $select = $field->getSelect();
+    $select->addOption('Bitte wählen', '');
+    foreach ($aiPlatformService->getProfiles('text') as $profile) {
+        $select->addOption((string) $profile['name'], (string) $profile['id']);
+    }
+
+    $form->addRawField('<p class="help-block"><a href="' . rex_url::backendPage('ai_platform/profiles') . '">ai_platform-Profile verwalten</a></p>');
+    $form->addRawField('</div>');
+}
 
 $testBtnVisible = ' style="display:none;"';
 $form->addRawField('<div id="wa-test-connection-wrap" class="form-group" style="margin-top:15px; padding-top:15px; border-top:1px solid #eee;"' . $testBtnVisible . '>');

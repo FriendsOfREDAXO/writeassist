@@ -1,5 +1,5 @@
 package: writeassist
-version: '2.5.1'
+version: '3.0.0'
 author: Friends Of REDAXO
 supportpage: https://github.com/FriendsOfREDAXO/writeassist
 
@@ -17,10 +17,9 @@ page:
         generator:
             title: 'translate:writeassist_generator'
             icon: rex-icon fa-wand-magic-sparkles
-        coder:
-            title: 'translate:writeassist_coder'
-            icon: rex-icon fa-regular fa-keyboard
-            perm: admin
+        fields_demo:
+            title: 'translate:writeassist_fields_demo'
+            icon: rex-icon fa-magic
         bulk_translate:
             title: 'translate:writeassist_bulk_translate_nav'
             icon: rex-icon fa-globe

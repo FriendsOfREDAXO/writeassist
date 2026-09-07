@@ -24,13 +24,20 @@ class rex_api_writeassist_ai_test extends rex_api_function
         }
 
         try {
-            // We use the factory which pulls from config
-            // Note: In a real test scenario, we might want to test the draft config values
-            // but rex_config is already saved when 'Apply' is clicked.
-            // If we wanted to test before save, we'd need to pass params here.
-            
-            $provider = WriteAssistAiFactory::factory();
-            
+            // Testet bewusst den aktuellen (ggf. noch ungespeicherten) Formularstand statt
+            // nur der gespeicherten Config - der Test-Button sendet dafuer die aktuellen
+            // Feldwerte mit. Nicht mitgesendete Felder fallen auf die gespeicherte Config
+            // zurueck (siehe ai_chat's ChatTest.php fuer dasselbe Muster).
+            $overrides = [];
+            foreach (['ai_provider', 'gemini_api_key', 'gemini_model', 'openai_api_key', 'openai_model', 'openwebui_api_key', 'openwebui_base_url', 'openwebui_model', 'ai_platform_text_profile_id'] as $key) {
+                $value = rex_request::post($key, 'string', null);
+                if (null !== $value) {
+                    $overrides[$key] = $value;
+                }
+            }
+
+            $provider = WriteAssistAiFactory::factory($overrides);
+
             if (!$provider->isConfigured()) {
                 rex_response::sendJson([
                     'success' => false, 

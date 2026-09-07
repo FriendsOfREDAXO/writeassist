@@ -1,0 +1,224 @@
+/* ============================================
+   WriteAssist – Feld-Widgets (watext / watranslate)
+   Gestalterisch an MediaPlace (mpw-*) angelehnt.
+   ============================================ */
+
+.wa-field-wrapper {
+    position: relative;
+    display: block;
+}
+
+.wa-field-trigger {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border: 1px solid #dfe3e9;
+    border-radius: 0;
+    background: #f3f6fb;
+    color: #9ca5b2;
+    font-size: 11px;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.wa-field-trigger:hover {
+    border-color: #4b9ad9;
+    color: #fff;
+    background: #4b9ad9;
+}
+
+.wa-field-trigger.wa-field-trigger-busy {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ---- Popover ---- */
+.wa-field-popover {
+    position: absolute;
+    z-index: 10000;
+    width: 260px;
+    background: #fff;
+    border: 1px solid #dfe3e9;
+    border-radius: 0;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+}
+
+.wa-field-popover-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wa-field-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.wa-field-select {
+    width: 100%;
+    padding: 5px 6px;
+    border: 1px solid #dfe3e9;
+    border-radius: 0;
+    background: #fff;
+    color: #324050;
+    font-size: 12px;
+}
+
+.wa-field-textarea {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #dfe3e9;
+    border-radius: 0;
+    background: #fff;
+    color: #324050;
+    font-size: 12px;
+    resize: vertical;
+}
+
+.wa-field-actions {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.wa-field-run-btn {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 0;
+    background: #4b9ad9;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.wa-field-run-btn:hover {
+    opacity: 0.88;
+}
+
+.wa-field-run-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.wa-field-status {
+    font-size: 11px;
+    color: #9ca5b2;
+}
+
+.wa-field-status-info {
+    color: #4b9ad9;
+}
+
+.wa-field-status-success {
+    color: #28a745;
+}
+
+.wa-field-status-warning {
+    color: #f0ad4e;
+}
+
+.wa-field-status-error {
+    color: #d9534f;
+}
+
+/* ---- Sprachliste (watranslate) ---- */
+.wa-field-lang-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.wa-field-lang-btn {
+    padding: 4px 8px;
+    border: 1px solid #dfe3e9;
+    border-radius: 0;
+    background: #f3f6fb;
+    color: #324050;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.wa-field-lang-btn:hover {
+    border-color: #4b9ad9;
+    background: #4b9ad9;
+    color: #fff;
+}
+
+/* ---- Dark Mode ---- */
+body.rex-theme-dark .wa-field-trigger {
+    background: #253344;
+    border-color: #2d3e50;
+    color: #6c8ea8;
+}
+body.rex-theme-dark .wa-field-trigger:hover {
+    border-color: #3c8dbc;
+    background: #3c8dbc;
+    color: #fff;
+}
+body.rex-theme-dark .wa-field-popover {
+    background: #1e2a3a;
+    border-color: #2d3e50;
+}
+body.rex-theme-dark .wa-field-select,
+body.rex-theme-dark .wa-field-textarea {
+    background: #253344;
+    border-color: #2d3e50;
+    color: #cfe0ee;
+}
+body.rex-theme-dark .wa-field-status {
+    color: #8fa8c0;
+}
+body.rex-theme-dark .wa-field-lang-btn {
+    background: #253344;
+    border-color: #2d3e50;
+    color: #cfe0ee;
+}
+body.rex-theme-dark .wa-field-lang-btn:hover {
+    border-color: #3c8dbc;
+    background: #3c8dbc;
+    color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-trigger {
+        background: #253344;
+        border-color: #2d3e50;
+        color: #6c8ea8;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-trigger:hover {
+        border-color: #3c8dbc;
+        background: #3c8dbc;
+        color: #fff;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-popover {
+        background: #1e2a3a;
+        border-color: #2d3e50;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-select,
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-textarea {
+        background: #253344;
+        border-color: #2d3e50;
+        color: #cfe0ee;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-status {
+        color: #8fa8c0;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-lang-btn {
+        background: #253344;
+        border-color: #2d3e50;
+        color: #cfe0ee;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .wa-field-lang-btn:hover {
+        border-color: #3c8dbc;
+        background: #3c8dbc;
+        color: #fff;
+    }
+}

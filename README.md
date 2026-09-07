@@ -4,7 +4,7 @@
 
 WriteAssist bringt die volle Power moderner KI-Tools direkt in dein REDAXO Backend. Egal ob du Texte übersetzen, Grammatik korrigieren oder komplett neuen Content generieren willst – WriteAssist ist überall da, wo du es brauchst.
 
-Voll integriert als Toolbar-Button im TinyMCE, als Info-Center-Widget oder als dedizierter Coding-Assistent. Dein Schweizer Taschenmesser für Content & Code.
+Voll integriert als Toolbar-Button im TinyMCE, als Info-Center-Widget oder direkt an normalen Formularfeldern ohne WYSIWYG-Editor. Dein Schweizer Taschenmesser für Content.
 
 ## Features im Überblick
 
@@ -24,16 +24,19 @@ Lass dir beim Schreiben helfen – vom Umschreiben bis zum Brainstorming.
 - **Texte optimieren**: Kürzen, verlängern, Tonalität ändern.
 - **Content erschaffen**: Blogposts, Teaser oder Beschreibungen aus Stichpunkten generieren.
 
-**Unterstützte KI-Modelle:**
+**Unterstützte KI-Provider:**
 *   **Google Gemini**: Schnell, smart und mit großzügigem kostenlosen Kontingent.
 *   **OpenWebUI / OpenAI Compatible**: Volle Freiheit! Nutze lokal gehostete Modelle (Ollama, vLLM) oder jede API, die OpenAI-kompatibel ist (z.B. Mistral, Groq).
+*   **ai_platform-Addon**: Ist [ai_platform](https://github.com/FriendsOfREDAXO/ai_platform) installiert, kann WriteAssist dessen zentral verwaltete Text-Profile nutzen – keine eigenen API-Keys nötig.
 *   **Prompt Management**: Speichere deine besten Befehle als Vorlagen für das ganze Team.
 
-### 💻 Code-Assistent (Admin-Only)
-Dein Sparringspartner für REDAXO-Entwicklung.
-- Generiert Modul-Code, erklärt komplexe Klassen oder hilft beim Debuggen.
-- **Weiß Bescheid**: Kennt Core-Klassen und installierte AddOns via Datenbank-Scan.
-- *Hinweis: Ideal für schnelle Snippets und Fragen, ersetzt aber keinen erfahrenen Entwickler.*
+### 🪄 KI-Buttons an normalen Formularfeldern
+Nicht jedes Feld hat einen WYSIWYG-Editor – trotzdem soll die KI helfen können.
+- **`watext`**: Textarea oder Input mit dieser CSS-Klasse bekommt einen Zauberstab-Button (Generieren, Umschreiben, Zusammenfassen, Erweitern, eigener Prompt).
+- **`watranslate`**: Übersetzt den Feldinhalt per Klick (DeepL oder KI, je nach Einstellung).
+- Beide Klassen lassen sich kombinieren, funktionieren in Modulen, YForm, MForm und eigenen Backend-Seiten – WriteAssist erkennt auch nachträglich eingefügte Felder (z.B. per MBlock) automatisch.
+- **Feldlimit-sicher**: Ein vorhandenes `maxlength`-Attribut wird respektiert, das Ergebnis wird bei Bedarf sichtbar gekürzt statt still abgeschnitten.
+- Live-Demo unter *WriteAssist → Feld-Widget Demo*.
 
 ## Integrationen
 
@@ -101,6 +104,20 @@ Zusätzlich gibt es ein Kontextmenü: Text markieren -> Rechtsklick -> **KI: Ums
 ```
 undo redo | styles | bold italic | writeassist_translate writeassist_generate | link
 ```
+
+## KI-Buttons an eigenen Formularfeldern
+
+Einfach die CSS-Klasse zum Feld hinzufügen, WriteAssist erledigt den Rest:
+
+```html
+<textarea class="form-control watext" name="my_field"></textarea>
+
+<input type="text" class="form-control watranslate" name="my_translated_field">
+
+<textarea class="form-control watext watranslate" name="my_combined_field"></textarea>
+```
+
+Funktioniert überall im Backend – Module, YForm-Formulare, MForm, eigene Seiten. Ein `maxlength`-Attribut wird beim Ergebnis respektiert.
 
 ## Eigener LanguageTool Server
 
