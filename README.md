@@ -86,6 +86,18 @@ Für bereits vorhandene Artikel und Kategorien gibt es eine eigene Backend-Seite
 | LanguageTool | Öffentliche API oder eigener Server | Ja |
 | OpenWebUI / Ollama | Lokal installieren | Ja |
 
+### Entfernten OpenAI-kompatiblen Endpunkt einrichten
+
+Die Auswahl **OpenWebUI / OpenAI Compatible** in den WriteAssist-Einstellungen kann neben lokalen Modellen auch einen entfernten OpenAI-kompatiblen Endpunkt verwenden. Beispiel mit AI-ROUTER:
+
+1. Als **KI-Provider** `OpenWebUI / OpenAI Compatible` wählen.
+2. Bei **Base URL** `https://api.ai-router.dev/v1` eintragen.
+3. Den eigenen API-Key und eine in deinem Konto verfügbare Modell-ID hinterlegen.
+
+[AI-ROUTER](https://ai-router.dev/de/openai-compatible-api-gateway/) ist ein unabhängiger Dienst mit OpenAI-kompatibler API. WriteAssist ruft beim Verbindungstest die Modellliste über `/v1/models` ab und verwendet die konfigurierte Modell-ID für die Textgenerierung.
+
+> Beim Generieren, Umschreiben oder Optimieren werden Prompt und ausgewählte Textinhalte an den konfigurierten Endpunkt gesendet. Übermittle nur Inhalte, die du an diesen Dienst weitergeben darfst.
+
 ## TinyMCE einrichten
 
 ### 1. Übersetzer
