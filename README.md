@@ -8,10 +8,11 @@ Voll integriert als Toolbar-Button im TinyMCE, als Info-Center-Widget oder direk
 
 ## Features im Überblick
 
-### 🌐 Übersetzung (DeepL)
+### 🌐 Übersetzung (DeepL oder Text-KI)
 Übersetze Content mit einem Klick, ohne das Layout zu zerschießen.
 - **Nahtlos**: Funktioniert direkt im TinyMCE Editor und behält HTML-Formatierung bei.
-- **Smart**: Automatische Spracherkennung.
+- **Wähle den Dienst**: In den Einstellungen lässt sich als Übersetzungs-Dienst DeepL oder die eingestellte Text-KI (Gemini/OpenAI/OpenWebUI/ai_platform) wählen – gilt einheitlich für Einzelübersetzung, Auto-Übersetzen und Massenübersetzung.
+- **Smart**: Automatische Spracherkennung (DeepL).
 - **Griffbereit**: Auch als Info-Center-Widget verfügbar.
 
 ### ✨ Textverbesserung (LanguageTool)
@@ -50,20 +51,21 @@ Die Tools sind da, wo du schreibst.
 - **Buttons in der Toolbar**: Funktionen auf Knopfdruck abrufbar.
 - **Kontext-Aware**: Liest den markierten Text oder den ganzen Editor-Inhalt.
 
-### 🔄 Auto-Übersetzen bei Anlage
-Wenn eine mehrsprachige REDAXO-Installation mit DeepL betrieben wird, kann WriteAssist neue Artikel und Kategorien automatisch in alle aktiven Sprachen übersetzen – ohne manuellen Eingriff.
+### 🔄 Auto-Übersetzen bei Anlage & Umbenennung
+Bei einer mehrsprachigen REDAXO-Installation kann WriteAssist Artikel- und Kategorienamen automatisch in alle aktiven Sprachen übersetzen – ohne manuellen Eingriff, per DeepL oder Text-KI.
 
-- **Automatisch**: Wird ausgelöst, sobald ein Artikel oder eine Kategorie angelegt wird.
+- **Bei Neuanlage**: Wird ausgelöst, sobald ein Artikel oder eine Kategorie angelegt wird.
+- **Bei Umbenennung**: Optional auch bei jeder Bearbeitung des Namens – überschreibt dabei bestehende Übersetzungen.
 - **Alle Sprachen sofort**: Alle aktiven Clangs werden beim Speichern direkt befüllt.
 - **Quellerkennung**: Die Ausgangssprache wird anhand der aktuellen Clang bestimmt.
-- **Steuerbar**: Lässt sich in den WriteAssist-Einstellungen ein- und ausschalten.
+- **Steuerbar**: Beide Optionen lassen sich in den WriteAssist-Einstellungen unabhängig per Toggle ein- und ausschalten.
 
 **Voraussetzungen:**
-- DeepL API-Key in den WriteAssist-Einstellungen hinterlegt
-- Option *Auto-Übersetzen* aktiviert
+- Der in den Einstellungen unter *Übersetzungs-Dienst* gewählte Dienst ist konfiguriert (DeepL-API-Key oder ein eingerichteter KI-Provider)
+- Die jeweilige Option (*Bei Neuanlage* / *Bei Umbenennung*) ist aktiviert
 
 ### 🌍 Massenübersetzung bestehender Namen
-Für bereits vorhandene Artikel und Kategorien gibt es eine eigene Backend-Seite: Quellsprache auswählen, Typ wählen und mit einem Klick alle Namen übersetzen.
+Für bereits vorhandene Artikel und Kategorien gibt es eine eigene Backend-Seite: Quellsprache auswählen, Typ wählen und mit einem Klick alle Namen übersetzen – ebenfalls über DeepL oder Text-KI, je nach Einstellung.
 
 - Übersetzt Artikel- und/oder Kategorienamen in einem Durchgang
 - Option „nur unübersetzte Namen" schützt bereits angepasste Titel
@@ -78,6 +80,8 @@ Für bereits vorhandene Artikel und Kategorien gibt es eine eigene Backend-Seite
 3. API-Schlüssel in den Einstellungen eintragen
 
 ## API-Schlüssel holen
+
+Für die Übersetzung reicht **einer** der beiden Dienste (DeepL oder ein KI-Provider) – welcher genutzt wird, legst du in den Einstellungen unter *Übersetzungs-Dienst* fest.
 
 | Service | Wo gibts den Key? | Kostenlos? |
 |---------|-------------------|------------|

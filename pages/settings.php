@@ -9,6 +9,7 @@ $package = rex_addon::get('writeassist');
 // -------------------------------------------------------------------------
 // Aktuelle Konfiguration für Sidebar
 // -------------------------------------------------------------------------
+$cfgTranslationProvider = (string) $package->getConfig('translation_provider', 'deepl');
 $cfgApiKey        = trim((string) $package->getConfig('api_key', ''));
 $cfgAutoTranslate = (bool) $package->getConfig('enable_auto_translate', false);
 $cfgRenameTranslate = (bool) $package->getConfig('translate_on_rename', false);
@@ -67,8 +68,10 @@ $sidebar .= '<li>' . ($cfgRenameTranslate ? $checkOn : $checkOff) . ' <strong>Be
 $sidebar .= '</ul>';
 if (!$cfgAutoTranslate && !$cfgRenameTranslate) {
     $sidebar .= '<p class="small" style="margin-top:8px">Aktiviere eine der Optionen unten, damit Artikel- und Kategorienamen automatisch übersetzt werden.</p>';
-    if (!$deeplConfigured) {
-        $sidebar .= '<p class="small text-warning"><i class="rex-icon fa-exclamation-triangle"></i> DeepL-API-Key fehlt.</p>';
+    $providerConfigured = 'ai' === $cfgTranslationProvider ? $aiConfigured : $deeplConfigured;
+    if (!$providerConfigured) {
+        $missingLabel = 'ai' === $cfgTranslationProvider ? 'KI-Provider ist nicht konfiguriert.' : 'DeepL-API-Key fehlt.';
+        $sidebar .= '<p class="small text-warning"><i class="rex-icon fa-exclamation-triangle"></i> ' . $missingLabel . '</p>';
     }
 }
 $sidebar .= '</div></div>';

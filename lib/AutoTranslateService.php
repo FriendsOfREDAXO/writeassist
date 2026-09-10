@@ -7,6 +7,7 @@ namespace FriendsOfREDAXO\WriteAssist;
 use Exception;
 use rex;
 use rex_addon;
+use rex_addon_interface;
 use rex_article;
 use rex_article_cache;
 use rex_category;
@@ -18,10 +19,11 @@ use FriendsOfREDAXO\WriteAssist\WriteAssistAiFactory;
  * AutoTranslateService
  *
  * Automatically translates article and category names into all active languages
- * via DeepL when a new article or category is created in REDAXO.
+ * when a new article or category is created in REDAXO, using the translation
+ * provider configured in WriteAssist settings (DeepL or Text-KI).
  *
  * Activated via WriteAssist settings: "enable_auto_translate"
- * Requires a valid DeepL API key in WriteAssist settings.
+ * Requires a configured translation provider (DeepL API key, or a configured AI provider).
  */
 class AutoTranslateService
 {
@@ -34,10 +36,7 @@ class AutoTranslateService
         if (!(bool) $addon->getConfig('enable_auto_translate', false)) {
             return false;
         }
-        if ('' === (string) $addon->getConfig('api_key', '')) {
-            return false;
-        }
-        return true;
+        return self::hasConfiguredProvider($addon);
     }
 
     /**
@@ -49,10 +48,21 @@ class AutoTranslateService
         if (!(bool) $addon->getConfig('translate_on_rename', false)) {
             return false;
         }
-        if ('' === (string) $addon->getConfig('api_key', '')) {
-            return false;
+        return self::hasConfiguredProvider($addon);
+    }
+
+    /**
+     * Ob der in den Einstellungen gewählte Übersetzungs-Dienst (DeepL oder Text-KI)
+     * tatsächlich konfiguriert ist. Muss dieselbe Provider-Wahl wie translateText()
+     * widerspiegeln, sonst bleibt Auto-Übersetzen z.B. bei "Text-KI" ohne DeepL-Key
+     * stillschweigend inaktiv, obwohl translateText() den KI-Provider nutzen würde.
+     */
+    private static function hasConfiguredProvider(rex_addon_interface $addon): bool
+    {
+        if ($addon->getConfig('translation_provider', 'deepl') === 'ai') {
+            return WriteAssistAiFactory::factory()->isConfigured();
         }
-        return true;
+        return '' !== (string) $addon->getConfig('api_key', '');
     }
 
     /**
@@ -139,7 +149,7 @@ class AutoTranslateService
 
                 rex_article_cache::generateMeta($id, $clang->getId());
             } catch (Exception $e) {
-                // Silently skip on DeepL error – original name stays
+                // Silently skip on provider error – original name stays
             }
         }
     }

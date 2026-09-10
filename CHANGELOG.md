@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.2 - 2026-09-10
+### Behoben
+- **Auto-Übersetzen blieb bei Text-KI ohne DeepL-Key inaktiv:** "Bei Neuanlage" und "Bei Umbenennung" prüften intern immer nur, ob ein DeepL-API-Key hinterlegt ist – unabhängig vom oben gewählten Übersetzungs-Dienst. War als Dienst "Text-KI" gewählt und ein KI-Provider korrekt konfiguriert, aber kein DeepL-Key hinterlegt, blieben beide Optionen dadurch stillschweigend wirkungslos, obwohl die eigentliche Übersetzung (`translateText()`) den KI-Provider korrekt genutzt hätte. Die Verfügbarkeitsprüfung berücksichtigt jetzt den gewählten Dienst.
+- Diverse Texte in den Einstellungen und der README erwähnten noch "per DeepL", obwohl seit 2.5.0 auch die Text-KI als Übersetzungs-Dienst gewählt werden kann. Texte auf den gewählten Dienst umformuliert (inkl. Sidebar-Warnung bei fehlender Konfiguration).
+
 ## 3.2.1 - 2026-09-10
 ### Behoben
 - **Toggle-Switches zeigten noch die leere Dropdown-Box dahinter:** Core umschließt jedes `<select>` mit einem eigenen `.rex-select-style`-Wrapper, der selbst wie eine Dropdown-Box aussieht (Rahmen + Pfeil per Theme-CSS). Ein `hide()` nur auf dem `<select>` reichte daher nicht. Jetzt wird der komplette Wrapper versteckt.
