@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.1.0 - 2026-09-10
+### Geändert
+- **Massenübersetzung nutzt jetzt ebenfalls den KI-Fallback:** Bisher war die Massenübersetzung (Backend > WriteAssist > Massenübersetzung) die einzige Stelle im Addon, die zwingend einen DeepL-API-Key voraussetzte, obwohl Einzelübersetzung und Auto-Übersetzung bei Neuanlage seit 2.5.0 auch über eine Text-KI (Gemini/OpenAI/OpenWebUI/ai_platform) laufen können. Ist in den Einstellungen als Provider "Text-KI" gewählt und korrekt konfiguriert, nutzt die Massenübersetzung jetzt ebenfalls diese – ohne DeepL-Key.
+
+### Behoben
+- **Echter Bug in der Text-Generierung:** Die "Custom Prompt"-Aktion im Generator rief eine nicht existierende Methode auf `GeminiApi` auf und ist dadurch bei jedem Aufruf mit einem Fehler abgebrochen. Behoben.
+- Diverse Robustheits-Fixes (fehlschlagendes JSON-Encoding vor einem API-Call wird jetzt als klare Fehlermeldung statt als leerer, stiller Request behandelt; PCRE-Fehler beim Aufräumen von KI-Antworten führen nicht mehr zu einem ungültigen Zwischenwert).
+
 ## 3.0.0 - 2026-09-07
 ### Hinzugefügt
 - **KI-Buttons an normalen Formularfeldern**: Textareas und Inputs ohne WYSIWYG-Editor bekommen per CSS-Klasse einen KI-Button – `watext` für Generieren/Umschreiben/Zusammenfassen/Erweitern/eigener Prompt, `watranslate` für Direktübersetzung. Beide Klassen sind kombinierbar, funktionieren in Modulen, YForm, MForm und eigenen Backend-Seiten, und erkennen auch nachträglich eingefügte Felder (z.B. per MBlock) automatisch. Neue Demo-Seite *Feld-Widget Demo* zeigt alle Varianten live.
