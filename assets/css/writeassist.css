@@ -283,3 +283,76 @@
 .writeassist-interface textarea {
     font-family: monospace;
 }
+
+/* -------------------------------------------------------------------------
+ * Settings page: toggle switches
+ * ------------------------------------------------------------------------- */
+.wa-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    margin: 0;
+    user-select: none;
+}
+
+.wa-toggle input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.wa-toggle-track {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    background: #ccc;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+}
+
+.wa-toggle-track::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: left 0.15s ease;
+}
+
+.wa-toggle input[type="checkbox"]:checked + .wa-toggle-track {
+    background: #5cb85c;
+}
+
+.wa-toggle input[type="checkbox"]:checked + .wa-toggle-track::after {
+    left: 22px;
+}
+
+.wa-toggle input[type="checkbox"]:focus + .wa-toggle-track {
+    box-shadow: 0 0 0 2px rgba(92, 184, 92, 0.4);
+}
+
+/* Settings: fieldsets that become irrelevant based on another choice */
+.wa-fieldset-fade {
+    opacity: 0.45;
+    transition: opacity 0.15s ease;
+}
+
+.wa-fieldset-fade .wa-fieldset-hint {
+    opacity: 1;
+}
+
+.wa-fieldset-hint {
+    display: none;
+}
+
+.wa-fieldset-fade .wa-fieldset-hint {
+    display: block;
+}

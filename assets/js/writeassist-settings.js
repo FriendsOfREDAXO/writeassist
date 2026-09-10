@@ -1,6 +1,58 @@
 /* WriteAssist – Settings Page JS */
 $(document).on('rex:ready', function () {
 
+    // === Yes/No selects -> visual toggle switches ===
+    // Ersetzt sichtbar die einfachen Ja/Nein-<select>-Felder durch einen Toggle-Switch,
+    // ohne die zugrunde liegenden Felder (und damit rex_config_form's Save-Logik) anzufassen:
+    // der Switch spiegelt nur den Wert des verborgenen <select> und stoesst dessen change-Event an.
+    $('select.wa-yesno-toggle').each(function () {
+        var $select = $(this);
+        if ($select.data('wa-toggled')) {
+            return;
+        }
+        $select.data('wa-toggled', true);
+
+        var checked = $select.val() === '1';
+
+        var $toggle = $(
+            '<label class="wa-toggle">' +
+                '<input type="checkbox"' + (checked ? ' checked' : '') + '>' +
+                '<span class="wa-toggle-track"></span>' +
+            '</label>'
+        );
+
+        var $checkbox = $toggle.find('input[type="checkbox"]');
+        $checkbox.on('change', function () {
+            $select.val($checkbox.prop('checked') ? '1' : '0').trigger('change');
+        });
+
+        // Original-<select> bleibt im DOM (fuer's Speichern ueber rex_config_form), wird aber
+        // versteckt; das <dt>-Label des form-group bleibt stehen, der Switch ersetzt nur
+        // die Auswahl selbst (kein eigenes Label noetig, das <dt> uebernimmt das schon).
+        $select.hide();
+        $select.after($toggle);
+    });
+
+    // === Übersetzungs-Dienst <-> DeepL-Fieldset ===
+    // Wenn "Text-KI" als Uebersetzungs-Dienst gewaehlt ist, wird der DeepL-Key von
+    // keiner Funktion des Addons mehr benoetigt (siehe AutoTranslateService::translateText()) -
+    // das DeepL-Fieldset wird dann nur ausgegraut (nicht versteckt), da der Key trotzdem
+    // gueltig bleiben und z.B. nach einem spaeteren Zurueckwechseln weiterverwendet werden kann.
+    var $translationProviderSelect = $('#translation-provider-select');
+    var $deeplWrap = $('#wa-deepl-fieldset-wrap');
+
+    function updateDeeplRelevance() {
+        if (!$translationProviderSelect.length || !$deeplWrap.length) {
+            return;
+        }
+        $deeplWrap.toggleClass('wa-fieldset-fade', $translationProviderSelect.val() === 'ai');
+    }
+
+    if ($translationProviderSelect.length) {
+        updateDeeplRelevance();
+        $translationProviderSelect.on('change', updateDeeplRelevance);
+    }
+
     // === AI Provider toggle ===
     var $providerSelect = $('#ai-provider-select');
 

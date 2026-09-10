@@ -142,6 +142,7 @@ $form->addRawField('<fieldset><legend>Allgemeine Übersetzung</legend>');
 
 $field = $form->addSelectField('translation_provider');
 $field->setLabel('Übersetzungs-Dienst');
+$field->setAttribute('id', 'translation-provider-select');
 $select = $field->getSelect();
 $select->addOption('DeepL (benötigt DeepL Token)', 'deepl');
 $select->addOption('Eingestellte Text-KI (Gemini/OpenAI)', 'ai');
@@ -150,7 +151,12 @@ $field->setNotice('Welcher Dienst soll für Übersetzungen (z.B. YForm Lang Fiel
 $form->addRawField('</fieldset>');
 
 // === DeepL Settings ===
+// Wird ausgegraut, wenn oben "Text-KI" als Übersetzungs-Dienst gewählt ist - der
+// DeepL-Key wird dann von keiner Funktion des Addons mehr verwendet, siehe
+// AutoTranslateService::translateText() (einzige Stelle, die translation_provider auswertet).
+$form->addRawField('<div id="wa-deepl-fieldset-wrap">');
 $form->addRawField('<fieldset><legend>' . $package->i18n('writeassist_deepl_settings') . '</legend>');
+$form->addRawField('<p class="help-block wa-fieldset-hint"><i class="rex-icon fa-info-circle"></i> Nicht benötigt, solange oben die Text-KI als Übersetzungs-Dienst eingestellt ist.</p>');
 
 $field = $form->addInputField('text', 'api_key', null, ['class' => 'form-control']);
 $field->setLabel($package->i18n('writeassist_api_key'));
@@ -164,6 +170,7 @@ $select->addOption($package->i18n('writeassist_api_type_pro'), '0');
 $field->setNotice($package->i18n('writeassist_api_type_notice'));
 
 $form->addRawField('</fieldset>');
+$form->addRawField('</div>');
 
 // === LanguageTool Settings ===
 $form->addRawField('<fieldset><legend>' . $package->i18n('writeassist_languagetool_settings') . '</legend>');
@@ -301,6 +308,8 @@ $form->addRawField('<fieldset><legend>' . $package->i18n('writeassist_integratio
 
 $field = $form->addSelectField('enable_infocenter_widget');
 $field->setLabel($package->i18n('writeassist_enable_infocenter_widget'));
+$field->setAttribute('id', 'enable_infocenter_widget');
+$field->setAttribute('class', 'wa-yesno-toggle');
 $select = $field->getSelect();
 $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
@@ -308,6 +317,8 @@ $field->setNotice($package->i18n('writeassist_enable_infocenter_widget_notice'))
 
 $field = $form->addSelectField('enable_tinymce_plugin');
 $field->setLabel($package->i18n('writeassist_enable_tinymce_plugin'));
+$field->setAttribute('id', 'enable_tinymce_plugin');
+$field->setAttribute('class', 'wa-yesno-toggle');
 $select = $field->getSelect();
 $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
@@ -315,6 +326,8 @@ $field->setNotice($package->i18n('writeassist_enable_tinymce_plugin_notice'));
 
 $field = $form->addSelectField('enable_auto_translate');
 $field->setLabel($package->i18n('writeassist_enable_auto_translate'));
+$field->setAttribute('id', 'enable_auto_translate');
+$field->setAttribute('class', 'wa-yesno-toggle');
 $select = $field->getSelect();
 $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
@@ -322,6 +335,8 @@ $field->setNotice($package->i18n('writeassist_enable_auto_translate_notice'));
 
 $field = $form->addSelectField('translate_on_rename');
 $field->setLabel($package->i18n('writeassist_translate_on_rename'));
+$field->setAttribute('id', 'translate_on_rename');
+$field->setAttribute('class', 'wa-yesno-toggle');
 $select = $field->getSelect();
 $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');

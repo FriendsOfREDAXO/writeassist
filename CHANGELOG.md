@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.0 - 2026-09-10
+### Geändert
+- **Einstellungsseite überarbeitet:** Die Ja/Nein-Auswahlfelder unter "Integrationen" (Info Center Widget, TinyMCE-Plugin, Auto-Übersetzen bei Neuanlage/Umbenennung) sind jetzt echte Toggle-Switches statt Dropdowns.
+- **DeepL-Fieldset reagiert auf den gewählten Übersetzungs-Dienst:** Ist oben "Text-KI" als Übersetzungs-Dienst gewählt, wird der DeepL-Bereich ausgegraut und mit einem Hinweis versehen, da der DeepL-Key dann von keiner Funktion des Addons mehr benötigt wird. Zurück auf "DeepL" gewechselt, wird der Bereich wieder normal angezeigt.
+
 ## 3.1.0 - 2026-09-10
 ### Geändert
 - **Massenübersetzung nutzt jetzt ebenfalls den KI-Fallback:** Bisher war die Massenübersetzung (Backend > WriteAssist > Massenübersetzung) die einzige Stelle im Addon, die zwingend einen DeepL-API-Key voraussetzte, obwohl Einzelübersetzung und Auto-Übersetzung bei Neuanlage seit 2.5.0 auch über eine Text-KI (Gemini/OpenAI/OpenWebUI/ai_platform) laufen können. Ist in den Einstellungen als Provider "Text-KI" gewählt und korrekt konfiguriert, nutzt die Massenübersetzung jetzt ebenfalls diese – ohne DeepL-Key.
