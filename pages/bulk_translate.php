@@ -87,8 +87,12 @@ $content = '
                 <div class="panel-heading"><strong><i class="rex-icon fa-spinner fa-spin" id="wa-bulk-spinner"></i> ' . $package->i18n('writeassist_bulk_translate_running') . '</strong></div>
                 <div class="panel-body">
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped active" id="wa-bulk-bar" role="progressbar" style="width:100%">' . $package->i18n('writeassist_bulk_translate_please_wait') . '</div>
+                        <div class="progress-bar progress-bar-striped active" id="wa-bulk-bar" role="progressbar" style="width:0%"></div>
                     </div>
+                    <p class="text-muted" id="wa-bulk-progress-text" style="margin-bottom:10px">' . $package->i18n('writeassist_bulk_translate_please_wait') . '</p>
+                    <button type="button" class="btn btn-default btn-sm" id="wa-bulk-cancel">
+                        <i class="rex-icon fa-stop"></i> ' . $package->i18n('writeassist_bulk_translate_cancel') . '
+                    </button>
                 </div>
             </div>
         </div>

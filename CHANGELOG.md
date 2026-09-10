@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.3.0 - 2026-09-10
+### Geändert
+- **Massenübersetzung läuft jetzt in Batches statt in einem langen Request:** Bisher übersetzte ein einziger Request alle betroffenen Artikel/Kategorien komplett synchron durch – bei vielen Einträgen ein Risiko für PHP-Timeouts und einen für die Dauer blockierten Browser-Tab. Die Seite ermittelt jetzt zunächst die Arbeitsliste und arbeitet sie in kleinen Batches (5 Einträge) ab, mit Live-Fortschrittsanzeige und einem Abbrechen-Button.
+
+### Behoben
+- **Reasoning-Modelle konnten Artefakte in Übersetzungen hinterlassen:** Bei als Text-KI eingebundenen "Thinking"-Modellen (z.B. Qwen3 über ai_platform) konnten Marker wie `<think>...</think>` oder ein angehängtes `think`/`/think` unbemerkt Teil des übersetzten Artikel- oder Kategorienamens werden. Der Übersetzungs-Prompt schaltet den Thinking-Modus jetzt explizit per `/no_think` ab (bei Modellen, die das nicht unterstützen, wirkungslos aber unschädlich), zusätzlich werden bekannte Reasoning-Marker aus der Antwort entfernt.
+
 ## 3.2.2 - 2026-09-10
 ### Behoben
 - **Auto-Übersetzen blieb bei Text-KI ohne DeepL-Key inaktiv:** "Bei Neuanlage" und "Bei Umbenennung" prüften intern immer nur, ob ein DeepL-API-Key hinterlegt ist – unabhängig vom oben gewählten Übersetzungs-Dienst. War als Dienst "Text-KI" gewählt und ein KI-Provider korrekt konfiguriert, aber kein DeepL-Key hinterlegt, blieben beide Optionen dadurch stillschweigend wirkungslos, obwohl die eigentliche Übersetzung (`translateText()`) den KI-Provider korrekt genutzt hätte. Die Verfügbarkeitsprüfung berücksichtigt jetzt den gewählten Dienst.

@@ -69,6 +69,7 @@ Für bereits vorhandene Artikel und Kategorien gibt es eine eigene Backend-Seite
 
 - Übersetzt Artikel- und/oder Kategorienamen in einem Durchgang
 - Option „nur unübersetzte Namen" schützt bereits angepasste Titel
+- Läuft in kleinen Batches statt in einem einzigen langen Request – bleibt dadurch auch bei vielen Einträgen bedienbar, zeigt einen Live-Fortschritt und lässt sich jederzeit abbrechen
 - Nur für Admins sichtbar
 
 --------------------------------------------------------------------------------

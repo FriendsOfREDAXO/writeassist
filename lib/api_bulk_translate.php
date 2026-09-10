@@ -14,10 +14,26 @@ use FriendsOfREDAXO\WriteAssist\WriteAssistAiFactory;
  * wie bei der Einzelübersetzung und der Auto-Übersetzung bei Neuanlage, siehe
  * AutoTranslateService::translateText()).
  *
- * POST params:
- *  source_clang      int   ID of the source clang
+ * Läuft in zwei Schritten, damit die Massenübersetzung bei vielen Artikeln
+ * nicht an PHP's max_execution_time oder einem blockierenden Browser-Tab
+ * scheitert (vorher: ein einziger Request übersetzte alle Artikel x alle
+ * Zielsprachen komplett synchron durch):
+ *
+ *  action=collect        Ermittelt die Arbeitsliste (id, isCategory, targetClangId)
+ *                         unter Berücksichtigung von only_untranslated, ohne zu
+ *                         übersetzen. Antwort enthält die vollständige Liste.
+ *  action=translate_batch Übersetzt eine vom Client übergebene Teilmenge dieser
+ *                         Liste (ein "Batch"). Wird vom JS wiederholt aufgerufen,
+ *                         bis alle Einträge abgearbeitet sind.
+ *
+ * POST params (collect):
+ *  source_clang      int     ID of the source clang
  *  type              string  'articles' | 'categories' | 'both'
- *  only_untranslated int   1 = only translate where name is still identical to source
+ *  only_untranslated int     1 = only translate where name is still identical to source
+ *
+ * POST params (translate_batch):
+ *  source_clang      int     ID of the source clang
+ *  items             string  JSON-kodierte Liste von {id, is_category, target_clang}
  */
 class rex_api_writeassist_bulk_translate extends rex_api_function
 {
@@ -42,6 +58,22 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
             exit;
         }
 
+        $action = rex_post('action', 'string', 'collect');
+
+        if ('translate_batch' === $action) {
+            $this->translateBatch();
+        } else {
+            $this->collect();
+        }
+
+        exit;
+    }
+
+    /**
+     * Ermittelt die vollständige Arbeitsliste, ohne zu übersetzen.
+     */
+    private function collect(): void
+    {
         $sourceClangId    = (int) rex_post('source_clang', 'int', 0);
         $type             = rex_post('type', 'string', 'both');
         $onlyUntranslated = (bool) rex_post('only_untranslated', 'int', 0);
@@ -49,29 +81,24 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
         $sourceClang = rex_clang::get($sourceClangId);
         if (!$sourceClang) {
             rex_response::sendJson(['success' => false, 'error' => 'Ungültige Quellsprache']);
-            exit;
+            return;
         }
 
-        $targetClangs = [];
+        $targetClangIds = [];
         foreach (rex_clang::getAll() as $clang) {
             if ($clang->getId() !== $sourceClangId) {
-                $targetClangs[] = $clang;
+                $targetClangIds[] = $clang->getId();
             }
         }
 
-        if (empty($targetClangs)) {
+        if ([] === $targetClangIds) {
             rex_response::sendJson(['success' => false, 'error' => 'Keine weiteren Sprachen vorhanden']);
-            exit;
+            return;
         }
 
-        $translated = 0;
-        $skipped    = 0;
-        $errors     = 0;
-        $log        = [];
-
         $prefix = rex::getTablePrefix();
+        $items = [];
 
-        // --- Artikel ---
         if (in_array($type, ['articles', 'both'], true)) {
             $sql = rex_sql::factory();
             $sql->setQuery(
@@ -83,32 +110,15 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
                 $id         = (int) $row->getValue('id');
                 $sourceName = (string) $row->getValue('name');
 
-                foreach ($targetClangs as $targetClang) {
-                    if ($onlyUntranslated && !self::isUntranslated($id, false, $sourceName, $targetClang->getId())) {
-                        ++$skipped;
+                foreach ($targetClangIds as $targetClangId) {
+                    if ($onlyUntranslated && !self::isUntranslated($id, false, $sourceName, $targetClangId)) {
                         continue;
                     }
-
-                    try {
-                        $translated_name = AutoTranslateService::translateText($sourceName, $targetClang->getId(), $sourceClangId);
-
-                        rex_sql::factory()
-                            ->setTable($prefix . 'article')
-                            ->setWhere(['id' => $id, 'clang_id' => $targetClang->getId()])
-                            ->setValue('name', $translated_name)
-                            ->update();
-
-                        rex_article_cache::generateMeta($id, $targetClang->getId());
-                        ++$translated;
-                    } catch (Exception $e) {
-                        ++$errors;
-                        $log[] = 'Fehler Artikel ' . $id . ': ' . $e->getMessage();
-                    }
+                    $items[] = ['id' => $id, 'is_category' => false, 'target_clang' => $targetClangId];
                 }
             }
         }
 
-        // --- Kategorien ---
         if (in_array($type, ['categories', 'both'], true)) {
             $sql = rex_sql::factory();
             $sql->setQuery(
@@ -120,40 +130,107 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
                 $id         = (int) $row->getValue('id');
                 $sourceName = (string) $row->getValue('catname');
 
-                foreach ($targetClangs as $targetClang) {
-                    if ($onlyUntranslated && !self::isUntranslated($id, true, $sourceName, $targetClang->getId())) {
-                        ++$skipped;
+                foreach ($targetClangIds as $targetClangId) {
+                    if ($onlyUntranslated && !self::isUntranslated($id, true, $sourceName, $targetClangId)) {
                         continue;
                     }
-
-                    try {
-                        $translated_name = AutoTranslateService::translateText($sourceName, $targetClang->getId(), $sourceClangId);
-
-                        rex_sql::factory()
-                            ->setTable($prefix . 'article')
-                            ->setWhere(['id' => $id, 'clang_id' => $targetClang->getId(), 'startarticle' => 1])
-                            ->setValue('catname', $translated_name)
-                            ->setValue('name', $translated_name)
-                            ->update();
-
-                        rex_article_cache::generateMeta($id, $targetClang->getId());
-                        ++$translated;
-                    } catch (Exception $e) {
-                        ++$errors;
-                        $log[] = 'Fehler Kategorie ' . $id . ': ' . $e->getMessage();
-                    }
+                    $items[] = ['id' => $id, 'is_category' => true, 'target_clang' => $targetClangId];
                 }
+            }
+        }
+
+        rex_response::sendJson([
+            'success' => true,
+            'items'   => $items,
+            'total'   => count($items),
+        ]);
+    }
+
+    /**
+     * Übersetzt einen vom Client übergebenen Ausschnitt der Arbeitsliste.
+     */
+    private function translateBatch(): void
+    {
+        $sourceClangId = (int) rex_post('source_clang', 'int', 0);
+        $sourceClang = rex_clang::get($sourceClangId);
+        if (!$sourceClang) {
+            rex_response::sendJson(['success' => false, 'error' => 'Ungültige Quellsprache']);
+            return;
+        }
+
+        $itemsJson = rex_post('items', 'string', '[]');
+        $items = json_decode($itemsJson, true);
+        if (!is_array($items)) {
+            rex_response::sendJson(['success' => false, 'error' => 'Ungültige Übergabe']);
+            return;
+        }
+
+        $prefix = rex::getTablePrefix();
+        $translated = 0;
+        $errors = 0;
+        $log = [];
+
+        foreach ($items as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $id           = (int) ($item['id'] ?? 0);
+            $isCategory   = (bool) ($item['is_category'] ?? false);
+            $targetClangId = (int) ($item['target_clang'] ?? 0);
+
+            if (0 === $id || 0 === $targetClangId) {
+                continue;
+            }
+
+            $sourceName = self::fetchName($id, $isCategory, $sourceClangId);
+            if (null === $sourceName) {
+                continue;
+            }
+
+            try {
+                $translatedName = AutoTranslateService::translateText($sourceName, $targetClangId, $sourceClangId);
+
+                $update = rex_sql::factory()
+                    ->setTable($prefix . 'article')
+                    ->setWhere($isCategory
+                        ? ['id' => $id, 'clang_id' => $targetClangId, 'startarticle' => 1]
+                        : ['id' => $id, 'clang_id' => $targetClangId])
+                    ->setValue('name', $translatedName);
+                if ($isCategory) {
+                    $update->setValue('catname', $translatedName);
+                }
+                $update->update();
+
+                rex_article_cache::generateMeta($id, $targetClangId);
+                ++$translated;
+            } catch (Exception $e) {
+                ++$errors;
+                $log[] = 'Fehler ' . ($isCategory ? 'Kategorie' : 'Artikel') . ' ' . $id . ': ' . $e->getMessage();
             }
         }
 
         rex_response::sendJson([
             'success'    => true,
             'translated' => $translated,
-            'skipped'    => $skipped,
             'errors'     => $errors,
             'log'        => $log,
         ]);
-        exit;
+    }
+
+    private static function fetchName(int $id, bool $isCategory, int $sourceClangId): ?string
+    {
+        $sql = rex_sql::factory();
+        $sql->setQuery(
+            'SELECT ' . ($isCategory ? 'catname' : 'name') . ' as n FROM ' . rex::getTablePrefix() . 'article'
+            . ' WHERE id = :id AND clang_id = :clang' . ($isCategory ? ' AND startarticle = 1' : ' AND startarticle = 0'),
+            ['id' => $id, 'clang' => $sourceClangId]
+        );
+
+        if (0 === $sql->getRows()) {
+            return null;
+        }
+
+        return (string) $sql->getValue('n');
     }
 
     /**

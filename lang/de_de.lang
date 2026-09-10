@@ -205,6 +205,7 @@ writeassist_bulk_translate_only_untranslated = Nur noch nicht übersetzte Namen
 writeassist_bulk_translate_only_untranslated_notice = Überspringt Einträge, deren Name in der Zielsprache sich bereits vom Quelltitel unterscheidet.
 writeassist_bulk_translate_start = Übersetzung starten
 writeassist_bulk_translate_running = Übersetzung läuft …
+writeassist_bulk_translate_cancel = Abbrechen
 writeassist_bulk_translate_please_wait = Bitte warten – das kann je nach Anzahl der Einträge etwas dauern.
 writeassist_bulk_translate_no_api_key = Kein Übersetzungs-Provider konfiguriert. Bitte zuerst einen DeepL-API-Key oder einen KI-Provider in den Einstellungen eintragen.
 writeassist_bulk_translate_info_title = Hinweise

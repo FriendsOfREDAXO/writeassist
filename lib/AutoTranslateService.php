@@ -88,7 +88,14 @@ class AutoTranslateService
             if ($ai->isConfigured()) {
                 $targetCode = self::getDeeplCode($targetClang);
 
-                $prompt = "Übersetze den folgenden Text/Titel in die Sprache/den Sprachcode: " . $targetCode . ".
+                // "/no_think" schaltet bei Qwen3 und einigen anderen Reasoning-Modellen
+                // den Thinking-Modus ab (sonst können Reasoning-Marker wie "<think>...</think>"
+                // oder ein angehängtes "think" in der Antwort landen, siehe stripReasoningArtifacts()).
+                // Bei Modellen, die die Direktive nicht kennen, ist sie wirkungslos, aber unschädlich.
+                $prompt = "/no_think
+
+"
+                        . "Übersetze den folgenden Text/Titel in die Sprache/den Sprachcode: " . $targetCode . ".
 
 "
                         . "Antworte AUSSCHLIESSLICH mit dem übersetzten Text. Keine Einleitung, keine Anführungszeichen.
@@ -98,7 +105,7 @@ class AutoTranslateService
 " . $text;
 
                 $aiResponse = $ai->generate($prompt);
-                return trim($aiResponse['text']);
+                return self::stripReasoningArtifacts($aiResponse['text']);
             }
         }
 
@@ -107,6 +114,22 @@ class AutoTranslateService
         $deepl = new DeeplApi();
         $result = $deepl->translate($text, $targetCode, $sourceCode);
         return $result['text'];
+    }
+
+    /**
+     * Entfernt Reasoning-Artefakte, die manche über OpenWebUI/ai_platform
+     * angebundene "Thinking"-Modelle (z.B. Qwen3) trotz einfachem Prompt in
+     * die Antwort durchsickern lassen: <think>...</think>-Blöcke sowie die
+     * Steuer-Tokens /think und /no_think am Rand der Antwort. Ohne dieses
+     * Aufräumen würden solche Marker unbemerkt als Teil des übersetzten
+     * Artikel-/Kategorienamens gespeichert.
+     */
+    private static function stripReasoningArtifacts(string $text): string
+    {
+        $text = preg_replace('#<think>.*?</think>#is', '', $text) ?? $text;
+        $text = preg_replace('#^\s*/no_think\s*|^\s*/think\s*|\s*/no_think\s*$|\s*/think\s*$#i', '', $text) ?? $text;
+
+        return trim($text);
     }
 
     /**
