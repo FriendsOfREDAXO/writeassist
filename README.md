@@ -12,6 +12,7 @@ Voll integriert als Toolbar-Button im TinyMCE, als Info-Center-Widget oder direk
 Übersetze Content mit einem Klick, ohne das Layout zu zerschießen.
 - **Nahtlos**: Funktioniert direkt im TinyMCE Editor und behält HTML-Formatierung bei.
 - **Wähle den Dienst**: In den Einstellungen lässt sich als Übersetzungs-Dienst DeepL oder die eingestellte Text-KI (Gemini/OpenAI/OpenWebUI/ai_platform) wählen – gilt einheitlich für Einzelübersetzung, Auto-Übersetzen und Massenübersetzung.
+- **Kontext für die KI (optional)**: Bei Text-KI als Dienst lässt sich in den Einstellungen ein freier Hintergrund-Text hinterlegen (z.B. „Fußballwebsite eines Landesverbands, WDFV/FVN sind Verbandskürzel und bleiben unübersetzt"), der jeder Übersetzung mitgegeben wird – hilft besonders kleineren Modellen, Eigennamen und Abkürzungen nicht frei zu „übersetzen".
 - **Smart**: Automatische Spracherkennung (DeepL).
 - **Griffbereit**: Auch als Info-Center-Widget verfügbar.
 

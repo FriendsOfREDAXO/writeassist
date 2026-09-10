@@ -66,6 +66,18 @@ class AutoTranslateService
     }
 
     /**
+     * Optionaler Hintergrund-Kontext aus den Einstellungen (z.B. Art der Website,
+     * feste Begriffe/Abkürzungen, die unübersetzt bleiben sollen), der jedem
+     * KI-Übersetzungs-Prompt mitgegeben wird - gemeinsam genutzt von translateText()
+     * und api_translate.php (Einzelübersetzung/TinyMCE), damit der Kontext einheitlich
+     * überall greift, wo translation_provider=ai übersetzt.
+     */
+    public static function getTranslationContext(): string
+    {
+        return trim((string) rex_addon::get('writeassist')->getConfig('translation_context', ''));
+    }
+
+    /**
      * Übersetzt einen einzelnen Text/Titel in eine Zielsprache, unter Verwendung
      * des in den WriteAssist-Einstellungen gewählten Providers (DeepL oder KI).
      *
@@ -87,6 +99,7 @@ class AutoTranslateService
             $ai = WriteAssistAiFactory::factory();
             if ($ai->isConfigured()) {
                 $targetCode = self::getDeeplCode($targetClang);
+                $context = self::getTranslationContext();
 
                 // "/no_think" schaltet bei Qwen3 und einigen anderen Reasoning-Modellen
                 // den Thinking-Modus ab (sonst können Reasoning-Marker wie "<think>...</think>"
@@ -97,8 +110,19 @@ class AutoTranslateService
 "
                         . "Übersetze den folgenden Text/Titel in die Sprache/den Sprachcode: " . $targetCode . ".
 
-"
-                        . "Antworte AUSSCHLIESSLICH mit dem übersetzten Text. Keine Einleitung, keine Anführungszeichen.
+";
+
+                if ('' !== $context) {
+                    // Optionaler Hintergrund-Kontext aus den Einstellungen (z.B. Art der Website,
+                    // feste Begriffe/Abkürzungen, die unübersetzt bleiben sollen) - hilft gerade
+                    // kleineren Modellen, Eigennamen/Akronyme nicht frei zu "übersetzen"
+                    // (beobachtet z.B. bei Vereinskürzeln wie "WDFV").
+                    $prompt .= "Kontext zur Website: " . $context . "
+
+";
+                }
+
+                $prompt .= "Antworte AUSSCHLIESSLICH mit dem übersetzten Text. Keine Einleitung, keine Anführungszeichen.
 
 "
                         . "Zu übersetzender Text:

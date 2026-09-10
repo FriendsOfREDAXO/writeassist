@@ -44,7 +44,7 @@ $(document).on('rex:ready', function () {
         );
     }
 
-    function runBatches(sourceClang, items) {
+    function runBatches(sourceClang, items, skipped) {
         var total     = items.length;
         var doneCount = 0;
         var translated = 0;
@@ -56,6 +56,7 @@ $(document).on('rex:ready', function () {
                 finish(
                     '<div class="alert alert-warning"><i class="rex-icon fa-info-circle"></i> Abgebrochen nach '
                     + doneCount + ' von ' + total + ' Einträgen. <strong>' + translated + '</strong> übersetzt, '
+                    + '<strong>' + skipped + '</strong> übersprungen, '
                     + '<strong>' + errors + '</strong> Fehler.</div>'
                 );
                 return;
@@ -66,6 +67,7 @@ $(document).on('rex:ready', function () {
                     + '<div class="panel-heading"><strong><i class="rex-icon fa-check"></i> Übersetzung abgeschlossen</strong></div>'
                     + '<div class="panel-body">'
                     + '<p><strong>' + translated + '</strong> Namen übersetzt &nbsp;|&nbsp; '
+                    + '<strong>' + skipped + '</strong> übersprungen &nbsp;|&nbsp; '
                     + '<strong>' + errors + '</strong> Fehler</p>';
 
                 if (log.length > 0) {
@@ -143,7 +145,7 @@ $(document).on('rex:ready', function () {
             }
 
             setProgress(0, data.total);
-            runBatches(sourceClang, data.items);
+            runBatches(sourceClang, data.items, data.skipped || 0);
         })
         .fail(function (xhr, status, err) {
             showError('Verbindungsfehler: ' + String(err || status));

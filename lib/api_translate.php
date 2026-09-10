@@ -45,11 +45,19 @@ class rex_api_writeassist_translate extends rex_api_function
                 }
                 
                 $formatNote = $preserveFormatting ? 'Erhalte jegliche HTML-Formatierung exakt bei (Texte innerhalb der Tags übersetzen, Tags beibehalten).' : 'Antworte in einfachem Text ohne Formatierung.';
-                
+                $context = \FriendsOfREDAXO\WriteAssist\AutoTranslateService::getTranslationContext();
+
                 $prompt = "Übersetze den folgenden Text in die Sprache/den Sprachcode: " . $targetLang . ".
 
-"
-                        . $formatNote . "
+";
+
+                if ('' !== $context) {
+                    $prompt .= "Kontext zur Website: " . $context . "
+
+";
+                }
+
+                $prompt .= $formatNote . "
 "
                         . "Antworte AUSSCHLIESSLICH mit dem übersetzten Text. Keine Einleitung, keine Erklärungen, füge auch keine Markdown-Codeblöcke hinzu, falls der Originaltext diese nicht enthielt.
 

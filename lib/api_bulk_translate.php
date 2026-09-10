@@ -98,6 +98,7 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
 
         $prefix = rex::getTablePrefix();
         $items = [];
+        $skipped = 0;
 
         if (in_array($type, ['articles', 'both'], true)) {
             $sql = rex_sql::factory();
@@ -112,6 +113,7 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
 
                 foreach ($targetClangIds as $targetClangId) {
                     if ($onlyUntranslated && !self::isUntranslated($id, false, $sourceName, $targetClangId)) {
+                        ++$skipped;
                         continue;
                     }
                     $items[] = ['id' => $id, 'is_category' => false, 'target_clang' => $targetClangId];
@@ -132,6 +134,7 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
 
                 foreach ($targetClangIds as $targetClangId) {
                     if ($onlyUntranslated && !self::isUntranslated($id, true, $sourceName, $targetClangId)) {
+                        ++$skipped;
                         continue;
                     }
                     $items[] = ['id' => $id, 'is_category' => true, 'target_clang' => $targetClangId];
@@ -143,6 +146,7 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
             'success' => true,
             'items'   => $items,
             'total'   => count($items),
+            'skipped' => $skipped,
         ]);
     }
 

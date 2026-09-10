@@ -151,6 +151,15 @@ $select->addOption('DeepL (benötigt DeepL Token)', 'deepl');
 $select->addOption('Eingestellte Text-KI (Gemini/OpenAI)', 'ai');
 $field->setNotice('Welcher Dienst soll für Übersetzungen (z.B. YForm Lang Fields & Übersetzer-Tab) genutzt werden?');
 
+// Nur relevant bei Text-KI als Übersetzungs-Dienst (DeepL nutzt keinen freien
+// Prompt-Kontext) - wird analog zum DeepL-Fieldset ein-/ausgeblendet, siehe
+// writeassist-settings.js.
+$form->addRawField('<div id="wa-translation-context-wrap">');
+$field = $form->addTextAreaField('translation_context', null, ['class' => 'form-control', 'rows' => 3]);
+$field->setLabel('Kontext für KI-Übersetzung (optional)');
+$field->setNotice('Wird der KI bei jeder Übersetzung als Hintergrundinfo mitgegeben, z.B. um die Art der Website zu erklären oder feste Begriffe/Abkürzungen von der Übersetzung auszunehmen. Beispiel: "Fußballwebsite eines Landesverbands. WDFV, FVN und FLVW sind Verbandskürzel und bleiben unübersetzt."');
+$form->addRawField('</div>');
+
 $form->addRawField('</fieldset>');
 
 // === DeepL Settings ===

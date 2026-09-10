@@ -45,12 +45,21 @@ $(document).on('rex:ready', function () {
     // gueltig bleiben und z.B. nach einem spaeteren Zurueckwechseln weiterverwendet werden kann.
     var $translationProviderSelect = $('#translation-provider-select');
     var $deeplWrap = $('#wa-deepl-fieldset-wrap');
+    // Kontext-Feld ist nur bei Text-KI sinnvoll (DeepL nutzt keinen freien Prompt) -
+    // wird daher komplett ausgeblendet statt nur ausgegraut, siehe pages/settings.php.
+    var $translationContextWrap = $('#wa-translation-context-wrap');
 
     function updateDeeplRelevance() {
-        if (!$translationProviderSelect.length || !$deeplWrap.length) {
+        if (!$translationProviderSelect.length) {
             return;
         }
-        $deeplWrap.toggleClass('wa-fieldset-fade', $translationProviderSelect.val() === 'ai');
+        var isAi = $translationProviderSelect.val() === 'ai';
+        if ($deeplWrap.length) {
+            $deeplWrap.toggleClass('wa-fieldset-fade', isAi);
+        }
+        if ($translationContextWrap.length) {
+            $translationContextWrap.toggle(isAi);
+        }
     }
 
     if ($translationProviderSelect.length) {

@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.3.1 - 2026-09-10
+### Hinzugefügt
+- **Optionaler Kontext für KI-Übersetzungen:** In den Einstellungen lässt sich bei Text-KI als Übersetzungs-Dienst ein freier Hintergrund-Text hinterlegen (z.B. Art der Website, feste Begriffe/Abkürzungen, die unübersetzt bleiben sollen). Wird jedem KI-Übersetzungs-Prompt mitgegeben – Einzelübersetzung, Auto-Übersetzen und Massenübersetzung gleichermaßen. Hilft besonders kleineren Modellen, Eigennamen/Akronyme (z.B. Vereinskürzel) nicht frei zu "übersetzen".
+
+### Behoben
+- **"Nur noch nicht übersetzte Namen" fehlte in der Abschluss-Anzeige der Massenübersetzung:** Seit der Umstellung auf Batches (3.3.0) filterte die Option weiterhin korrekt, aber die Anzahl der dadurch übersprungenen Einträge wurde nicht mehr an die Ergebnis-Anzeige übergeben – es wirkte dadurch, als würde die Option ignoriert. Zähler ist jetzt wieder in der Zusammenfassung sichtbar.
+
 ## 3.3.0 - 2026-09-10
 ### Geändert
 - **Massenübersetzung läuft jetzt in Batches statt in einem langen Request:** Bisher übersetzte ein einziger Request alle betroffenen Artikel/Kategorien komplett synchron durch – bei vielen Einträgen ein Risiko für PHP-Timeouts und einen für die Dauer blockierten Browser-Tab. Die Seite ermittelt jetzt zunächst die Arbeitsliste und arbeitet sie in kleinen Batches (5 Einträge) ab, mit Live-Fortschrittsanzeige und einem Abbrechen-Button.
