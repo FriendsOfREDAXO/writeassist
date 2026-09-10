@@ -34,8 +34,8 @@ interface WriteAssistAiProviderInterface
     
     /**
      * Tests the connection to the API
-     * 
-     * @return array ['success' => bool, 'message' => string]
+     *
+     * @return array{success: bool, message: string}
      */
     public function testConnection(): array;
 }

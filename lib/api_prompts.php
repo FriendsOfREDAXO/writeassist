@@ -73,13 +73,19 @@ class rex_api_writeassist_prompts extends rex_api_function
         exit;
     }
     
+    /**
+     * @return array<string, array{id: string, title: string, content: string, updated: int}>
+     */
     private function getPrompts(): array
     {
         $data = rex_config::get('writeassist', 'saved_prompts', '[]');
         $prompts = json_decode($data, true);
         return is_array($prompts) ? $prompts : [];
     }
-    
+
+    /**
+     * @param array<string, array{id: string, title: string, content: string, updated: int}> $prompts
+     */
     private function savePrompts(array $prompts): void
     {
         rex_config::set('writeassist', 'saved_prompts', json_encode($prompts));

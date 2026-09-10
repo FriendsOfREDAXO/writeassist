@@ -50,6 +50,9 @@ class WriteAssistAiProviderAiPlatform extends WriteAssistAiProviderAbstract
         return ['text' => $generatedText];
     }
 
+    /**
+     * @return array{success: bool, message: string}
+     */
     public function testConnection(): array
     {
         if (!$this->isConfigured()) {

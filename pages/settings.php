@@ -91,7 +91,9 @@ if ($deeplUsage !== null && !isset($deeplUsage['error'])) {
     $sidebar .= '</div>';
     $sidebar .= '<small>' . number_format($usageCount, 0, ',', '.') . ' / ' . number_format($usageLimit, 0, ',', '.') . ' Zeichen (' . $usagePercent . '%)</small>';
     $sidebar .= '</div>';
-} elseif ($deeplUsage !== null && isset($deeplUsage['error'])) {
+} elseif ($deeplUsage !== null) {
+    // Erste Bedingung negiert: $deeplUsage ist hier nie null und hat immer
+    // 'error' gesetzt (siehe DeeplApi::getUsage()), daher kein erneuter isset()-Check nötig.
     $sidebar .= '<div class="small text-muted" style="margin-top:4px"><i class="rex-icon fa-exclamation-triangle"></i> Nutzung nicht abrufbar</div>';
 }
 $sidebar .= '</li>';

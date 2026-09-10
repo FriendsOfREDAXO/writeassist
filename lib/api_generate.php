@@ -45,7 +45,7 @@ class rex_api_writeassist_generate extends rex_api_function
                 'summarize' => $api->summarize($text),
                 'expand' => $api->expand($text),
                 'generate' => $api->generateFromTopic($text, $type, $prompt),
-                'custom' => $api->custom($prompt, $text),
+                'custom' => $api->generate($prompt, $text),
                 default => throw new \Exception('Unknown action: ' . $action)
             };
             

@@ -62,9 +62,9 @@ class rex_api_writeassist_translate extends rex_api_function
                 // Clean up possible markdown code blocks if the AI still added them around the entire response
                 $translation = trim($aiResponse['text']);
                 if (str_starts_with($translation, '```html')) {
-                    $translation = preg_replace('/^```html\s*|\s*```$/i', '', $translation);
+                    $translation = preg_replace('/^```html\s*|\s*```$/i', '', $translation) ?? $translation;
                 } elseif (str_starts_with($translation, '```')) {
-                    $translation = preg_replace('/^```[a-z]*\s*|\s*```$/i', '', $translation);
+                    $translation = preg_replace('/^```[a-z]*\s*|\s*```$/i', '', $translation) ?? $translation;
                 }
                 
                 rex_response::sendJson([
