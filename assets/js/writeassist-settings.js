@@ -26,11 +26,16 @@ $(document).on('rex:ready', function () {
             $select.val($checkbox.prop('checked') ? '1' : '0').trigger('change');
         });
 
-        // Original-<select> bleibt im DOM (fuer's Speichern ueber rex_config_form), wird aber
-        // versteckt; das <dt>-Label des form-group bleibt stehen, der Switch ersetzt nur
-        // die Auswahl selbst (kein eigenes Label noetig, das <dt> uebernimmt das schon).
-        $select.hide();
-        $select.after($toggle);
+        // Core umschliesst jedes <select> mit einem eigenen ".rex-select-style"-Wrapper-Div,
+        // das per Backend-Theme-CSS selbst wie eine Dropdown-Box aussieht (Rahmen + Pfeil) -
+        // ein "hide()" nur auf dem <select> reicht daher nicht, sonst bleibt die leere
+        // Wrapper-Box sichtbar. Das <select> bleibt im DOM (fuer's Speichern ueber
+        // rex_config_form), der komplette Wrapper wird versteckt und der Switch danach
+        // eingefuegt.
+        var $wrapper = $select.closest('.rex-select-style');
+        var $hideTarget = $wrapper.length ? $wrapper : $select;
+        $hideTarget.hide();
+        $hideTarget.after($toggle);
     });
 
     // === Übersetzungs-Dienst <-> DeepL-Fieldset ===

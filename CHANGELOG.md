@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.1 - 2026-09-10
+### Behoben
+- **Toggle-Switches zeigten noch die leere Dropdown-Box dahinter:** Core umschließt jedes `<select>` mit einem eigenen `.rex-select-style`-Wrapper, der selbst wie eine Dropdown-Box aussieht (Rahmen + Pfeil per Theme-CSS). Ein `hide()` nur auf dem `<select>` reichte daher nicht. Jetzt wird der komplette Wrapper versteckt.
+
 ## 3.2.0 - 2026-09-10
 ### Geändert
 - **Einstellungsseite überarbeitet:** Die Ja/Nein-Auswahlfelder unter "Integrationen" (Info Center Widget, TinyMCE-Plugin, Auto-Übersetzen bei Neuanlage/Umbenennung) sind jetzt echte Toggle-Switches statt Dropdowns.
