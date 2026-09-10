@@ -12,10 +12,12 @@ abstract class WriteAssistAiProviderAbstract implements WriteAssistAiProviderInt
     protected function cleanText(string $text): string
     {
         // Markdown Bold entfernen (**text** -> text)
-        $text = preg_replace('/\*\*(.*?)\*\*/', '$1', $text);
-        
+        // preg_replace() kann bei einem PCRE-Fehler (z.B. Backtrack-Limit) null
+        // zurückgeben; in dem Fall den Ausgangswert behalten statt null weiterzureichen.
+        $text = preg_replace('/\*\*(.*?)\*\*/', '$1', $text) ?? $text;
+
         // Zitate am Anfang entfernen
-        $text = preg_replace('/^["\']|["\']$/', '', trim($text));
+        $text = preg_replace('/^["\']|["\']$/', '', trim($text)) ?? $text;
         
         // "Hier ist der Alt-Text:" o.ä. entfernen
         $prefixes = [
@@ -37,9 +39,8 @@ abstract class WriteAssistAiProviderAbstract implements WriteAssistAiProviderInt
     
     /**
      * Handles cURL errors
-     * @param \CurlHandle|resource $ch
      */
-    protected function handleCurlError($ch): void
+    protected function handleCurlError(\CurlHandle $ch): void
     {
         $error = curl_error($ch);
         $errno = curl_errno($ch);

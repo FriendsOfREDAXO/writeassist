@@ -63,31 +63,40 @@ class WriteAssistAiProviderGemini extends WriteAssistAiProviderAbstract
         $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/';
         $url = $baseUrl . $this->model . ':generateContent?key=' . $this->apiKey;
         
+        $payloadJson = json_encode($payload);
+        if (false === $payloadJson) {
+            throw new \Exception('Anfrage konnte nicht als JSON kodiert werden.');
+        }
+
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($payload),
+            CURLOPT_POSTFIELDS => $payloadJson,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
             CURLOPT_TIMEOUT => 30,
             CURLOPT_SSL_VERIFYPEER => true
         ]);
-        
+
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
+
         if (curl_errno($ch)) {
             $this->handleCurlError($ch);
         }
         curl_close($ch);
-        
+
+        // handleCurlError() wirft immer eine Exception bei curl_errno($ch) !== 0,
+        // daher ist $response an dieser Stelle garantiert ein String, kein false.
+        $response = (string) $response;
+
         if ($httpCode !== 200) {
              $errorData = json_decode($response, true);
              $errorMessage = $errorData['error']['message'] ?? 'HTTP Error ' . $httpCode;
              throw new \Exception('API Error: ' . $errorMessage);
         }
-        
+
         $responseData = json_decode($response, true);
         
         // Extract text
@@ -110,6 +119,9 @@ class WriteAssistAiProviderGemini extends WriteAssistAiProviderAbstract
         return $result;
     }
     
+    /**
+     * @return array{success: bool, message: string}
+     */
     public function testConnection(): array
     {
         if (!$this->isConfigured()) {

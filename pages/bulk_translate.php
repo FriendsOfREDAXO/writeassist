@@ -9,9 +9,15 @@
 
 $package = rex_addon::get('writeassist');
 
-// Check prerequisites
+// Check prerequisites - entweder DeepL-Key oder ein korrekt konfigurierter
+// KI-Provider (gleicher Fallback wie bei Einzelübersetzung / Auto-Übersetzung
+// bei Neuanlage, siehe AutoTranslateService::translateText()).
 $apiKey = trim((string) $package->getConfig('api_key', ''));
-if ($apiKey === '') {
+$providerType = $package->getConfig('translation_provider', 'deepl');
+$aiConfigured = $providerType === 'ai' && \FriendsOfREDAXO\WriteAssist\WriteAssistAiFactory::factory()->isConfigured();
+$hasProvider = $apiKey !== '' || $aiConfigured;
+
+if (!$hasProvider) {
     echo rex_view::warning($package->i18n('writeassist_bulk_translate_no_api_key'));
 }
 
@@ -70,7 +76,7 @@ $content = '
 
                 <hr>
 
-                <button type="button" class="btn btn-primary" id="wa-bulk-start" ' . ($apiKey === '' ? 'disabled' : '') . '>
+                <button type="button" class="btn btn-primary" id="wa-bulk-start" ' . (!$hasProvider ? 'disabled' : '') . '>
                     <i class="rex-icon fa-play"></i> ' . $package->i18n('writeassist_bulk_translate_start') . '
                 </button>
             </div>

@@ -67,27 +67,34 @@ class WriteAssistAiProviderOpenAiCompatible extends WriteAssistAiProviderAbstrac
             'Content-Type: application/json',
             'Authorization: Bearer ' . $this->apiKey
         ];
-        
+
+        $dataJson = json_encode($data);
+        if (false === $dataJson) {
+            throw new \Exception('Anfrage konnte nicht als JSON kodiert werden.');
+        }
+
         $ch = curl_init();
         curl_setopt_array($ch, [
             CURLOPT_URL => $url,
             CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_POSTFIELDS => $dataJson,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_SSL_VERIFYPEER => true
         ]);
-        
+
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
+
         if (curl_errno($ch)) {
              $this->handleCurlError($ch);
         }
         curl_close($ch);
-        
-        $responseData = json_decode($response, true);
+
+        // handleCurlError() wirft immer eine Exception bei curl_errno($ch) !== 0,
+        // daher ist $response an dieser Stelle garantiert ein String, kein false.
+        $responseData = json_decode((string) $response, true);
         
         if ($httpCode !== 200) {
             $errorMessage = $responseData['error']['message'] ?? 'HTTP Error ' . $httpCode;
@@ -109,6 +116,9 @@ class WriteAssistAiProviderOpenAiCompatible extends WriteAssistAiProviderAbstrac
         return $result;
     }
     
+    /**
+     * @return array{success: bool, message: string}
+     */
     public function testConnection(): array
     {
         if (!$this->isConfigured()) {
@@ -142,7 +152,7 @@ class WriteAssistAiProviderOpenAiCompatible extends WriteAssistAiProviderAbstrac
         curl_close($ch);
 
         $modelsList = '';
-        if ($httpCode === 200) {
+        if ($httpCode === 200 && is_string($response)) {
             $data = json_decode($response, true);
             if (isset($data['data']) && is_array($data['data'])) {
                 $names = array_map(function($m) { return $m['id']; }, $data['data']);
