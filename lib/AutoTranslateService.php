@@ -56,6 +56,50 @@ class AutoTranslateService
     }
 
     /**
+     * Übersetzt einen einzelnen Text/Titel in eine Zielsprache, unter Verwendung
+     * des in den WriteAssist-Einstellungen gewählten Providers (DeepL oder KI).
+     *
+     * Gemeinsame Provider-Wahl-Logik für translateName() (Auto-Übersetzung bei
+     * Artikel/Kategorie-Anlage) und die Massenübersetzung (api_bulk_translate.php),
+     * damit beide denselben KI-Fallback nutzen, statt die Provider-Auswahl doppelt
+     * zu pflegen.
+     *
+     * @param string $text        Zu übersetzender Text (Titel, kein HTML)
+     * @param int    $targetClang Ziel-Sprache
+     * @param int    $sourceClang Quell-Sprache
+     * @throws Exception Wenn der gewählte Provider fehlschlägt (z.B. DeepL-API-Fehler)
+     */
+    public static function translateText(string $text, int $targetClang, int $sourceClang): string
+    {
+        $providerType = rex_addon::get('writeassist')->getConfig('translation_provider', 'deepl');
+
+        if ($providerType === 'ai') {
+            $ai = WriteAssistAiFactory::factory();
+            if ($ai->isConfigured()) {
+                $targetCode = self::getDeeplCode($targetClang);
+
+                $prompt = "Übersetze den folgenden Text/Titel in die Sprache/den Sprachcode: " . $targetCode . ".
+
+"
+                        . "Antworte AUSSCHLIESSLICH mit dem übersetzten Text. Keine Einleitung, keine Anführungszeichen.
+
+"
+                        . "Zu übersetzender Text:
+" . $text;
+
+                $aiResponse = $ai->generate($prompt);
+                return trim($aiResponse['text']);
+            }
+        }
+
+        $sourceCode = self::getDeeplSourceCode($sourceClang);
+        $targetCode = self::getDeeplCode($targetClang);
+        $deepl = new DeeplApi();
+        $result = $deepl->translate($text, $targetCode, $sourceCode);
+        return $result['text'];
+    }
+
+    /**
      * Translate a name (article or category) into all other active clangs.
      *
      * @param int    $id         Article or category ID
@@ -69,47 +113,13 @@ class AutoTranslateService
             return;
         }
 
-        $sourceCode = self::getDeeplSourceCode($sourceClang);
-        
-        $providerType = rex_addon::get('writeassist')->getConfig('translation_provider', 'deepl');
-        $deepl = null;
-        $ai = null;
-        
-        if ($providerType === 'ai') {
-            $ai = WriteAssistAiFactory::factory();
-            if (!$ai->isConfigured()) {
-                $ai = null;
-            }
-        }
-        
-        if (!$ai) {
-            $deepl = new DeeplApi();
-        }
-
         foreach (rex_clang::getAll() as $clang) {
             if ($clang->getId() === $sourceClang) {
                 continue;
             }
 
             try {
-                $targetCode = self::getDeeplCode($clang->getId());
-                
-                if ($ai) {
-                    $prompt = "Übersetze den folgenden Text/Titel in die Sprache/den Sprachcode: " . $targetCode . ".
-
-"
-                            . "Antworte AUSSCHLIESSLICH mit dem übersetzten Text. Keine Einleitung, keine Anführungszeichen.
-
-"
-                            . "Zu übersetzender Text:
-" . $sourceName;
-                            
-                    $aiResponse = $ai->generate($prompt);
-                    $translatedName = trim($aiResponse['text']);
-                } else {
-                    $result = $deepl->translate($sourceName, $targetCode, $sourceCode);
-                    $translatedName = $result['text'];
-                }
+                $translatedName = self::translateText($sourceName, $clang->getId(), $sourceClang);
 
                 if ('category' === $type) {
                     // Kategorien sind startarticle=1-Zeilen in rex_article – Feld: catname

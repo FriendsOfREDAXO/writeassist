@@ -3,13 +3,16 @@
 declare(strict_types=1);
 
 use FriendsOfREDAXO\WriteAssist\AutoTranslateService;
-use FriendsOfREDAXO\WriteAssist\DeeplApi;
+use FriendsOfREDAXO\WriteAssist\WriteAssistAiFactory;
 
 /**
  * WriteAssist – Bulk Translate API
  *
  * Translates existing article and/or category names from a source language
- * into all other active clangs via DeepL.
+ * into all other active clangs, via DeepL or - falls in den Einstellungen als
+ * Provider gewählt - über den konfigurierten KI-Provider (gleicher Fallback
+ * wie bei der Einzelübersetzung und der Auto-Übersetzung bei Neuanlage, siehe
+ * AutoTranslateService::translateText()).
  *
  * POST params:
  *  source_clang      int   ID of the source clang
@@ -30,8 +33,12 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
         }
 
         $addon = rex_addon::get('writeassist');
-        if (trim((string) $addon->getConfig('api_key', '')) === '') {
-            rex_response::sendJson(['success' => false, 'error' => 'Kein DeepL-API-Key hinterlegt']);
+        $providerType = $addon->getConfig('translation_provider', 'deepl');
+        $aiConfigured = $providerType === 'ai' && WriteAssistAiFactory::factory()->isConfigured();
+        $deeplConfigured = trim((string) $addon->getConfig('api_key', '')) !== '';
+
+        if (!$aiConfigured && !$deeplConfigured) {
+            rex_response::sendJson(['success' => false, 'error' => 'Kein Übersetzungs-Provider konfiguriert (weder DeepL-API-Key noch KI-Provider)']);
             exit;
         }
 
@@ -57,7 +64,6 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
             exit;
         }
 
-        $deepl     = new DeeplApi();
         $translated = 0;
         $skipped    = 0;
         $errors     = 0;
@@ -84,10 +90,7 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
                     }
 
                     try {
-                        $sourceCode = AutoTranslateService::getSourceCode($sourceClangId);
-                        $targetCode = AutoTranslateService::getTargetCode($targetClang->getId());
-                        $result     = $deepl->translate($sourceName, $targetCode, $sourceCode);
-                        $translated_name = $result['text'];
+                        $translated_name = AutoTranslateService::translateText($sourceName, $targetClang->getId(), $sourceClangId);
 
                         rex_sql::factory()
                             ->setTable($prefix . 'article')
@@ -124,10 +127,7 @@ class rex_api_writeassist_bulk_translate extends rex_api_function
                     }
 
                     try {
-                        $sourceCode      = AutoTranslateService::getSourceCode($sourceClangId);
-                        $targetCode      = AutoTranslateService::getTargetCode($targetClang->getId());
-                        $result          = $deepl->translate($sourceName, $targetCode, $sourceCode);
-                        $translated_name = $result['text'];
+                        $translated_name = AutoTranslateService::translateText($sourceName, $targetClang->getId(), $sourceClangId);
 
                         rex_sql::factory()
                             ->setTable($prefix . 'article')
