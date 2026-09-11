@@ -24,6 +24,19 @@ if (!$hasProvider) {
 $clangs = rex_clang::getAll();
 $clangCount = count($clangs);
 
+// YRewrite SEO fields (title/description) are offered only when YRewrite is available.
+$seoCheckboxes = '';
+if (rex_addon::get('yrewrite')->isAvailable()) {
+    $seoCheckboxes = '
+                        <div class="checkbox">
+                            <label><input type="checkbox" id="wa-bulk-seo-title" value="1"> ' . $package->i18n('writeassist_bulk_translate_seo_title') . '</label>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" id="wa-bulk-seo-description" value="1"> ' . $package->i18n('writeassist_bulk_translate_seo_description') . '</label>
+                        </div>
+                        <small class="text-muted">' . $package->i18n('writeassist_bulk_translate_seo_notice') . '</small>';
+}
+
 // Build source lang options
 $clangOptions = '';
 foreach ($clangs as $clang) {
@@ -49,19 +62,12 @@ $content = '
 
                 <div class="form-group">
                     <label>' . $package->i18n('writeassist_bulk_translate_type') . '</label>
-                    <div>
-                        <label class="checkbox-inline">
-                            <input type="radio" name="wa-bulk-type" value="both" checked> ' . $package->i18n('writeassist_bulk_translate_type_both') . '
-                        </label>
-                        &nbsp;
-                        <label class="checkbox-inline">
-                            <input type="radio" name="wa-bulk-type" value="articles"> ' . $package->i18n('writeassist_bulk_translate_type_articles') . '
-                        </label>
-                        &nbsp;
-                        <label class="checkbox-inline">
-                            <input type="radio" name="wa-bulk-type" value="categories"> ' . $package->i18n('writeassist_bulk_translate_type_categories') . '
-                        </label>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id="wa-bulk-articles" value="1" checked> ' . $package->i18n('writeassist_bulk_translate_articles') . '</label>
                     </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" id="wa-bulk-categories" value="1" checked> ' . $package->i18n('writeassist_bulk_translate_categories') . '</label>
+                    </div>' . $seoCheckboxes . '
                 </div>
 
                 <div class="form-group">
@@ -76,7 +82,7 @@ $content = '
 
                 <hr>
 
-                <button type="button" class="btn btn-primary" id="wa-bulk-start" ' . (!$hasProvider ? 'disabled' : '') . '>
+                <button type="button" class="btn btn-primary" id="wa-bulk-start" data-select-hint="' . rex_escape($package->i18n('writeassist_bulk_translate_select_hint')) . '" ' . (!$hasProvider ? 'disabled' : '') . '>
                     <i class="rex-icon fa-play"></i> ' . $package->i18n('writeassist_bulk_translate_start') . '
                 </button>
             </div>
