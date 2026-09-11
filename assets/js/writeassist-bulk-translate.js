@@ -66,7 +66,7 @@ $(document).on('rex:ready', function () {
                 var html = '<div class="panel panel-success">'
                     + '<div class="panel-heading"><strong><i class="rex-icon fa-check"></i> Übersetzung abgeschlossen</strong></div>'
                     + '<div class="panel-body">'
-                    + '<p><strong>' + translated + '</strong> Namen übersetzt &nbsp;|&nbsp; '
+                    + '<p><strong>' + translated + '</strong> übersetzt &nbsp;|&nbsp; '
                     + '<strong>' + skipped + '</strong> übersprungen &nbsp;|&nbsp; '
                     + '<strong>' + errors + '</strong> Fehler</p>';
 
@@ -116,8 +116,17 @@ $(document).on('rex:ready', function () {
 
     $startBtn.on('click', function () {
         var sourceClang       = $('#wa-bulk-source-clang').val();
-        var type              = $('input[name="wa-bulk-type"]:checked').val();
+        var doArticles        = $('#wa-bulk-articles').is(':checked');
+        var doCategories      = $('#wa-bulk-categories').is(':checked');
         var onlyUntranslated  = $('#wa-bulk-only-untranslated').is(':checked') ? 1 : 0;
+        var seoTitle          = $('#wa-bulk-seo-title').is(':checked') ? 1 : 0;
+        var seoDescription    = $('#wa-bulk-seo-description').is(':checked') ? 1 : 0;
+
+        if (!doArticles && !doCategories) {
+            showError($startBtn.data('select-hint') || 'Bitte mindestens Artikel oder Kategorien auswählen.');
+            return;
+        }
+        var type = (doArticles && doCategories) ? 'both' : (doArticles ? 'articles' : 'categories');
 
         cancelled = false;
         $startBtn.prop('disabled', true);
@@ -131,7 +140,9 @@ $(document).on('rex:ready', function () {
             action:            'collect',
             source_clang:      sourceClang,
             type:              type,
-            only_untranslated: onlyUntranslated
+            only_untranslated: onlyUntranslated,
+            seo_title:         seoTitle,
+            seo_description:   seoDescription
         })
         .done(function (data) {
             if (!data.success) {
