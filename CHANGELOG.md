@@ -1,22 +1,17 @@
 # Changelog
 
-## 3.5.0 - 2026-09-25
-### Hinzugefügt
-- **Auto-SEO beim Speichern der Metadaten:** Zwei neue Einstellungen (jeweils optional, standardmäßig aus). „SEO-Bild automatisch in andere Sprachen übernehmen" kopiert beim Speichern der Artikel-/Kategorie-Metadaten das yrewrite-SEO-Bild unverändert in alle anderen Sprachen. „SEO-Titel/-Beschreibung automatisch übersetzen" übersetzt yrewrite-Titel und -Beschreibung über den gewählten Dienst (DeepL/Text-KI) in alle anderen Sprachen. Gekoppelt an die Extension Points `ART_META_UPDATED`/`CAT_META_UPDATED` sowie `YFORM_SAVED`/`REX_YFORM_SAVED` (yrewrite-SEO-Block in der Content-Sidebar); Voraussetzung: YRewrite installiert (Meta-Übersetzung zusätzlich: Dienst konfiguriert).
-
-### Geändert
-- **Übersetzer-Seite berücksichtigt den gewählten Dienst:** Ist als Übersetzungs-Dienst „Text-KI" gewählt und ein KI-Provider (z.B. ai_platform) konfiguriert, verlangt die Übersetzer-Seite keinen DeepL-API-Key mehr – die Warnung entfällt und der Button ist aktiv. Die DeepL-Verbrauchsanzeige bleibt DeepL-exklusiv.
-
-### Behoben
-- **Textverbesserung im Dark Mode unlesbar:** Das Label „Strenger Modus" und die Korrektur-Hinweise erzwangen eine Textfarbe über `var(--rex-color-text, #333)`; da diese Variable im Dark Mode von be_style nicht definiert ist, fiel die Schrift auf nahezu Schwarz auf dunklem Grund zurück. Eigene Dark-Mode-Regeln ergänzt.
-
-## 3.4.0 - 2026-09-10
+## 3.4.0 - 2026-09-25
 ### Hinzugefügt
 - **SEO-Felder in der Massenübersetzung:** Ist YRewrite installiert, lassen sich in der Massenübersetzung optional die SEO-Felder Titel und Beschreibung (`yrewrite_title`, `yrewrite_description`) der ausgewählten Kategorien und Artikel mitübersetzen. Auswahl per Checkbox.
+- **Auto-SEO beim Speichern der Metadaten:** Zwei neue Einstellungen (jeweils optional, standardmäßig aus). „SEO-Bild automatisch in andere Sprachen übernehmen" kopiert beim Speichern der Artikel-/Kategorie-Metadaten das yrewrite-SEO-Bild unverändert in alle anderen Sprachen. „SEO-Titel/-Beschreibung automatisch übersetzen" übersetzt yrewrite-Titel und -Beschreibung über den gewählten Dienst (DeepL/Text-KI) in alle anderen Sprachen. Gekoppelt an die Extension Points `ART_META_UPDATED`/`CAT_META_UPDATED` sowie `YFORM_SAVED`/`REX_YFORM_SAVED` (yrewrite-SEO-Block in der Content-Sidebar); Voraussetzung: YRewrite installiert (Meta-Übersetzung zusätzlich: Dienst konfiguriert).
 
 ### Geändert
 - **Auswahl in der Massenübersetzung vereinheitlicht:** Die bisherigen Radiobuttons (Artikel & Kategorien / Nur Artikel / Nur Kategorien) sind jetzt Checkboxen und bilden zusammen mit den SEO-Feldern eine gemeinsame Liste. Artikel und Kategorien können unabhängig gewählt werden.
 - **Wording:** „Nur noch nicht übersetzte Namen" → „Bereits übersetzte Werte überspringen"; Hinweis- und Warntexte sprechen jetzt von „Einträgen"/„Werten" statt nur „Namen", da neben Namen auch SEO-Felder übersetzt werden. In den Einstellungen sind die Optionen des Übersetzungs-Dienstes klarer benannt.
+- **Übersetzer-Seite berücksichtigt den gewählten Dienst:** Ist als Übersetzungs-Dienst „Text-KI" gewählt und ein KI-Provider (z.B. ai_platform) konfiguriert, verlangt die Übersetzer-Seite keinen DeepL-API-Key mehr – die Warnung entfällt und der Button ist aktiv. Die DeepL-Verbrauchsanzeige bleibt DeepL-exklusiv.
+
+### Behoben
+- **Textverbesserung im Dark Mode unlesbar:** Das Label „Strenger Modus" und die Korrektur-Hinweise erzwangen eine Textfarbe über `var(--rex-color-text, #333)`; da diese Variable im Dark Mode von be_style nicht definiert ist, fiel die Schrift auf nahezu Schwarz auf dunklem Grund zurück. Eigene Dark-Mode-Regeln ergänzt.
 
 ## 3.3.1 - 2026-09-10
 ### Hinzugefügt
