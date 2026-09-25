@@ -7,17 +7,21 @@ declare(strict_types=1);
  */
 
 use FriendsOfREDAXO\WriteAssist\DeeplApi;
+use FriendsOfREDAXO\WriteAssist\WriteAssistAiFactory;
 
 $package = rex_addon::get('writeassist');
 $api = new DeeplApi();
 
-// Check if API key is configured
-$apiKey = $package->getConfig('api_key', '');
-if ($apiKey === '' || $apiKey === null) {
+// Provider-aware: translation runs via DeepL or the configured text AI (ai_platform etc.).
+$providerType = (string) $package->getConfig('translation_provider', 'deepl');
+$apiKey = (string) $package->getConfig('api_key', '');
+$isDeepl = 'ai' !== $providerType;
+$configured = $isDeepl ? ('' !== $apiKey) : WriteAssistAiFactory::factory()->isConfigured();
+if (!$configured) {
     echo rex_view::warning(rex_i18n::rawMsg('writeassist_no_api_key_warning', rex_url::backendPage('writeassist/settings')));
 }
 
-// Get usage statistics
+// DeepL usage statistics (only DeepL exposes a quota)
 $usage = $api->getUsage();
 $usagePercent = 0;
 if ($usage['character_limit'] > 0) {
@@ -28,7 +32,7 @@ if ($usage['character_limit'] > 0) {
 
 <div class="writeassist-translator-page">
     
-    <?php if (!empty($apiKey) && !isset($usage['error'])): ?>
+    <?php if ($isDeepl && '' !== $apiKey && !isset($usage['error'])): ?>
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title"><?= $package->i18n('writeassist_usage_title') ?></h3>
@@ -114,7 +118,7 @@ if ($usage['character_limit'] > 0) {
                 </div>
                 
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary" id="writeassist-translate-btn" <?= empty($apiKey) ? 'disabled' : '' ?>>
+                    <button type="button" class="btn btn-primary" id="writeassist-translate-btn" <?= $configured ? '' : 'disabled' ?>>
                         <i class="rex-icon fa-language"></i> <?= $package->i18n('writeassist_translate') ?>
                     </button>
                     <button type="button" class="btn btn-default" id="writeassist-copy-btn" style="display:none;">
