@@ -1,0 +1,228 @@
+# WriteAssist AddOn
+writeassist_title = WriteAssist
+writeassist_translator = Vertaler
+writeassist_improver = Tekstverbetering
+writeassist_generator = AI-generator
+writeassist_fields_demo = Veld-widget demo
+writeassist_settings = Instellingen
+writeassist_help = Help
+
+# Fields Demo (watext / watranslate)
+writeassist_fields_demo_title = AI-veldwidgets voor gewone formuliervelden
+writeassist_fields_demo_intro = Textarea's en inputs zonder WYSIWYG-editor kunnen via een CSS-klasse van een AI-knop worden voorzien - geen extra JavaScript nodig, WriteAssist herkent de velden automatisch (ook velden die later via MBlock e.d. worden toegevoegd).
+writeassist_fields_demo_watext_hint = Voegt een toverstaf-knop toe: tekst genereren, herschrijven, samenvatten, uitbreiden of met een eigen prompt bewerken.
+writeassist_fields_demo_watranslate_hint = Voegt een vertaalknop toe die de veldinhoud met één klik in de gekozen taal vertaalt.
+writeassist_fields_demo_input_label = Invoerveld
+writeassist_fields_demo_input_placeholder = bijv. kop of meta-titel...
+writeassist_fields_demo_textarea_label = Textarea
+writeassist_fields_demo_textarea_placeholder = Hier uitproberen...
+writeassist_fields_demo_translate_sample = Hallo, hoe gaat het met je?
+writeassist_fields_demo_watext_provider = Huidige AI-provider: {0}. Wijzigen onder
+writeassist_fields_demo_watranslate_provider = Huidige vertaalengine: {0}. Wijzigen onder
+writeassist_fields_demo_usage_title = Integratie in eigen code
+writeassist_fields_demo_usage_intro = Voeg gewoon de klasse toe aan het formulierveld - werkt in modules, YForm-formulieren, MForm en willekeurige backendpagina's:
+writeassist_fields_demo_usage_note = Beide klassen kunnen ook worden gecombineerd (een veld krijgt dan beide knoppen).
+writeassist_fields_demo_combined_hint = Beide klassen tegelijk - het veld krijgt twee knoppen naast elkaar (Genereren en Vertalen).
+writeassist_fields_demo_maxlength_hint = Een bestaand maxlength-attribuut wordt gerespecteerd: het resultaat wordt indien nodig automatisch ingekort, met een zichtbare melding in plaats van stil dataverlies.
+
+# Widget
+writeassist_widget_title = Schrijfhulp
+writeassist_tab_translate = Vertalen
+writeassist_tab_improve = Verbeteren
+writeassist_enter_text = Tekst invoeren...
+writeassist_enter_text_improve = Tekst ter controle invoeren...
+writeassist_translate = Vertalen
+writeassist_check = Controleren
+writeassist_improve = Controleren
+writeassist_copy = Kopiëren
+writeassist_clear = Wissen
+writeassist_swap = Wisselen
+writeassist_picky_mode = Strenge modus
+writeassist_no_deepl_key = DeepL API-sleutel ontbreekt.
+writeassist_no_services_configured = Geen diensten geconfigureerd. Voer een API-sleutel in bij de instellingen.
+writeassist_auto_detect = Automatische detectie
+
+# Translator Page
+writeassist_source_language = Brontaal
+writeassist_target_language = Doeltaal
+writeassist_source_text = Brontekst
+writeassist_translated_text = Vertaling
+writeassist_corrected_text = Gecorrigeerde tekst
+writeassist_usage_title = API-gebruik
+writeassist_characters_used = Gebruikte tekens
+writeassist_no_api_key_warning = Geen DeepL API-sleutel geconfigureerd. Voer deze in bij de <a href="{0}">instellingen</a>.
+
+# Improver Page
+writeassist_improver_description = Controleer je tekst op grammatica, spelling en stijl met LanguageTool (gratis).
+writeassist_language = Taal
+writeassist_apply_corrections = Correcties toepassen
+writeassist_corrections = Gevonden fouten
+writeassist_no_errors = Geen fouten gevonden ✓
+writeassist_issues_found = probleem/problemen gevonden
+writeassist_corrections_applied = Correcties toegepast
+
+# Settings
+writeassist_deepl_settings = DeepL-vertaling
+writeassist_api_key = DeepL API-sleutel
+writeassist_api_key_notice = API-sleutel: <a href="https://www.deepl.com/pro#developer" target="_blank">DeepL Developer Plan</a> (tot 1.000.000 tekens eenmalig gratis)
+writeassist_api_type = API-type
+writeassist_api_type_free = Free API
+writeassist_api_type_pro = Pro API
+writeassist_api_type_notice = Free API gebruikt api-free.deepl.com, Pro API gebruikt api.deepl.com
+
+writeassist_languagetool_settings = LanguageTool (optioneel)
+writeassist_languagetool_url = Eigen API-URL
+writeassist_languagetool_url_notice = Alleen voor zelf-gehoste LanguageTool-instanties. Laat leeg voor de openbare API.
+writeassist_languagetool_api_key = API-sleutel
+writeassist_languagetool_api_key_notice = Optioneel voor premiumfuncties. LanguageTool werkt ook zonder API-sleutel.
+writeassist_languagetool_username = Gebruikersnaam
+
+writeassist_ignore_settings = Genegeerde woorden
+writeassist_ignore_words = Woorden negeren
+writeassist_ignore_words_notice = Eén woord per regel. Deze woorden worden bij de spellingcontrole genegeerd (bijv. eigennamen, bedrijfsnamen, vaktermen).
+writeassist_test_connection = Verbindingstest
+writeassist_test_connection_notice = Let op: sla eerst op voordat je de verbindingstest start.
+
+
+# API Messages
+writeassist_translation_success = Vertaling geslaagd!
+writeassist_improvement_success = Controle voltooid!
+writeassist_no_api_key = Geen API-sleutel geconfigureerd
+writeassist_translation_failed = Vertaling mislukt
+writeassist_improvement_failed = Controle mislukt
+
+# Gemini Settings
+writeassist_gemini_settings = Google Gemini (AI-tekstgeneratie)
+writeassist_gemini_api_key = Gemini API-sleutel
+writeassist_gemini_api_key_notice = Gratis API-sleutel: <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a> (gratis met gebruikslimieten)
+writeassist_gemini_model = Standaardmodel
+writeassist_gemini_model_notice = Aanbevolen: Gemini 2.5 Flash (gratis), Gemini 2.5 Pro (betaald, beste kwaliteit)
+
+# Generator Page
+writeassist_generator_description = Genereer teksten met Google Gemini AI. Gratis met een API-sleutel van Google AI Studio.
+writeassist_no_gemini_key = Geen Gemini API-sleutel geconfigureerd.
+writeassist_no_gemini_key_warning = Geen Gemini API-sleutel geconfigureerd. Voer deze in bij de <a href="{0}">instellingen</a>.
+writeassist_prompt = Prompt
+writeassist_prompt_placeholder = Beschrijf wat je wilt genereren...
+writeassist_system_prompt = Systeemprompt (optioneel)
+writeassist_system_prompt_placeholder = Definieer de rol of context van de AI...
+writeassist_model = Model
+writeassist_temperature = Creativiteit
+writeassist_max_tokens = Maximale lengte
+writeassist_generate = Genereren
+writeassist_generated_text = Gegenereerde tekst
+writeassist_generation_failed = Generatie mislukt
+
+# Generator UI
+writeassist_generator_input = Invoer
+writeassist_generator_output = Uitvoer
+writeassist_action = Actie
+writeassist_action_rewrite = Tekst herschrijven
+writeassist_action_summarize = Samenvatten
+writeassist_action_expand = Uitbreiden
+writeassist_action_generate = Tekst genereren
+writeassist_action_custom = Eigen prompt
+writeassist_style = Stijl
+writeassist_style_professional = Professioneel
+writeassist_style_casual = Informeel
+writeassist_style_simple = Eenvoudig
+writeassist_style_formal = Formeel
+writeassist_style_creative = Creatief
+writeassist_style_concise = Beknopt
+writeassist_type = Type
+writeassist_type_paragraph = Alinea
+writeassist_type_headline = Koppen
+writeassist_type_bullets = Opsomming
+writeassist_type_intro = Inleiding
+writeassist_type_meta = Meta-description
+writeassist_input_text = Invoertekst
+writeassist_input_placeholder = Tekst invoeren of onderwerp beschrijven...
+writeassist_output_placeholder = Gegenereerde tekst verschijnt hier...
+writeassist_use_as_input = Als invoer gebruiken
+writeassist_generating = Genereren...
+writeassist_tokens_used = Tokens gebruikt
+
+# Integration Settings
+writeassist_integration_settings = Integraties
+writeassist_enable_infocenter_widget = Info Center-widget inschakelen
+writeassist_enable_infocenter_widget_notice = Toont de WriteAssist-widget in het Info Center (als de addon info_center is geïnstalleerd)
+writeassist_enable_tinymce_plugin = TinyMCE-plugin inschakelen
+writeassist_enable_tinymce_plugin_notice = Activeert de vertaalplugin in de TinyMCE-editor (als de addon TinyMCE is geïnstalleerd)
+writeassist_yes = Ja
+writeassist_no = Nee
+
+# AI Provider Settings
+writeassist_ai_provider_settings = AI-generatorprovider
+writeassist_ai_provider = Provider kiezen
+writeassist_ai_provider_disabled = Uitgeschakeld
+writeassist_ai_provider_notice = Kies de dienst voor de AI-tekstgeneratie
+writeassist_openwebui_api_key = API Key
+writeassist_openwebui_api_key_notice = De API-sleutel voor OpenWebUI of Ollama (optioneel bij lokale installaties)
+writeassist_openwebui_base_url = Base URL
+writeassist_openwebui_base_url_notice = De URL naar het API-eindpunt (bijv. http://localhost:3000/api of http://localhost:11434/v1)
+writeassist_openwebui_model = Modelnaam
+writeassist_openwebui_model_notice = De technische naam van het model (bijv. llama2, mistral, gemma:7b)
+
+# OpenAI Settings
+writeassist_openai_api_key = API-sleutel
+writeassist_openai_api_key_notice = API-sleutel van <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com</a>
+writeassist_openai_model = Model
+writeassist_openai_model_notice = Aanbevolen: gpt-4o-mini (goedkoop), gpt-4o (beste kwaliteit)
+
+# Generator UI Updates
+writeassist_optional_instructions = Aanvullende instructies (optioneel)
+writeassist_topic_keywords = Onderwerp / trefwoorden
+writeassist_input_text_optional = Contexttekst (optioneel)
+writeassist_enter_prompt = Voer een instructie in.
+writeassist_generating = Genereren...
+
+# Prompt Management
+writeassist_load_prompt = Sjabloon laden...
+writeassist_save_prompt = Prompt als sjabloon opslaan
+writeassist_delete_prompt = Sjabloon verwijderen
+writeassist_prompt_saved = Prompt is opgeslagen!
+writeassist_prompt_empty = Het promptveld is leeg.
+writeassist_prompt_name = Naam voor het sjabloon:
+writeassist_prompt_delete_confirm = Weet je zeker dat je dit sjabloon wilt verwijderen?
+
+# Auto-Translate
+writeassist_enable_auto_translate = Artikelen/categorieën automatisch vertalen (bij aanmaken)
+writeassist_enable_auto_translate_notice = Indien ingeschakeld worden titels van nieuw aangemaakte artikelen en categorieën automatisch via de hierboven gekozen vertaaldienst (DeepL of tekst-AI) naar alle andere talen vertaald. Voorwaarde: de gekozen dienst is geconfigureerd.
+writeassist_translate_on_rename = Artikelen/categorieën automatisch vertalen (bij hernoemen)
+writeassist_translate_on_rename_notice = Indien ingeschakeld wordt de naam van een artikel of categorie bij elke bewerking automatisch via de hierboven gekozen vertaaldienst (DeepL of tekst-AI) naar alle andere talen vertaald. Bestaande vertalingen worden daarbij overschreven.
+writeassist_enable_auto_seo_image = SEO-afbeelding automatisch overnemen in andere talen
+writeassist_enable_auto_seo_image_notice = Indien ingeschakeld wordt bij het opslaan van de metadata de yrewrite-SEO-afbeelding van een artikel of categorie ongewijzigd naar alle andere talen gekopieerd. Voorwaarde: yrewrite is geïnstalleerd.
+writeassist_enable_auto_seo_meta = SEO-titel/-beschrijving automatisch vertalen
+writeassist_enable_auto_seo_meta_notice = Indien ingeschakeld worden bij het opslaan van de metadata de yrewrite-SEO-titel en -beschrijving via de hierboven gekozen dienst naar alle andere talen vertaald (bestaande waarden worden overschreven). Voorwaarde: yrewrite geïnstalleerd en dienst geconfigureerd.
+
+# Bulk Translate
+writeassist_bulk_translate_nav = Bulkvertaling
+writeassist_bulk_translate_page_title = Bestaande namen vertalen
+writeassist_bulk_translate_title = Artikel- en categorienamen vertalen
+writeassist_bulk_translate_description = Vertaalt de namen van bestaande artikelen en categorieën vanuit een brontaal naar alle andere actieve talen via de in de instellingen gekozen vertaaldienst.
+writeassist_bulk_translate_source_lang = Brontaal
+writeassist_bulk_translate_type = Wat moet er vertaald worden?
+writeassist_bulk_translate_type_both = Artikelen & categorieën
+writeassist_bulk_translate_type_articles = Alleen artikelen
+writeassist_bulk_translate_type_categories = Alleen categorieën
+writeassist_bulk_translate_only_untranslated = Reeds vertaalde waarden overslaan
+writeassist_bulk_translate_articles = Artikelen
+writeassist_bulk_translate_categories = Categorieën
+writeassist_bulk_translate_select_hint = Selecteer ten minste artikelen of categorieën.
+writeassist_bulk_translate_only_untranslated_notice = Slaat items over waarvan de waarde in de doeltaal al afwijkt van de brontekst.
+writeassist_bulk_translate_seo_group = SEO-gegevens (YRewrite)
+writeassist_bulk_translate_seo_title = SEO-titel
+writeassist_bulk_translate_seo_description = SEO-beschrijving
+writeassist_bulk_translate_seo_notice = Vertaalt daarnaast de YRewrite-SEO-velden (titel en beschrijving) van de geselecteerde categorieën en artikelen.
+writeassist_bulk_translate_start = Vertaling starten
+writeassist_bulk_translate_running = Vertaling loopt …
+writeassist_bulk_translate_cancel = Annuleren
+writeassist_bulk_translate_please_wait = Even geduld – afhankelijk van het aantal items kan dit even duren.
+writeassist_bulk_translate_no_api_key = Geen vertaalprovider geconfigureerd. Voer eerst een DeepL-API-sleutel of een AI-provider in bij de instellingen.
+writeassist_bulk_translate_info_title = Opmerkingen
+writeassist_bulk_translate_info_text = Deze functie vertaalt uitsluitend de namen (titels) van artikelen en categorieën – geen inhoud.
+writeassist_bulk_translate_info_item1 = Alle actieve talen behalve de brontaal worden gevuld.
+writeassist_bulk_translate_info_item2 = Reeds vertaalde namen blijven ongewijzigd als de optie actief is.
+writeassist_bulk_translate_info_item3 = Het proces kan afhankelijk van de omvang van de website enkele minuten duren.
+writeassist_bulk_translate_warning_title = Let op
+writeassist_bulk_translate_warning_text = De vertaling overschrijft bestaande items in de doeltalen (tenzij „Reeds vertaalde waarden overslaan" is ingeschakeld). Maak vooraf een back-up.

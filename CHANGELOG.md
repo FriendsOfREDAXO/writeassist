@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.5.0-dev
+### Hinzugefügt
+- **Auto-SEO beim Speichern der Metadaten:** Zwei neue Einstellungen (jeweils optional, standardmäßig aus). „SEO-Bild automatisch in andere Sprachen übernehmen" kopiert beim Speichern der Artikel-/Kategorie-Metadaten das yrewrite-SEO-Bild unverändert in alle anderen Sprachen. „SEO-Titel/-Beschreibung automatisch übersetzen" übersetzt yrewrite-Titel und -Beschreibung über den gewählten Dienst (DeepL/Text-KI) in alle anderen Sprachen. Gekoppelt an die Extension Points `ART_META_UPDATED`/`CAT_META_UPDATED` sowie `YFORM_SAVED`/`REX_YFORM_SAVED` (yrewrite-SEO-Block in der Content-Sidebar); Voraussetzung: YRewrite installiert (Meta-Übersetzung zusätzlich: Dienst konfiguriert).
+
 ## 3.3.1 - 2026-09-10
 ### Hinzugefügt
 - **Optionaler Kontext für KI-Übersetzungen:** In den Einstellungen lässt sich bei Text-KI als Übersetzungs-Dienst ein freier Hintergrund-Text hinterlegen (z.B. Art der Website, feste Begriffe/Abkürzungen, die unübersetzt bleiben sollen). Wird jedem KI-Übersetzungs-Prompt mitgegeben – Einzelübersetzung, Auto-Übersetzen und Massenübersetzung gleichermaßen. Hilft besonders kleineren Modellen, Eigennamen/Akronyme (z.B. Vereinskürzel) nicht frei zu "übersetzen".

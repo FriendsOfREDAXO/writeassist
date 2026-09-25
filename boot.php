@@ -87,6 +87,51 @@ if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isRenameEnabled()) {
     });
 }
 
+// Auto-SEO: das yrewrite-SEO-Bild sprachübergreifend übernehmen und/oder SEO-
+// Titel/-Beschreibung in die anderen Sprachen übersetzen. Der yrewrite-SEO-Block
+// in der Content-Sidebar speichert per YForm (feuert YFORM_SAVED/REX_YFORM_SAVED),
+// das metainfo-Metadatenformular feuert ART_META_UPDATED/CAT_META_UPDATED.
+if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()
+    || \FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()) {
+    $writeAssistSeoQueue = static function (int $id, int $sourceClang): void {
+        static $queued = [];
+        if ($id <= 0 || $sourceClang <= 0 || isset($queued[$id . '_' . $sourceClang])) {
+            return;
+        }
+        $queued[$id . '_' . $sourceClang] = true;
+        register_shutdown_function(static function () use ($id, $sourceClang): void {
+            if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()) {
+                \FriendsOfREDAXO\WriteAssist\AutoTranslateService::propagateSeoImage($id, $sourceClang);
+            }
+            if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()) {
+                \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateSeoMeta($id, $sourceClang);
+            }
+        });
+    };
+
+    // metainfo metadata form (id + clang in the params)
+    $writeAssistMetaHandler = static function (rex_extension_point $ep) use ($writeAssistSeoQueue): void {
+        $params = $ep->getParams();
+        $writeAssistSeoQueue((int) ($params['id'] ?? 0), (int) ($params['clang'] ?? rex_clang::getCurrentId()));
+    };
+    rex_extension::register('ART_META_UPDATED', $writeAssistMetaHandler);
+    rex_extension::register('CAT_META_UPDATED', $writeAssistMetaHandler);
+
+    // yrewrite SEO sidebar block (saved via a YForm "db" action on rex_article).
+    // Restricted to that form via the yrewrite_func=seo hidden field.
+    $writeAssistYformHandler = static function (rex_extension_point $ep) use ($writeAssistSeoQueue): void {
+        $params = $ep->getParams();
+        if (($params['table'] ?? '') !== rex::getTable('article') || 'seo' !== rex_post('yrewrite_func', 'string')) {
+            return;
+        }
+        $id = (int) ($params['id'] ?? 0);
+        $clang = rex_request('clang', 'int', rex_clang::getCurrentId());
+        $writeAssistSeoQueue($id, $clang);
+    };
+    rex_extension::register('YFORM_SAVED', $writeAssistYformHandler);
+    rex_extension::register('REX_YFORM_SAVED', $writeAssistYformHandler);
+}
+
 if (rex::isBackend() && rex::getUser()) {
     // Register as Info Center Widget if info_center addon is available and enabled
     if ($addon->getConfig('enable_infocenter_widget', true) && rex_addon::get('info_center')->isAvailable() && class_exists(\KLXM\InfoCenter\InfoCenter::class)) {

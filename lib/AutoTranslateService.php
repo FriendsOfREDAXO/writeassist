@@ -52,6 +52,27 @@ class AutoTranslateService
     }
 
     /**
+     * Whether the SEO image auto-propagation (verbatim copy to other clangs) is active.
+     */
+    public static function isSeoImageEnabled(): bool
+    {
+        return (bool) rex_addon::get('writeassist')->getConfig('enable_auto_seo_image', false)
+            && rex_addon::get('yrewrite')->isAvailable();
+    }
+
+    /**
+     * Whether the SEO title/description auto-translation is active and usable.
+     */
+    public static function isSeoMetaEnabled(): bool
+    {
+        $addon = rex_addon::get('writeassist');
+        if (!(bool) $addon->getConfig('enable_auto_seo_meta', false)) {
+            return false;
+        }
+        return rex_addon::get('yrewrite')->isAvailable() && self::hasConfiguredProvider($addon);
+    }
+
+    /**
      * Ob der in den Einstellungen gewählte Übersetzungs-Dienst (DeepL oder Text-KI)
      * tatsächlich konfiguriert ist. Muss dieselbe Provider-Wahl wie translateText()
      * widerspiegeln, sonst bleibt Auto-Übersetzen z.B. bei "Text-KI" ohne DeepL-Key
@@ -202,13 +223,99 @@ class AutoTranslateService
     }
 
     /**
+     * Copy the yrewrite SEO image of an article verbatim into all other active
+     * clangs (the image is language-independent).
+     */
+    public static function propagateSeoImage(int $id, int $sourceClang): void
+    {
+        if ($id <= 0 || $sourceClang <= 0 || !rex_addon::get('yrewrite')->isAvailable()) {
+            return;
+        }
+        // Read the fresh value straight from the DB — at shutdown a cached
+        // rex_article instance / meta cache may still hold the old image.
+        $row = rex_sql::factory()->getArray(
+            'SELECT yrewrite_image FROM ' . rex::getTablePrefix() . 'article WHERE id = :id AND clang_id = :c LIMIT 1',
+            [':id' => $id, ':c' => $sourceClang],
+        );
+        if (0 === count($row)) {
+            return;
+        }
+        $image = (string) $row[0]['yrewrite_image'];
+
+        foreach (rex_clang::getAll() as $clang) {
+            if ($clang->getId() === $sourceClang) {
+                continue;
+            }
+            try {
+                rex_sql::factory()
+                    ->setTable(rex::getTablePrefix() . 'article')
+                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
+                    ->setValue('yrewrite_image', $image)
+                    ->update();
+                rex_article_cache::delete($id, $clang->getId());
+            } catch (Exception $e) {
+                // skip on error – original stays
+            }
+        }
+    }
+
+    /**
+     * Translate the yrewrite SEO title and description of an article into all
+     * other active clangs.
+     */
+    public static function translateSeoMeta(int $id, int $sourceClang): void
+    {
+        if ($id <= 0 || $sourceClang <= 0 || !rex_addon::get('yrewrite')->isAvailable()) {
+            return;
+        }
+        // Read fresh values straight from the DB (avoid stale caches at shutdown).
+        $row = rex_sql::factory()->getArray(
+            'SELECT yrewrite_title, yrewrite_description FROM ' . rex::getTablePrefix() . 'article WHERE id = :id AND clang_id = :c LIMIT 1',
+            [':id' => $id, ':c' => $sourceClang],
+        );
+        if (0 === count($row)) {
+            return;
+        }
+        $title = (string) $row[0]['yrewrite_title'];
+        $description = (string) $row[0]['yrewrite_description'];
+        if ('' === $title && '' === $description) {
+            return;
+        }
+
+        foreach (rex_clang::getAll() as $clang) {
+            if ($clang->getId() === $sourceClang) {
+                continue;
+            }
+            try {
+                $sql = rex_sql::factory()
+                    ->setTable(rex::getTablePrefix() . 'article')
+                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()]);
+                $changed = false;
+                if ('' !== $title) {
+                    $sql->setValue('yrewrite_title', self::translateText($title, $clang->getId(), $sourceClang));
+                    $changed = true;
+                }
+                if ('' !== $description) {
+                    $sql->setValue('yrewrite_description', self::translateText($description, $clang->getId(), $sourceClang));
+                    $changed = true;
+                }
+                if ($changed) {
+                    $sql->update();
+                    rex_article_cache::delete($id, $clang->getId());
+                }
+            } catch (Exception $e) {
+                // skip on provider error – target stays
+            }
+        }
+    }
+
+    /**
      * @deprecated Use translateName() instead
      */
     public static function translateArticleName(int $articleId, int $sourceClang): void
     {
         $article = rex_article::get($articleId, $sourceClang);
-        if ($article) {
-            self::translateName($articleId, 'article', $article->getName(), $sourceClang);
+        if ($article) {            self::translateName($articleId, 'article', $article->getName(), $sourceClang);
         }
     }
 
