@@ -147,8 +147,8 @@ $field = $form->addSelectField('translation_provider');
 $field->setLabel('Übersetzungs-Dienst');
 $field->setAttribute('id', 'translation-provider-select');
 $select = $field->getSelect();
-$select->addOption('DeepL (benötigt DeepL Token)', 'deepl');
-$select->addOption('Eingestellte Text-KI (Gemini/OpenAI)', 'ai');
+$select->addOption('DeepL (benötigt DeepL API-Key)', 'deepl');
+$select->addOption('Text-KI (unten konfigurierter KI-Provider)', 'ai');
 $field->setNotice('Welcher Dienst soll für Übersetzungen (z.B. YForm Lang Fields & Übersetzer-Tab) genutzt werden?');
 
 // Nur relevant bei Text-KI als Übersetzungs-Dienst (DeepL nutzt keinen freien

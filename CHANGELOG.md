@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.4.0 - 2026-09-10
+### Hinzugefügt
+- **SEO-Felder in der Massenübersetzung:** Ist YRewrite installiert, lassen sich in der Massenübersetzung optional die SEO-Felder Titel und Beschreibung (`yrewrite_title`, `yrewrite_description`) der ausgewählten Kategorien und Artikel mitübersetzen. Auswahl per Checkbox.
+
+### Geändert
+- **Auswahl in der Massenübersetzung vereinheitlicht:** Die bisherigen Radiobuttons (Artikel & Kategorien / Nur Artikel / Nur Kategorien) sind jetzt Checkboxen und bilden zusammen mit den SEO-Feldern eine gemeinsame Liste. Artikel und Kategorien können unabhängig gewählt werden.
+- **Wording:** „Nur noch nicht übersetzte Namen" → „Bereits übersetzte Werte überspringen"; Hinweis- und Warntexte sprechen jetzt von „Einträgen"/„Werten" statt nur „Namen", da neben Namen auch SEO-Felder übersetzt werden. In den Einstellungen sind die Optionen des Übersetzungs-Dienstes klarer benannt.
+
 ## 3.3.1 - 2026-09-10
 ### Hinzugefügt
 - **Optionaler Kontext für KI-Übersetzungen:** In den Einstellungen lässt sich bei Text-KI als Übersetzungs-Dienst ein freier Hintergrund-Text hinterlegen (z.B. Art der Website, feste Begriffe/Abkürzungen, die unübersetzt bleiben sollen). Wird jedem KI-Übersetzungs-Prompt mitgegeben – Einzelübersetzung, Auto-Übersetzen und Massenübersetzung gleichermaßen. Hilft besonders kleineren Modellen, Eigennamen/Akronyme (z.B. Vereinskürzel) nicht frei zu "übersetzen".
