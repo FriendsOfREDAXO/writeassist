@@ -354,6 +354,24 @@ $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
 $field->setNotice($package->i18n('writeassist_translate_on_rename_notice'));
 
+$field = $form->addSelectField('enable_auto_seo_image');
+$field->setLabel($package->i18n('writeassist_enable_auto_seo_image'));
+$field->setAttribute('id', 'enable_auto_seo_image');
+$field->setAttribute('class', 'wa-yesno-toggle');
+$select = $field->getSelect();
+$select->addOption($package->i18n('writeassist_yes'), '1');
+$select->addOption($package->i18n('writeassist_no'), '0');
+$field->setNotice($package->i18n('writeassist_enable_auto_seo_image_notice'));
+
+$field = $form->addSelectField('enable_auto_seo_meta');
+$field->setLabel($package->i18n('writeassist_enable_auto_seo_meta'));
+$field->setAttribute('id', 'enable_auto_seo_meta');
+$field->setAttribute('class', 'wa-yesno-toggle');
+$select = $field->getSelect();
+$select->addOption($package->i18n('writeassist_yes'), '1');
+$select->addOption($package->i18n('writeassist_no'), '0');
+$field->setNotice($package->i18n('writeassist_enable_auto_seo_meta_notice'));
+
 $form->addRawField('</fieldset>');
 
 // -------------------------------------------------------------------------

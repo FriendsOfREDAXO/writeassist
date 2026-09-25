@@ -155,6 +155,50 @@ $package = rex_addon::get('writeassist');
 .writeassist-improver-page .panel-body {
     color: var(--rex-color-text, #333);
 }
+
+/* ---- Dark Mode (REDAXO be_style) ---- */
+body.rex-theme-dark .writeassist-improver-page .panel {
+    background: #1e2a3a;
+    border-color: #2d3e50;
+}
+body.rex-theme-dark .writeassist-improver-page .panel-heading {
+    background: #253344;
+    border-color: #2d3e50;
+}
+body.rex-theme-dark .writeassist-improver-page .panel-body,
+body.rex-theme-dark .writeassist-improver-page .panel-body .checkbox label,
+body.rex-theme-dark .writeassist-correction-item {
+    color: #cfe0ee;
+}
+body.rex-theme-dark .writeassist-correction-item {
+    background: #253344;
+}
+body.rex-theme-dark .writeassist-correction-context {
+    background: rgba(255, 255, 255, 0.06);
+    color: #cfe0ee;
+}
+@media (prefers-color-scheme: dark) {
+    body.rex-has-theme:not(.rex-theme-light) .writeassist-improver-page .panel {
+        background: #1e2a3a;
+        border-color: #2d3e50;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .writeassist-improver-page .panel-heading {
+        background: #253344;
+        border-color: #2d3e50;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .writeassist-improver-page .panel-body,
+    body.rex-has-theme:not(.rex-theme-light) .writeassist-improver-page .panel-body .checkbox label,
+    body.rex-has-theme:not(.rex-theme-light) .writeassist-correction-item {
+        color: #cfe0ee;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .writeassist-correction-item {
+        background: #253344;
+    }
+    body.rex-has-theme:not(.rex-theme-light) .writeassist-correction-context {
+        background: rgba(255, 255, 255, 0.06);
+        color: #cfe0ee;
+    }
+}
 </style>
 
 <script nonce="<?= rex_response::getNonce() ?>">
