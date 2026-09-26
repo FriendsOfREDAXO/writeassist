@@ -233,35 +233,39 @@ class AutoTranslateService
     }
 
     /**
-     * Copy the yrewrite SEO image of an article verbatim into all other active
-     * clangs (the image is language-independent).
+     * Copy the language-independent yrewrite SEO-block settings of an article
+     * verbatim into all other active clangs: the SEO image plus the sitemap and
+     * robots settings (change frequency, priority, index). These are the same in
+     * every language; only title/description are translated (see translateSeoMeta).
      */
-    public static function propagateSeoImage(int $id, int $sourceClang): void
+    public static function propagateSeoSettings(int $id, int $sourceClang): void
     {
         if ($id <= 0 || $sourceClang <= 0 || !rex_addon::get('yrewrite')->isAvailable()) {
             return;
         }
-        // Read the fresh value straight from the DB — at shutdown a cached
-        // rex_article instance / meta cache may still hold the old image.
+        // Read the fresh values straight from the DB — at shutdown a cached
+        // rex_article instance / meta cache may still hold the old values.
         $row = rex_sql::factory()->getArray(
-            'SELECT yrewrite_image FROM ' . rex::getTablePrefix() . 'article WHERE id = :id AND clang_id = :c LIMIT 1',
+            'SELECT yrewrite_image, yrewrite_changefreq, yrewrite_priority, yrewrite_index FROM ' . rex::getTablePrefix() . 'article WHERE id = :id AND clang_id = :c LIMIT 1',
             [':id' => $id, ':c' => $sourceClang],
         );
         if (0 === count($row)) {
             return;
         }
-        $image = (string) $row[0]['yrewrite_image'];
+        $columns = ['yrewrite_image', 'yrewrite_changefreq', 'yrewrite_priority', 'yrewrite_index'];
 
         foreach (rex_clang::getAll() as $clang) {
             if ($clang->getId() === $sourceClang) {
                 continue;
             }
             try {
-                rex_sql::factory()
+                $sql = rex_sql::factory()
                     ->setTable(rex::getTablePrefix() . 'article')
-                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
-                    ->setValue('yrewrite_image', $image)
-                    ->update();
+                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()]);
+                foreach ($columns as $column) {
+                    $sql->setValue($column, $row[0][$column]);
+                }
+                $sql->update();
                 rex_article_cache::delete($id, $clang->getId());
             } catch (Exception $e) {
                 // skip on error – original stays

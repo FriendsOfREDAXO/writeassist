@@ -113,7 +113,7 @@ if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()
     $writeAssistRunSeo = static function (int $id, int $sourceClang) use ($writeAssistSchedule): void {
         $writeAssistSchedule('seo', $id, $sourceClang, static function (int $id, int $sourceClang): void {
             if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()) {
-                \FriendsOfREDAXO\WriteAssist\AutoTranslateService::propagateSeoImage($id, $sourceClang);
+                \FriendsOfREDAXO\WriteAssist\AutoTranslateService::propagateSeoSettings($id, $sourceClang);
             }
             if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()) {
                 \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateSeoMeta($id, $sourceClang);
