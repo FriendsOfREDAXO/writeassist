@@ -194,6 +194,8 @@ writeassist_enable_auto_seo_image = SEO-Bild automatisch in andere Sprachen übe
 writeassist_enable_auto_seo_image_notice = Wenn aktiviert, wird beim Speichern der Metadaten das yrewrite-SEO-Bild eines Artikels bzw. einer Kategorie unverändert in alle anderen Sprachen kopiert. Voraussetzung: yrewrite ist installiert.
 writeassist_enable_auto_seo_meta = SEO-Titel/-Beschreibung automatisch übersetzen
 writeassist_enable_auto_seo_meta_notice = Wenn aktiviert, werden beim Speichern der Metadaten yrewrite-SEO-Titel und -Beschreibung über den oben gewählten Übersetzungs-Dienst in alle anderen Sprachen übersetzt (bestehende Werte werden überschrieben). Voraussetzung: yrewrite installiert und Dienst konfiguriert.
+writeassist_enable_auto_url_sync = URL-Einstellungen synchronisieren
+writeassist_enable_auto_url_sync_notice = Wenn aktiviert, werden beim Speichern des yrewrite-URL-Blocks der URL-Typ (Automatisch/Eigene URL/Umleitung) und das Umleitungsziel unverändert in alle anderen Sprachen kopiert. Der eigene URL-Slug bleibt sprachspezifisch und wird NICHT kopiert. Voraussetzung: yrewrite installiert.
 
 # Bulk Translate
 writeassist_bulk_translate_nav = Massenübersetzung

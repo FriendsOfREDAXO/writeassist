@@ -194,6 +194,8 @@ writeassist_enable_auto_seo_image = SEO-afbeelding automatisch overnemen in ande
 writeassist_enable_auto_seo_image_notice = Indien ingeschakeld wordt bij het opslaan van de metadata de yrewrite-SEO-afbeelding van een artikel of categorie ongewijzigd naar alle andere talen gekopieerd. Voorwaarde: yrewrite is geïnstalleerd.
 writeassist_enable_auto_seo_meta = SEO-titel/-beschrijving automatisch vertalen
 writeassist_enable_auto_seo_meta_notice = Indien ingeschakeld worden bij het opslaan van de metadata de yrewrite-SEO-titel en -beschrijving via de hierboven gekozen dienst naar alle andere talen vertaald (bestaande waarden worden overschreven). Voorwaarde: yrewrite geïnstalleerd en dienst geconfigureerd.
+writeassist_enable_auto_url_sync = URL-instellingen synchroniseren
+writeassist_enable_auto_url_sync_notice = Indien ingeschakeld worden bij het opslaan van het yrewrite-URL-blok het URL-type (automatisch/eigen URL/omleiding) en het omleidingsdoel ongewijzigd naar alle andere talen gekopieerd. De eigen URL-slug blijft taalspecifiek en wordt NIET gekopieerd. Voorwaarde: yrewrite geïnstalleerd.
 
 # Bulk Translate
 writeassist_bulk_translate_nav = Bulkvertaling

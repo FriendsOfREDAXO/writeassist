@@ -73,6 +73,16 @@ class AutoTranslateService
     }
 
     /**
+     * Whether the yrewrite URL-settings auto-sync (verbatim copy of the URL type
+     * and redirection target to other clangs) is active.
+     */
+    public static function isUrlSyncEnabled(): bool
+    {
+        return (bool) rex_addon::get('writeassist')->getConfig('enable_auto_url_sync', false)
+            && rex_addon::get('yrewrite')->isAvailable();
+    }
+
+    /**
      * Ob der in den Einstellungen gewählte Übersetzungs-Dienst (DeepL oder Text-KI)
      * tatsächlich konfiguriert ist. Muss dieselbe Provider-Wahl wie translateText()
      * widerspiegeln, sonst bleibt Auto-Übersetzen z.B. bei "Text-KI" ohne DeepL-Key
@@ -251,6 +261,48 @@ class AutoTranslateService
                     ->setTable(rex::getTablePrefix() . 'article')
                     ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
                     ->setValue('yrewrite_image', $image)
+                    ->update();
+                rex_article_cache::delete($id, $clang->getId());
+            } catch (Exception $e) {
+                // skip on error – original stays
+            }
+        }
+    }
+
+    /**
+     * Copy the yrewrite URL settings of an article verbatim into all other
+     * active clangs: the URL type (AUTO/CUSTOM/REDIRECTION_*) and the
+     * redirection target. These are language-independent.
+     *
+     * The custom slug (yrewrite_url) is deliberately NOT copied — it is per
+     * language, and mirroring it would collide across clangs.
+     */
+    public static function propagateUrlType(int $id, int $sourceClang): void
+    {
+        if ($id <= 0 || $sourceClang <= 0 || !rex_addon::get('yrewrite')->isAvailable()) {
+            return;
+        }
+        // Read fresh values straight from the DB (avoid stale caches at shutdown).
+        $row = rex_sql::factory()->getArray(
+            'SELECT yrewrite_url_type, yrewrite_redirection FROM ' . rex::getTablePrefix() . 'article WHERE id = :id AND clang_id = :c LIMIT 1',
+            [':id' => $id, ':c' => $sourceClang],
+        );
+        if (0 === count($row)) {
+            return;
+        }
+        $urlType = (string) $row[0]['yrewrite_url_type'];
+        $redirection = (string) $row[0]['yrewrite_redirection'];
+
+        foreach (rex_clang::getAll() as $clang) {
+            if ($clang->getId() === $sourceClang) {
+                continue;
+            }
+            try {
+                rex_sql::factory()
+                    ->setTable(rex::getTablePrefix() . 'article')
+                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
+                    ->setValue('yrewrite_url_type', $urlType)
+                    ->setValue('yrewrite_redirection', $redirection)
                     ->update();
                 rex_article_cache::delete($id, $clang->getId());
             } catch (Exception $e) {

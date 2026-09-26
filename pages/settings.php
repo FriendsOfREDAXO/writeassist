@@ -372,6 +372,15 @@ $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
 $field->setNotice($package->i18n('writeassist_enable_auto_seo_meta_notice'));
 
+$field = $form->addSelectField('enable_auto_url_sync');
+$field->setLabel($package->i18n('writeassist_enable_auto_url_sync'));
+$field->setAttribute('id', 'enable_auto_url_sync');
+$field->setAttribute('class', 'wa-yesno-toggle');
+$select = $field->getSelect();
+$select->addOption($package->i18n('writeassist_yes'), '1');
+$select->addOption($package->i18n('writeassist_no'), '0');
+$field->setNotice($package->i18n('writeassist_enable_auto_url_sync_notice'));
+
 $form->addRawField('</fieldset>');
 
 // -------------------------------------------------------------------------

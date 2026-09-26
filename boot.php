@@ -87,19 +87,31 @@ if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isRenameEnabled()) {
     });
 }
 
-// Auto-SEO: das yrewrite-SEO-Bild sprachübergreifend übernehmen und/oder SEO-
-// Titel/-Beschreibung in die anderen Sprachen übersetzen. Der yrewrite-SEO-Block
-// in der Content-Sidebar speichert per YForm (feuert YFORM_SAVED/REX_YFORM_SAVED),
-// das metainfo-Metadatenformular feuert ART_META_UPDATED/CAT_META_UPDATED.
+// Auto-SEO / Auto-URL: yrewrite-Felder sprachübergreifend übernehmen.
+// - SEO-Bild kopieren / SEO-Titel+Beschreibung übersetzen: das metainfo-Metadaten-
+//   formular feuert ART_META_UPDATED/CAT_META_UPDATED, der yrewrite-SEO-Block
+//   speichert per YForm mit yrewrite_func=seo.
+// - yrewrite-URL-Typ (AUTO/CUSTOM/REDIRECTION_*) + Redirection-Ziel kopieren: der
+//   yrewrite-URL-Block speichert per YForm mit yrewrite_func=url.
 if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()
-    || \FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()) {
-    $writeAssistSeoQueue = static function (int $id, int $sourceClang): void {
+    || \FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()
+    || \FriendsOfREDAXO\WriteAssist\AutoTranslateService::isUrlSyncEnabled()) {
+    // Generischer "einmal pro (tag, id, clang)"-Shutdown-Scheduler: jede Sidebar-
+    // Speicherung soll ihre Aktion genau einmal am Request-Ende ausführen.
+    $writeAssistSchedule = static function (string $tag, int $id, int $sourceClang, callable $run): void {
         static $queued = [];
-        if ($id <= 0 || $sourceClang <= 0 || isset($queued[$id . '_' . $sourceClang])) {
+        $key = $tag . ':' . $id . '_' . $sourceClang;
+        if ($id <= 0 || $sourceClang <= 0 || isset($queued[$key])) {
             return;
         }
-        $queued[$id . '_' . $sourceClang] = true;
-        register_shutdown_function(static function () use ($id, $sourceClang): void {
+        $queued[$key] = true;
+        register_shutdown_function(static function () use ($id, $sourceClang, $run): void {
+            $run($id, $sourceClang);
+        });
+    };
+
+    $writeAssistRunSeo = static function (int $id, int $sourceClang) use ($writeAssistSchedule): void {
+        $writeAssistSchedule('seo', $id, $sourceClang, static function (int $id, int $sourceClang): void {
             if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()) {
                 \FriendsOfREDAXO\WriteAssist\AutoTranslateService::propagateSeoImage($id, $sourceClang);
             }
@@ -109,24 +121,37 @@ if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()
         });
     };
 
-    // metainfo metadata form (id + clang in the params)
-    $writeAssistMetaHandler = static function (rex_extension_point $ep) use ($writeAssistSeoQueue): void {
+    $writeAssistRunUrl = static function (int $id, int $sourceClang) use ($writeAssistSchedule): void {
+        $writeAssistSchedule('url', $id, $sourceClang, static function (int $id, int $sourceClang): void {
+            if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isUrlSyncEnabled()) {
+                \FriendsOfREDAXO\WriteAssist\AutoTranslateService::propagateUrlType($id, $sourceClang);
+            }
+        });
+    };
+
+    // metainfo metadata form (id + clang in the params) → SEO-Features
+    $writeAssistMetaHandler = static function (rex_extension_point $ep) use ($writeAssistRunSeo): void {
         $params = $ep->getParams();
-        $writeAssistSeoQueue((int) ($params['id'] ?? 0), (int) ($params['clang'] ?? rex_clang::getCurrentId()));
+        $writeAssistRunSeo((int) ($params['id'] ?? 0), (int) ($params['clang'] ?? rex_clang::getCurrentId()));
     };
     rex_extension::register('ART_META_UPDATED', $writeAssistMetaHandler);
     rex_extension::register('CAT_META_UPDATED', $writeAssistMetaHandler);
 
-    // yrewrite SEO sidebar block (saved via a YForm "db" action on rex_article).
-    // Restricted to that form via the yrewrite_func=seo hidden field.
-    $writeAssistYformHandler = static function (rex_extension_point $ep) use ($writeAssistSeoQueue): void {
+    // yrewrite-Sidebar-Blöcke (YForm-"db"-Action auf rex_article). Nach dem
+    // versteckten yrewrite_func-Feld routen: seo → SEO-Features, url → URL-Sync.
+    $writeAssistYformHandler = static function (rex_extension_point $ep) use ($writeAssistRunSeo, $writeAssistRunUrl): void {
         $params = $ep->getParams();
-        if (($params['table'] ?? '') !== rex::getTable('article') || 'seo' !== rex_post('yrewrite_func', 'string')) {
+        if (($params['table'] ?? '') !== rex::getTable('article')) {
             return;
         }
+        $func = rex_post('yrewrite_func', 'string');
         $id = (int) ($params['id'] ?? 0);
         $clang = rex_request('clang', 'int', rex_clang::getCurrentId());
-        $writeAssistSeoQueue($id, $clang);
+        if ('seo' === $func) {
+            $writeAssistRunSeo($id, $clang);
+        } elseif ('url' === $func) {
+            $writeAssistRunUrl($id, $clang);
+        }
     };
     rex_extension::register('YFORM_SAVED', $writeAssistYformHandler);
     rex_extension::register('REX_YFORM_SAVED', $writeAssistYformHandler);

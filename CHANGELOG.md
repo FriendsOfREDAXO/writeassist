@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.5.0 - 2026-09-25
+
+### Hinzugefügt
+- **yrewrite-URL-Einstellungen sprachübergreifend synchronisieren:** Neue optionale Einstellung (Auto-SEO-Block). Beim Speichern des yrewrite-URL-Blocks werden der URL-Typ (Automatisch/Eigene URL/Umleitung intern/extern) und das Umleitungsziel unverändert in alle anderen Sprachen kopiert. Der eigene URL-Slug bleibt bewusst sprachspezifisch und wird nicht kopiert. Gekoppelt an `YFORM_SAVED`/`REX_YFORM_SAVED` (yrewrite-URL-Block, `yrewrite_func=url`). Voraussetzung: yrewrite installiert.
+
 ## 3.4.0 - 2026-09-25
 
 ### Hinzugefügt
