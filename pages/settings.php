@@ -372,6 +372,23 @@ $select->addOption($package->i18n('writeassist_yes'), '1');
 $select->addOption($package->i18n('writeassist_no'), '0');
 $field->setNotice($package->i18n('writeassist_enable_auto_seo_meta_notice'));
 
+// Weitere Artikel-Felder (Metainfo, z.B. ein "URL-Typ"-Select) unveraendert in
+// alle anderen Sprachen kopieren - sprachunabhaengige Auswahlwerte, die nicht
+// uebersetzt, sondern gespiegelt werden sollen.
+$syncFieldOptions = \FriendsOfREDAXO\WriteAssist\AutoTranslateService::getAvailableSyncFields();
+if (count($syncFieldOptions) > 0) {
+    $field = $form->addSelectField('auto_seo_sync_fields');
+    $field->setLabel($package->i18n('writeassist_auto_seo_sync_fields'));
+    $field->setAttribute('id', 'auto_seo_sync_fields');
+    $select = $field->getSelect();
+    $select->setMultiple(true);
+    $select->setSize(min(8, max(3, count($syncFieldOptions))));
+    foreach ($syncFieldOptions as $syncColumn => $syncLabel) {
+        $select->addOption($syncLabel . ' (' . $syncColumn . ')', $syncColumn);
+    }
+    $field->setNotice($package->i18n('writeassist_auto_seo_sync_fields_notice'));
+}
+
 $form->addRawField('</fieldset>');
 
 // -------------------------------------------------------------------------

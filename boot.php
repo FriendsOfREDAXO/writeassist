@@ -92,7 +92,8 @@ if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isRenameEnabled()) {
 // in der Content-Sidebar speichert per YForm (feuert YFORM_SAVED/REX_YFORM_SAVED),
 // das metainfo-Metadatenformular feuert ART_META_UPDATED/CAT_META_UPDATED.
 if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()
-    || \FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()) {
+    || \FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()
+    || \FriendsOfREDAXO\WriteAssist\AutoTranslateService::isFieldSyncEnabled()) {
     $writeAssistSeoQueue = static function (int $id, int $sourceClang): void {
         static $queued = [];
         if ($id <= 0 || $sourceClang <= 0 || isset($queued[$id . '_' . $sourceClang])) {
@@ -105,6 +106,9 @@ if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoImageEnabled()
             }
             if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isSeoMetaEnabled()) {
                 \FriendsOfREDAXO\WriteAssist\AutoTranslateService::translateSeoMeta($id, $sourceClang);
+            }
+            if (\FriendsOfREDAXO\WriteAssist\AutoTranslateService::isFieldSyncEnabled()) {
+                \FriendsOfREDAXO\WriteAssist\AutoTranslateService::propagateFields($id, $sourceClang);
             }
         });
     };

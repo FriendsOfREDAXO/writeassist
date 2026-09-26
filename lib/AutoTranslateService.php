@@ -73,6 +73,59 @@ class AutoTranslateService
     }
 
     /**
+     * Whether at least one article field is configured to be copied verbatim
+     * across languages (e.g. a metainfo "URL type" select).
+     */
+    public static function isFieldSyncEnabled(): bool
+    {
+        return count(self::getSyncFields()) > 0;
+    }
+
+    /**
+     * Configured article columns to copy verbatim across languages.
+     *
+     * Always intersected with the article metainfo fields that actually exist,
+     * so a stale or hand-crafted config value can never reach a column name that
+     * is concatenated into an SQL string (the column list cannot be bound as a
+     * parameter).
+     *
+     * @return list<string>
+     */
+    public static function getSyncFields(): array
+    {
+        $configured = rex_addon::get('writeassist')->getConfig('auto_seo_sync_fields', []);
+        if (!is_array($configured)) {
+            $configured = array_filter(array_map('trim', explode(',', (string) $configured)));
+        }
+        $available = array_keys(self::getAvailableSyncFields());
+
+        return array_values(array_intersect(array_map('strval', $configured), $available));
+    }
+
+    /**
+     * Article metainfo fields available for verbatim language sync.
+     *
+     * @return array<string, string> column name => human label
+     */
+    public static function getAvailableSyncFields(): array
+    {
+        if (!rex_addon::get('metainfo')->isAvailable()) {
+            return [];
+        }
+        $rows = rex_sql::factory()->getArray(
+            'SELECT name, title FROM ' . rex::getTable('metainfo_field') . " WHERE name LIKE 'art\\_%' ORDER BY title, name",
+        );
+        $fields = [];
+        foreach ($rows as $row) {
+            $name = (string) $row['name'];
+            $title = trim((string) $row['title']);
+            $fields[$name] = '' !== $title ? \rex_i18n::translate($title, false) : $name;
+        }
+
+        return $fields;
+    }
+
+    /**
      * Ob der in den Einstellungen gewählte Übersetzungs-Dienst (DeepL oder Text-KI)
      * tatsächlich konfiguriert ist. Muss dieselbe Provider-Wahl wie translateText()
      * widerspiegeln, sonst bleibt Auto-Übersetzen z.B. bei "Text-KI" ohne DeepL-Key
@@ -252,6 +305,51 @@ class AutoTranslateService
                     ->setWhere(['id' => $id, 'clang_id' => $clang->getId()])
                     ->setValue('yrewrite_image', $image)
                     ->update();
+                rex_article_cache::delete($id, $clang->getId());
+            } catch (Exception $e) {
+                // skip on error – original stays
+            }
+        }
+    }
+
+    /**
+     * Copy configured article columns (e.g. a metainfo "URL type" select)
+     * verbatim into all other active clangs — same idea as propagateSeoImage
+     * but for arbitrary, language-independent article fields chosen in the
+     * settings. Column names are whitelisted in getSyncFields().
+     */
+    public static function propagateFields(int $id, int $sourceClang): void
+    {
+        if ($id <= 0 || $sourceClang <= 0) {
+            return;
+        }
+        $columns = self::getSyncFields();
+        if (0 === count($columns)) {
+            return;
+        }
+        // Columns are whitelisted against real metainfo fields in getSyncFields();
+        // backtick-quote them defensively before building the SELECT.
+        $select = implode(', ', array_map(static fn (string $c): string => '`' . $c . '`', $columns));
+        $row = rex_sql::factory()->getArray(
+            'SELECT ' . $select . ' FROM ' . rex::getTablePrefix() . 'article WHERE id = :id AND clang_id = :c LIMIT 1',
+            [':id' => $id, ':c' => $sourceClang],
+        );
+        if (0 === count($row)) {
+            return;
+        }
+
+        foreach (rex_clang::getAll() as $clang) {
+            if ($clang->getId() === $sourceClang) {
+                continue;
+            }
+            try {
+                $sql = rex_sql::factory()
+                    ->setTable(rex::getTablePrefix() . 'article')
+                    ->setWhere(['id' => $id, 'clang_id' => $clang->getId()]);
+                foreach ($columns as $column) {
+                    $sql->setValue($column, $row[0][$column]);
+                }
+                $sql->update();
                 rex_article_cache::delete($id, $clang->getId());
             } catch (Exception $e) {
                 // skip on error – original stays

@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.5.0 - 2026-09-25
+
+### Hinzugefügt
+- **Weitere Felder sprachübergreifend synchronisieren:** In den Einstellungen (Auto-SEO-Block) lässt sich eine Auswahl von Metainfo-Artikelfeldern festlegen (z.B. ein „URL-Typ"-Auswahlfeld), die beim Speichern der Metadaten unverändert in alle anderen Sprachen kopiert werden – für sprachunabhängige Auswahlwerte, die gespiegelt statt übersetzt werden sollen. Gekoppelt an dieselben Extension Points wie die Auto-SEO-Propagierung (`ART_META_UPDATED`/`CAT_META_UPDATED`). Die wählbaren Felder werden aus den vorhandenen Artikel-Metainfo-Feldern (`art_*`) ermittelt; die gespeicherten Spaltennamen werden vor jedem Schreibzugriff gegen diese Liste geprüft (Whitelist).
+
 ## 3.4.0 - 2026-09-25
 
 ### Hinzugefügt

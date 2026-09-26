@@ -167,6 +167,8 @@ writeassist_enable_auto_seo_image = Auto-copy SEO image to other languages
 writeassist_enable_auto_seo_image_notice = When enabled, saving the metadata copies an article's/category's yrewrite SEO image unchanged into all other languages. Requires yrewrite.
 writeassist_enable_auto_seo_meta = Auto-translate SEO title/description
 writeassist_enable_auto_seo_meta_notice = When enabled, saving the metadata translates the yrewrite SEO title and description into all other languages via the selected service (existing values are overwritten). Requires yrewrite and a configured service.
+writeassist_auto_seo_sync_fields = Synchronise additional fields
+writeassist_auto_seo_sync_fields_notice = Selected article metainfo fields (e.g. a "URL type" select) are copied verbatim into all other languages when the metadata is saved – for language-independent choice values that should be mirrored rather than translated. Multi-select with Ctrl/Cmd.
 writeassist_translate_on_rename_notice = When enabled, the name of an article or category is automatically translated into all other languages using the translation service selected above (DeepL or Text-AI) whenever it is saved. Existing translations will be overwritten.
 
 # Bulk Translate
