@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FriendsOfREDAXO\WriteAssist;
 
 use rex_addon;
+use rex_clang;
 use rex_i18n;
 use rex_url;
 
@@ -38,7 +39,9 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
         
         $aiApi = WriteAssistAiFactory::factory();
 
-        $showTranslate = ($providerType === 'ai' && $aiApi->isConfigured()) || ($providerType === 'deepl' && $deeplApiKey !== '');
+        // Übersetzen nur, wenn es etwas zu übersetzen gibt: mehrsprachige Website oder DeepL eingerichtet
+        $showTranslate = (($providerType === 'ai' && $aiApi->isConfigured() && rex_clang::count() > 1) || ($providerType === 'deepl' && $deeplApiKey !== ''))
+            && '0' !== (string) $package->getConfig('widget_show_translate', '1');
         $showImprove   = true; // LanguageTool is a free public API, always available
         $showGenerate  = $aiApi->isConfigured();
 
@@ -186,6 +189,35 @@ class WriteAssistWidget extends \KLXM\InfoCenter\AbstractWidget
     
     private function renderImproveTab(): string
     {
+        // Textverbesserung über die eingestellte Text-KI statt LanguageTool (Einstellung „Verbessern mit“)
+        if ('ai' === rex_addon::get('writeassist')->getConfig('improve_provider', 'languagetool') && WriteAssistAiFactory::factory()->isConfigured()) {
+            return '
+            <div class="writeassist-form-group">
+                <textarea class="writeassist-input writeassist-improve-source" rows="4" placeholder="' . rex_i18n::msg('writeassist_enter_text_improve') . '"></textarea>
+            </div>
+            <div class="writeassist-controls">
+                <select class="writeassist-select writeassist-improve-action" aria-label="Aktion">
+                    <option value="improve">Verbessern (Rechtschreibung &amp; Stil)</option>
+                    <option value="shorten">Kürzen</option>
+                    <option value="simplify">Einfacher formulieren</option>
+                    <option value="expand">Ausführlicher</option>
+                    <option value="summarize">Zusammenfassen</option>
+                    <option value="teaser">Teaser schreiben</option>
+                    <option value="headline">Überschriften vorschlagen</option>
+                </select>
+                <button type="button" class="writeassist-btn primary writeassist-improve-btn">' . rex_i18n::msg('writeassist_improve') . '</button>
+            </div>
+            <div class="writeassist-result writeassist-improve-result" style="display:none;">
+                <div class="writeassist-matches"></div>
+                <div class="writeassist-form-group">
+                    <textarea class="writeassist-input writeassist-improved" rows="5" readonly></textarea>
+                </div>
+                <button type="button" class="writeassist-btn small writeassist-copy-improved-btn">' . rex_i18n::msg('writeassist_copy') . '</button>
+            </div>
+            <div class="writeassist-message writeassist-improve-message" style="display:none;"></div>
+        ';
+        }
+
         return '
             <div class="writeassist-form-group">
                 <textarea class="writeassist-input writeassist-improve-source" rows="3" placeholder="' . rex_i18n::msg('writeassist_enter_text_improve') . '"></textarea>

@@ -154,6 +154,10 @@ $field->setNotice('Welcher Dienst soll für Übersetzungen (z.B. YForm Lang Fiel
 // Nur relevant bei Text-KI als Übersetzungs-Dienst (DeepL nutzt keinen freien
 // Prompt-Kontext) - wird analog zum DeepL-Fieldset ein-/ausgeblendet, siehe
 // writeassist-settings.js.
+$field = $form->addTextAreaField('generation_context', null, ['class' => 'form-control', 'rows' => 4]);
+$field->setLabel('Kontext für Textwerkzeuge (optional)');
+$field->setNotice('Wird bei jedem Generieren, Verbessern, Kürzen usw. als Hintergrund mitgegeben: Art der Website, Zielgruppe, Tonfall, Anrede, feste Begriffe. Beispiel: "Website des Fußballverbandes Niederrhein (FVN). Leser: Vereine, Schiedsrichter, Trainer, Eltern. Sachlich-freundlich, Anrede Sie, gendern mit Schrägstrich (Schiedsrichter/innen). Abkürzungen wie FVN, WDFV, DFB bleiben."');
+
 $form->addRawField('<div id="wa-translation-context-wrap">');
 $field = $form->addTextAreaField('translation_context', null, ['class' => 'form-control', 'rows' => 3]);
 $field->setLabel('Kontext für KI-Übersetzung (optional)');
@@ -186,6 +190,11 @@ $form->addRawField('</div>');
 
 // === LanguageTool Settings ===
 $form->addRawField('<fieldset><legend>' . $package->i18n('writeassist_languagetool_settings') . '</legend>');
+
+$field = $form->addSelectField('improve_provider');
+$field->setLabel('„Verbessern“ im Info-Center mit');
+$field->setNotice('LanguageTool prüft Rechtschreibung/Grammatik regelbasiert (öffentliche API: Texte gehen an languagetool.org). „Text-KI“ nutzt den eingestellten KI-Dienst und bietet zusätzlich Kürzen, Vereinfachen, Teaser und Überschriften.');
+$field->getSelect()->addOptions(['languagetool' => 'LanguageTool', 'ai' => 'Text-KI']);
 
 $field = $form->addInputField('text', 'languagetool_api_url', null, ['class' => 'form-control']);
 $field->setLabel($package->i18n('writeassist_languagetool_url'));

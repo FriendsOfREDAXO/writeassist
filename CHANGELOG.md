@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.6.0 - 2026-10-11
+
+### Hinzugefügt
+- **KI-Textwerkzeuge im TinyMCE neu:** Der Zauberstab ist jetzt ein Menü „KI“ mit schnellen Aktionen für die Markierung (oder den ganzen Inhalt): Verbessern (Rechtschreibung & Stil), Kürzen, Einfacher formulieren, Ausführlicher, Zusammenfassen, Teaser schreiben, Überschriften vorschlagen, Weiterschreiben, Umschreiben im Tonfall, Eigene Anweisung, Neuen Text schreiben und – falls vorhanden – die gespeicherten Prompts. Das Ergebnis erscheint zuerst in einer **Vorschau** (mit Ausgangstext zum Vergleich) und wird per „Ersetzen“ oder „Darunter einfügen“ übernommen, „Neu erzeugen“ liefert einen weiteren Vorschlag. Rückgängig mit Strg/⌘+Z. Rechtsklick auf markierten Text (Kontextmenü `writeassist_context`), Tastenkürzel Strg/⌘+Shift+K für eine eigene Anweisung. Der Toolbar-Name `writeassist_generate` bleibt, bestehende Profile funktionieren weiter.
+- **Formatierung bleibt erhalten:** Der Editor schickt HTML und bekommt HTML zurück – Absätze, Listen, Links und Hervorhebungen gehen beim Umschreiben nicht mehr verloren (vorher nur reiner Text). Antworten mit Markdown oder Codeblock werden in sauberes HTML umgewandelt, `<think>`-Blöcke entfernt.
+- **Kontext für Textwerkzeuge** (Einstellungen): Hintergrund zur Website – Zielgruppe, Tonfall, Anrede, feste Begriffe –, der jeder Generierung mitgegeben wird.
+- **„Verbessern“ im Info-Center mit Text-KI** (Einstellung „Verbessern mit“): statt LanguageTool die eingestellte KI, mit Auswahl Verbessern/Kürzen/Einfacher/Ausführlicher/Zusammenfassen/Teaser/Überschriften.
+
+### Geändert
+- Zusätzliche Hinweise und Tonfall gelten für alle Aktionen (vorher nur für „Generieren“).
+- Zeitlimit für KI-Anfragen 120 statt 30 Sekunden (größere und lokale Modelle).
+- Info-Center: Der Reiter „Übersetzen“ erscheint nur, wenn es etwas zu übersetzen gibt – mehrsprachige Website oder DeepL eingerichtet.
+- Verständlichere Fehlermeldung, wenn kein KI-Dienst eingerichtet ist.
+
 ## 3.5.0 - 2026-09-25
 
 ### Hinzugefügt
