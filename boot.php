@@ -167,8 +167,8 @@ if (rex::isBackend() && rex::getUser()) {
     }
 
     // Add assets to backend
-    rex_view::addCssFile($addon->getAssetsUrl('css/writeassist.css'));
-    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist.js'));
+    rex_view::addCssFile($addon->getAssetsUrl('css/writeassist.css') . '?v=' . (int) @filemtime($addon->getAssetsPath('css/writeassist.css')));
+    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/writeassist.js')));
     rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-bulk-translate.js'));
     rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-settings.js'));
 
@@ -192,14 +192,14 @@ if (rex::isBackend() && rex::getUser() && $addon->getConfig('enable_tinymce_plug
         // 1. DeepL Translate Plugin
         \FriendsOfRedaxo\TinyMce\PluginRegistry::addPlugin(
             'writeassist_translate',
-            rex_url::base('assets/addons/writeassist/js/tinymce-deepl-plugin.js'),
+            rex_url::base('assets/addons/writeassist/js/tinymce-deepl-plugin.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/tinymce-deepl-plugin.js')), // eigener Cache-Schlüssel – TinyMCE hängt sonst nur seine eigene Version an
             'writeassist_translate'
         );
 
         // 2. AI Generator Plugin (Gemini/OpenWebUI)
         \FriendsOfRedaxo\TinyMce\PluginRegistry::addPlugin(
             'writeassist_generate',
-            rex_url::base('assets/addons/writeassist/js/tinymce-generate-plugin.js'),
+            rex_url::base('assets/addons/writeassist/js/tinymce-generate-plugin.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/tinymce-generate-plugin.js')), // eigener Cache-Schlüssel – TinyMCE hängt sonst nur seine eigene Version an
             'writeassist_generate'
         );
     }

@@ -35,25 +35,31 @@ class rex_api_writeassist_generate extends rex_api_function
                 rex_response::setStatus(rex_response::HTTP_BAD_REQUEST);
                 rex_response::sendJson([
                     'success' => false,
-                    'error' => 'Gemini API key not configured'
+                    'error' => 'Kein KI-Dienst eingerichtet (WriteAssist → Einstellungen).'
                 ]);
                 exit;
             }
 
-            $result = match($action) {
-                'rewrite' => $api->rewrite($text, $style),
-                'summarize' => $api->summarize($text),
-                'expand' => $api->expand($text),
-                'generate' => $api->generateFromTopic($text, $type, $prompt),
-                'custom' => $api->generate($prompt, $text),
-                default => throw new \Exception('Unknown action: ' . $action)
-            };
+            $html = 'html' === (rex_post('format', 'string', '') ?: rex_request('format', 'string', 'text'));
+            if ('generate' === $action) {
+                $result = $api->generateFromTopic($text, $type, $prompt);
+                $result['text'] = GeminiApi::cleanResult($result['text'], $html);
+            } elseif ('custom' === $action && '' === trim($text)) {
+                // Eigene Anweisung ohne Text: freie Generierung
+                $result = $api->generate($prompt . ($html ? "\nAntworte ausschließlich mit einem HTML-Fragment ohne Codeblock." : ''));
+                $result['text'] = GeminiApi::cleanResult($result['text'], $html);
+            } else {
+                $result = $api->transform($action, $text, $style, $prompt, $html);
+            }
             
             rex_response::sendJson([
                 'success' => true,
                 'text' => $result['text'],
                 'usage' => $result['usage'] ?? null
             ]);
+        } catch (\InvalidArgumentException $e) {
+            rex_response::setStatus(rex_response::HTTP_BAD_REQUEST);
+            rex_response::sendJson(['success' => false, 'error' => $e->getMessage()]);
         } catch (\Exception $e) {
             rex_response::setStatus(rex_response::HTTP_INTERNAL_ERROR);
             rex_response::sendJson([

@@ -80,7 +80,7 @@ class WriteAssistAiProviderOpenAiCompatible extends WriteAssistAiProviderAbstrac
             CURLOPT_POSTFIELDS => $dataJson,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_TIMEOUT => 30,
+            CURLOPT_TIMEOUT => 120, // größere/lokale Modelle brauchen für längere Texte oft mehr als 30 s
             CURLOPT_SSL_VERIFYPEER => true
         ]);
 

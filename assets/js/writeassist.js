@@ -55,6 +55,11 @@
                 if (e.target.matches('.writeassist-improve-btn')) {
                     const widget = e.target.closest('.writeassist-widget') || e.target.closest('.writeassist-page');
                     const sourceText = widget.querySelector('.writeassist-improve-source').value;
+                    const aiAction = widget.querySelector('.writeassist-improve-action');
+                    if (aiAction) {
+                        self.improveAi(widget.querySelector('.writeassist-improve-source').value, aiAction.value, widget);
+                        return;
+                    }
                     const language = widget.querySelector('.writeassist-improve-lang').value;
                     const pickyMode = widget.querySelector('.writeassist-picky-mode')?.checked || false;
                     
@@ -205,6 +210,38 @@
                 });
         },
         
+        // Textwerkzeuge über die Text-KI (Einstellung „Verbessern mit: Text-KI“)
+        improveAi: function(text, action, widget) {
+            const self = this;
+            const messageEl = widget.querySelector('.writeassist-improve-message');
+            const resultDiv = widget.querySelector('.writeassist-improve-result');
+            const improvedArea = widget.querySelector('.writeassist-improved');
+            const button = widget.querySelector('.writeassist-improve-btn');
+            if (!text.trim()) {
+                self.showMessage(messageEl, 'Bitte Text eingeben', 'warning');
+                return;
+            }
+            self.showMessage(messageEl, 'KI arbeitet …', 'info');
+            button.disabled = true;
+            const formData = new FormData();
+            formData.append('action', action);
+            formData.append('text', text);
+            formData.append('format', 'text');
+            fetch('./index.php?rex-api-call=writeassist_generate', { method: 'POST', body: formData })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success && data.text) {
+                        improvedArea.value = data.text;
+                        resultDiv.style.display = 'block';
+                        self.showMessage(messageEl, 'Fertig – bitte prüfen und übernehmen.', 'success');
+                    } else {
+                        self.showMessage(messageEl, data.error || 'Fehler', 'error');
+                    }
+                })
+                .catch(function(error) { self.showMessage(messageEl, error.message || 'Netzwerkfehler', 'error'); })
+                .then(function() { button.disabled = false; });
+        },
+
         // Generate via Gemini/Provider API
         generate: function(text, type, widget) {
             const self = this;
