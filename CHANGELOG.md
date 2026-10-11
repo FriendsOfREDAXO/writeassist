@@ -13,6 +13,11 @@
 - Zeitlimit für KI-Anfragen 120 statt 30 Sekunden (größere und lokale Modelle).
 - Info-Center: Der Reiter „Übersetzen“ erscheint nur, wenn es etwas zu übersetzen gibt – mehrsprachige Website oder DeepL eingerichtet.
 - Verständlichere Fehlermeldung, wenn kein KI-Dienst eingerichtet ist.
+- Plugins, Widget-CSS und -JS mit eigenem Cache-Schlüssel (Dateidatum): TinyMCE hängte an externe Plugins nur seine eigene Version an, ein WriteAssist-Update kam erst nach Leeren des Browser-Caches an.
+- Dialog-Farben über CSS-Variablen anpassbar: `--wa-accent`, `--wa-accent-dark`, `--wa-accent-light`.
+
+### Hinweis zur Einrichtung
+- Im TinyMCE-Profil `writeassist_generate` unter **plugins** und **toolbar** eintragen (externe Plugins lädt TinyMCE nur, wenn sie in der Plugin-Liste des Profils stehen), für den Rechtsklick `writeassist_context` unter **contextmenu**.
 
 ## 3.5.0 - 2026-09-25
 

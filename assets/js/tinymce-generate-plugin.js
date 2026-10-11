@@ -38,23 +38,34 @@
     LABELS.custom = 'Eigene Anweisung';
     LABELS.generate = 'Neuer Text';
 
-    var STYLE_CSS = '<style>'
-        + '.wa-box{font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#222}'
-        + '.wa-head{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:#5b6570}'
-        + '.wa-chip{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef3ef;color:#0f5424;text-transform:none;letter-spacing:0;font-weight:600}'
-        + '.wa-result{max-height:46vh;overflow:auto;padding:12px 14px;border:1px solid #d9e0dc;border-left:4px solid #12803a;border-radius:4px;background:#fff}'
-        + '.wa-result>:first-child{margin-top:0}.wa-result>:last-child{margin-bottom:0}'
-        + '.wa-result a{color:#0f5424}'
-        + '.wa-orig{margin-top:10px}.wa-orig summary{cursor:pointer;color:#5b6570;font-size:12px}'
-        + '.wa-orig div{margin-top:6px;padding:8px 12px;border-radius:4px;background:#f4f6f5;color:#555;max-height:22vh;overflow:auto}'
-        + '.wa-meta{margin-top:8px;font-size:12px;color:#6b746e}'
-        + '.wa-loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 8px;color:#5b6570}'
-        + '.wa-dots{display:flex;gap:6px}.wa-dots span{width:9px;height:9px;border-radius:50%;background:#12803a;animation:wa-b 1s infinite ease-in-out}'
-        + '.wa-dots span:nth-child(2){animation-delay:.15s}.wa-dots span:nth-child(3){animation-delay:.3s}'
+    var STYLE_CSS_TEXT = ''
+        + '.tox .wa-box{font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:#222}'
+        + '.tox .wa-head{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:#5b6570}'
+        + '.tox .wa-chip{display:inline-block;padding:2px 8px;border-radius:999px;background:var(--wa-accent-light,#e8f1f8);color:var(--wa-accent-dark,#185d8c);text-transform:none;letter-spacing:0;font-weight:600}'
+        + '.tox .wa-result{max-height:46vh;overflow:auto;padding:12px 14px;border:1px solid #d9e0dc;border-left:4px solid var(--wa-accent,#207ab7);border-radius:4px;background:#fff}'
+        + '.tox .wa-result>:first-child{margin-top:0}.tox .wa-result>:last-child{margin-bottom:0}'
+        + '.tox .wa-result a{color:var(--wa-accent-dark,#185d8c)}'
+        + '.tox .wa-result p,.tox .wa-result ul,.tox .wa-result ol,.tox .wa-result h2,.tox .wa-result h3{margin:0 0 .7em}.tox .wa-result ul,.tox .wa-result ol{padding-left:1.4em}.tox .wa-result ul{list-style:disc}.tox .wa-result ol{list-style:decimal}.tox .wa-result strong,.tox .wa-result b{font-weight:700}.tox .wa-result em{font-style:italic}.tox .wa-result h2,.tox .wa-result h3{font-weight:700;font-size:1.1em}'
+        + '.tox .wa-orig{margin-top:10px}.tox .wa-orig summary{cursor:pointer;color:#5b6570;font-size:12px}'
+        + '.tox .wa-orig div{margin-top:6px;padding:8px 12px;border-radius:4px;background:#f4f6f5;color:#555;max-height:22vh;overflow:auto}'
+        + '.tox .wa-meta{margin-top:8px;font-size:12px;color:#6b746e}'
+        + '.tox .wa-loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:28px 8px;color:#5b6570}'
+        + '.tox .wa-dots{display:flex;gap:6px}.tox .wa-dots span{width:9px;height:9px;border-radius:50%;background:var(--wa-accent,#207ab7);animation:wa-b 1s infinite ease-in-out}'
+        + '.tox .wa-dots span:nth-child(2){animation-delay:.15s}.tox .wa-dots span:nth-child(3){animation-delay:.3s}'
         + '@keyframes wa-b{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-4px)}}'
-        + '@media (prefers-reduced-motion:reduce){.wa-dots span{animation:none;opacity:.7}}'
-        + '.wa-error{padding:12px 14px;border-radius:4px;background:#fdecea;color:#8a1c12}'
-        + '</style>';
+        + '@media (prefers-reduced-motion:reduce){.tox .wa-dots span{animation:none;opacity:.7}}'
+        + '.tox .wa-error{padding:12px 14px;border-radius:4px;background:#fdecea;color:#8a1c12}';
+    // TinyMCE entfernt <style> aus Dialog-Inhalten - die Stile kommen einmal in den Seitenkopf
+    var STYLE_CSS = '';
+    function injectStyles() {
+        if (document.getElementById('writeassist-tinymce-ui')) {
+            return;
+        }
+        var el = document.createElement('style');
+        el.id = 'writeassist-tinymce-ui';
+        el.textContent = STYLE_CSS_TEXT;
+        document.head.appendChild(el);
+    }
 
     function escapeHtml(s) {
         return String(s).replace(/[&<>"']/g, function (c) {
@@ -70,6 +81,7 @@
 
     var setup = function (editor) {
         var savedPrompts = null;
+        injectStyles();
 
         function loadPrompts() {
             if (savedPrompts !== null) {
@@ -195,6 +207,9 @@
                     if (source.hasSelection && source.bookmark) {
                         editor.selection.moveToBookmark(source.bookmark);
                     }
+                    if (source.hasSelection) {
+                        html = fitToSelection(html, source);
+                    }
                     if (mode === 'replace') {
                         if (source.hasSelection) {
                             editor.selection.setContent(html);
@@ -216,6 +231,30 @@
             }
 
             go();
+        }
+
+        /**
+         * Ergebnis passend zur Markierung einsetzen: Liegt die Markierung innerhalb EINES Absatzes
+         * (kein Block im markierten HTML), wird ein einzelner <p> zu Inline-Text; mehrere Blöcke
+         * ersetzen den ganzen umgebenden Absatz statt darin verschachtelt zu landen (<p><p>).
+         */
+        function fitToSelection(html, source) {
+            if (/<(p|ul|ol|h[1-6]|div|blockquote|table)\b/i.test(source.html)) {
+                return html;
+            }
+            var single = html.match(/^\s*<p>([\s\S]*?)<\/p>\s*$/i);
+            if (single && !/<\/?(p|ul|ol|h[1-6]|div|blockquote|table)\b/i.test(single[1])) {
+                return single[1];
+            }
+            if (/<(p|ul|ol|h[1-6]|div|blockquote|table)\b/i.test(html)) {
+                var dom = editor.dom;
+                var start = dom.getParent(editor.selection.getStart(), dom.isBlock);
+                var end = dom.getParent(editor.selection.getEnd(), dom.isBlock);
+                if (start && start === end && start !== editor.getBody()) {
+                    editor.selection.select(start);
+                }
+            }
+            return html;
         }
 
         function quick(action) {
