@@ -169,17 +169,17 @@ if (rex::isBackend() && rex::getUser()) {
     // Add assets to backend
     rex_view::addCssFile($addon->getAssetsUrl('css/writeassist.css') . '?v=' . (int) @filemtime($addon->getAssetsPath('css/writeassist.css')));
     rex_view::addJsFile($addon->getAssetsUrl('js/writeassist.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/writeassist.js')));
-    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-bulk-translate.js'));
-    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-settings.js'));
+    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-bulk-translate.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/writeassist-bulk-translate.js')));
+    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-settings.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/writeassist-settings.js')));
 
     // KI-Text-/Übersetzungs-Widget für einfache Textareas/Inputs ohne WYSIWYG-Editor
     // (class="watext" bzw. class="watranslate") - addonweit im Backend verfügbar,
     // damit auch YForm-/MForm-Felder oder Custom-Module davon profitieren können.
-    rex_view::addCssFile($addon->getAssetsUrl('css/writeassist-fields.css'));
-    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-fields.js'));
+    rex_view::addCssFile($addon->getAssetsUrl('css/writeassist-fields.css') . '?v=' . (int) @filemtime($addon->getAssetsPath('css/writeassist-fields.css')));
+    rex_view::addJsFile($addon->getAssetsUrl('js/writeassist-fields.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/writeassist-fields.js')));
     if ($addon->getConfig('enable_markitup_plugin', true) && rex_addon::get('markitup')->isAvailable()) {
         // Register MarkItUp integration JS
-        rex_view::addJsFile($addon->getAssetsUrl('js/markitup-writeassist-plugin.js'));
+        rex_view::addJsFile($addon->getAssetsUrl('js/markitup-writeassist-plugin.js') . '?v=' . (int) @filemtime($addon->getAssetsPath('js/markitup-writeassist-plugin.js')));
     }
 }
 

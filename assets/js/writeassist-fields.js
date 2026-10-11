@@ -99,6 +99,62 @@
         return 'value' in field ? field.value : field.textContent;
     }
 
+    // === Quelle für Aktionen „aus dem Inhalt“ (data-watext-source) ===
+    // data-watext-source="CSS-Selektor" (im selben Formular): Elemente, deren Inhalt die KI als
+    // Ausgangstext bekommt – z. B. der Haupttext einer News für ihren Teaser. Unterstützt Textfelder,
+    // TinyMCE-Editoren und Builder-/Bausteine-JSON. data-watext-source-label benennt die Quelle.
+    var SOURCE_MAX = 12000;
+
+    function htmlToText(html) {
+        var div = document.createElement('div');
+        div.innerHTML = String(html || '');
+        div.querySelectorAll('script, style').forEach(function (n) { n.remove(); });
+        return (div.textContent || '').replace(/\s+/g, ' ').trim();
+    }
+
+    // Texte aus Builder-JSON ([{type, data:{…}}]) sammeln – nur Inhalte, keine Technik
+    var SKIP_KEYS = /^(id|type|online|layout|style|columns|display|image_mode|level|align|link|url|image|images|file|files|media|icon|video|fvn_[a-z_]+|section|container|padding|background|bg|width|class)$/i;
+    function builderJsonToText(value) {
+        var data;
+        try { data = JSON.parse(value); } catch (e) { return null; }
+        if (!Array.isArray(data)) { return null; }
+        var parts = [];
+        (function walk(node, key) {
+            if (node == null) { return; }
+            if (typeof node === 'string') {
+                if (key && SKIP_KEYS.test(key)) { return; }
+                var t = /<[a-z][\s\S]*>/i.test(node) ? htmlToText(node) : node.trim();
+                if (t !== '' && !/^(https?:|redaxo:\/\/|#|\/)/i.test(t)) { parts.push(t); }
+                return;
+            }
+            if (Array.isArray(node)) { node.forEach(function (n) { walk(n, key); }); return; }
+            if (typeof node === 'object') {
+                if (node.online === false) { return; }
+                Object.keys(node).forEach(function (k) { if (!SKIP_KEYS.test(k) || k === 'data') { walk(node[k], k === 'data' ? '' : k); } });
+            }
+        })(data, '');
+        return parts.join('\n');
+    }
+
+    function getSourceText(field) {
+        var selector = field.getAttribute('data-watext-source');
+        if (!selector) { return ''; }
+        var scope = field.closest('form') || document;
+        var texts = [];
+        try {
+            scope.querySelectorAll(selector).forEach(function (el) {
+                var editor = (typeof tinymce !== 'undefined' && el.id) ? tinymce.get(el.id) : null;
+                var raw = editor ? editor.getContent() : ('value' in el ? el.value : el.innerHTML);
+                if (!raw || !String(raw).trim()) { return; }
+                var fromJson = /^\s*\[/.test(raw) ? builderJsonToText(raw) : null;
+                var t = fromJson !== null ? fromJson : htmlToText(raw);
+                if (t) { texts.push(t); }
+            });
+        } catch (e) { return ''; }
+        // offene TinyMCE-Editoren innerhalb der Quell-Container (noch nicht übernommene Änderungen)
+        return texts.join('\n\n').slice(0, SOURCE_MAX);
+    }
+
     // Setzt den Feldwert und beachtet ein vorhandenes maxlength-Attribut - das
     // Attribut begrenzt nur Tastatureingaben, ein programmatisches field.value=
     // wuerde es sonst stillschweigend ignorieren und einen zu langen Wert setzen.
@@ -107,7 +163,16 @@
         var maxLength = field.maxLength;
         var truncated = false;
         if (typeof maxLength === 'number' && maxLength >= 0 && value.length > maxLength) {
-            value = value.slice(0, maxLength);
+            // am letzten Satzende innerhalb der Grenze kürzen statt mitten im Wort
+            var cut = value.slice(0, maxLength);
+            // Satzende = . ! ? gefolgt von Leerraum/Ende – nicht nach einer Zahl („Im 8. Spieltag“)
+            var end = -1;
+            var re = /[.!?](?=\s|$)/g;
+            var m;
+            while ((m = re.exec(cut)) !== null) {
+                if (!(cut.charAt(m.index) === '.' && /\d/.test(cut.charAt(m.index - 1)))) { end = m.index; }
+            }
+            value = end >= maxLength * 0.5 ? cut.slice(0, end + 1) : cut;
             truncated = true;
         }
         field.value = value;
@@ -133,7 +198,20 @@
             opt.textContent = a.text;
             actionSelect.appendChild(opt);
         });
-        actionSelect.value = hasText ? 'rewrite' : 'generate';
+        var sourceLabel = field.getAttribute('data-watext-source-label') || 'Inhalt';
+        var hasSource = !!field.getAttribute('data-watext-source');
+        if (hasSource) {
+            var group = document.createElement('optgroup');
+            group.label = 'Aus dem ' + sourceLabel;
+            [['src_teaser', 'Teaser schreiben'], ['src_summarize', 'Zusammenfassen'], ['src_headline', 'Überschriften vorschlagen']].forEach(function (o) {
+                var opt = document.createElement('option');
+                opt.value = o[0];
+                opt.textContent = o[1] + ' (aus dem ' + sourceLabel + ')';
+                group.appendChild(opt);
+            });
+            actionSelect.insertBefore(group, actionSelect.firstChild);
+        }
+        actionSelect.value = hasSource ? 'src_teaser' : (hasText ? 'rewrite' : 'generate');
         actionRow.appendChild(actionSelect);
         wrap.appendChild(actionRow);
 
@@ -165,7 +243,7 @@
         function updatePromptVisibility() {
             var action = actionSelect.value;
             styleRow.style.display = action === 'rewrite' ? '' : 'none';
-            promptRow.style.display = (action === 'generate' || action === 'custom' || action === 'rewrite') ? '' : 'none';
+            promptRow.style.display = (action === 'generate' || action === 'custom' || action === 'rewrite' || action.indexOf('src_') === 0) ? '' : 'none';
             promptInput.placeholder = action === 'generate'
                 ? 'Thema / Stichworte...'
                 : action === 'custom'
@@ -189,8 +267,26 @@
 
         runBtn.addEventListener('click', function () {
             var action = actionSelect.value;
-            var text = action === 'generate' ? promptInput.value.trim() : getFieldValue(field);
-            var prompt = action === 'custom' ? promptInput.value.trim() : promptInput.value.trim();
+            var fromSource = action.indexOf('src_') === 0;
+            var text = action === 'generate' ? promptInput.value.trim() : (fromSource ? getSourceText(field) : getFieldValue(field));
+            var prompt = promptInput.value.trim();
+            if (fromSource) {
+                if (!text) {
+                    statusEl.textContent = 'Der ' + sourceLabel + ' ist noch leer';
+                    statusEl.className = 'wa-field-status wa-field-status-warning';
+                    return;
+                }
+                action = action.slice(4);
+                // Zeichengrenze des Feldes an die KI weitergeben
+                var max = parseInt(field.getAttribute('maxlength') || '0', 10);
+                if (max > 0) {
+                    // Modelle überschreiten Grenzen gern – mit Reserve anfragen, ein einziger Absatz
+                    prompt = (prompt ? prompt + '\n' : '') + 'Ein einziger Absatz mit höchstens ' + Math.floor(max * 0.8) + ' Zeichen (Leerzeichen mitgezählt).';
+                }
+                if (action === 'headline') {
+                    prompt = (prompt ? prompt + '\n' : '') + 'Gib nur die beste Überschrift aus, ohne Liste.';
+                }
+            }
 
             if (action === 'generate' && !text) {
                 statusEl.textContent = 'Bitte Thema eingeben';
@@ -215,7 +311,7 @@
 
             var formData = new FormData();
             formData.append('action', action);
-            formData.append('text', action === 'generate' ? text : getFieldValue(field));
+            formData.append('text', text);
             formData.append('style', styleSelect.value);
             formData.append('prompt', prompt);
             formData.append('type', 'paragraph');
@@ -229,7 +325,13 @@
                     runBtn.disabled = false;
                     setBusy(field, false);
                     if (data.success && data.text) {
-                        var wasTruncated = setFieldValue(field, data.text.trim());
+                        var result = data.text.trim();
+                        // Teaser/Zusammenfassung für ein Feld: nur der erste Absatz, wenn er trägt
+                        if (fromSource && action !== 'headline') {
+                            var first = result.split(/\n\s*\n/)[0].trim();
+                            if (first.length >= 80) { result = first; }
+                        }
+                        var wasTruncated = setFieldValue(field, result);
                         if (wasTruncated) {
                             statusEl.textContent = 'Gekürzt auf ' + field.maxLength + ' Zeichen (Feldlimit)';
                             statusEl.className = 'wa-field-status wa-field-status-warning';

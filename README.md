@@ -38,6 +38,7 @@ Nicht jedes Feld hat einen WYSIWYG-Editor – trotzdem soll die KI helfen könne
 - **`watranslate`**: Übersetzt den Feldinhalt per Klick (DeepL oder KI, je nach Einstellung).
 - Beide Klassen lassen sich kombinieren, funktionieren in Modulen, YForm, MForm und eigenen Backend-Seiten – WriteAssist erkennt auch nachträglich eingefügte Felder (z.B. per MBlock) automatisch.
 - **Feldlimit-sicher**: Ein vorhandenes `maxlength`-Attribut wird respektiert, das Ergebnis wird bei Bedarf sichtbar gekürzt statt still abgeschnitten.
+- **Aus einem anderen Feld**: `data-watext-source=".selector"` (im selben Formular) – der Zauberstab schreibt Teaser, Zusammenfassung oder Überschrift aus diesem Inhalt (Textfeld, TinyMCE, Builder-JSON); `data-watext-source-label="Inhalt der News"` benennt die Quelle.
 - Live-Demo unter *WriteAssist → Feld-Widget Demo*.
 
 ## Integrationen
