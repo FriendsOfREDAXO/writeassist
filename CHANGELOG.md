@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.6.1 - 2026-10-11
+
+### Hinzugefügt
+- **Feld-Widget: Teaser, Zusammenfassung und Überschrift „aus dem Inhalt“**: Mit `data-watext-source="CSS-Selektor"` (im selben Formular) bekommt ein `watext`-Feld eine Quelle, z. B. den Haupttext einer News – der Zauberstab bietet dann „Teaser schreiben / Zusammenfassen / Überschriften vorschlagen (aus dem Inhalt)“ an. Quelle können Textfelder, TinyMCE-Editoren und Builder-/Bausteine-JSON sein (nur Inhalte, keine Technik). `data-watext-source-label` benennt die Quelle. Ein `maxlength` des Feldes geht als Längenvorgabe an die KI.
+
+### Geändert
+- Teaser und Zusammenfassungen sachlicher: Wichtigstes zuerst, nur Angaben aus dem Text, keine Werbefloskeln.
+- Zu lange Ergebnisse werden am letzten Satzende gekürzt statt mitten im Wort (Ordnungszahlen wie „8.“ zählen nicht als Satzende).
+- Alle Skripte und Stile mit eigenem Cache-Schlüssel (Dateidatum).
+
 ## 3.6.0 - 2026-10-11
 
 ### Hinzugefügt
