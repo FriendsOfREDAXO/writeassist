@@ -406,8 +406,8 @@
     };
 
     if (typeof tinymce !== 'undefined') {
-        tinymce.PluginManager.add('writeassist_generate', function (editor, url) {
-            setup(editor, url);
+        tinymce.PluginManager.add('writeassist_generate', function (editor) {
+            setup(editor);
             return { getMetadata: function () { return meta; } };
         });
     }
